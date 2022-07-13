@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import es.library.databaseserver.perfil.Perfil;
-import es.library.databaseserver.perfil.repository.PerfilRepository;
+import es.library.databaseserver.perfil.dao.PerfilRepository;
 
 @Service
 public class PerfilService {

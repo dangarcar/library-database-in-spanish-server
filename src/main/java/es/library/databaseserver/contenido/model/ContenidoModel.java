@@ -1,10 +1,10 @@
-package es.library.databaseserver.contenido;
+package es.library.databaseserver.contenido.model;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Contenido {
-
+public class ContenidoModel {
+	
 	private Long ID;
 	private String titulo;
 	private String autor;
@@ -16,24 +16,12 @@ public class Contenido {
 	private Integer diasDePrestamo;
 	private Boolean disponible;
 	private LocalDate fechaDisponibilidad;
+	private Long IDLibro;
+	private Long IDAudiovisual;
 	
-	/*public Contenido(String titulo, String autor, String descripcion, Integer ano, String idioma, Soporte soporte,Boolean prestable, Integer diasDePrestamo, Boolean disponible) {
-		this.titulo = titulo;
-		this.autor = autor;
-		this.descripcion = descripcion;
-		this.ano = ano;
-		this.idioma = idioma;
-		this.soporte = soporte;
-		this.prestable = prestable;
-		this.diasDePrestamo = diasDePrestamo;
-		this.disponible = disponible;
-	}*/
-	
-	
-	
-	public Contenido(Long iD, String titulo, String autor, String descripcion, Integer ano, String idioma,
+	public ContenidoModel(Long iD, String titulo, String autor, String descripcion, Integer ano, String idioma,
 			Soporte soporte, Boolean prestable, Integer diasDePrestamo, Boolean disponible,
-			LocalDate fechaDisponibilidad) {
+			LocalDate fechaDisponibilidad,Long IDLibro, Long IDAudiovisual) {
 		ID = iD;
 		this.titulo = titulo;
 		this.autor = autor;
@@ -45,6 +33,8 @@ public class Contenido {
 		this.diasDePrestamo = diasDePrestamo;
 		this.disponible = disponible;
 		this.fechaDisponibilidad = fechaDisponibilidad;
+		this.IDLibro = IDLibro;
+		this.IDAudiovisual = IDAudiovisual;
 	}
 
 
@@ -83,6 +73,12 @@ public class Contenido {
 	public LocalDate getFechaDisponibilidad() {return fechaDisponibilidad;}
 	public void setFechaDisponibilidad(LocalDate fechaDisponibilidad) {this.fechaDisponibilidad = fechaDisponibilidad;}
 	
+	public Long getIDAudiovisual() {return IDAudiovisual;}
+	public void setIDAudiovisual(Long iDAudiovisual) {IDAudiovisual = iDAudiovisual;}
+	
+	public Long getIDLibro() {return IDLibro;}
+	public void setIDLibro(Long iDLibro) {IDLibro = iDLibro;}
+	
 	//TIPICOS hashCode(), equals() y toString() DE UNA CLASE JAVA
 	@Override
 	public int hashCode() {
@@ -97,7 +93,7 @@ public class Contenido {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Contenido other = (Contenido) obj;
+		ContenidoModel other = (ContenidoModel) obj;
 		return Objects.equals(ID, other.ID) && Objects.equals(autor, other.autor) && soporte == other.soporte
 				&& Objects.equals(titulo, other.titulo);
 	}

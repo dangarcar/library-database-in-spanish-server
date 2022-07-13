@@ -1,41 +1,41 @@
-package es.library.databaseserver.contenido.repository;
+package es.library.databaseserver.contenido.dao;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
-import es.library.databaseserver.contenido.Contenido;
+import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
+import es.library.databaseserver.contenido.model.ContenidoModel;
 
 @Repository("contenidoFake")
-public class ContenidoFakeRepository implements ContenidoRepository {
+public class ContenidoFakeRepository implements ContenidoDAO {
 	
-	private final List<Contenido> contenidosList = new ArrayList<>();
+	private final List<ContenidoModel> contenidosList = new ArrayList<>();
 	
 	@Override
-	public List<Contenido> getAllContenidos() throws SQLException {
+	public List<ContenidoModel> getAllContenidos() {
 		return contenidosList;
 	}
 
 	@Override
-	public Contenido getContenidoByID(Long ID) throws SQLException {
+	public ContenidoModel getContenidoByID(Long ID) throws NoSuchContenidoException {
 		return contenidosList.stream().filter(p -> p.getID().equals(ID)).collect(Collectors.toList()).get(0);
 	}
 
 	@Override
-	public void insertContenido(Contenido contenido) throws SQLException {
+	public void insertContenido(ContenidoModel contenido) {
 		contenidosList.add(contenido);
 	}
 
 	@Override
-	public void deleteContenidoByID(Long ID) throws SQLException {
+	public void deleteContenidoByID(Long ID) throws NoSuchContenidoException {
 		contenidosList.remove(getContenidoByID(ID));
 	}
 
 	@Override
-	public void updateContenidoByID(Long ID, Contenido contenido) throws SQLException {
+	public void updateContenidoByID(Long ID, ContenidoModel contenido) {
 		int index = -1;
 		
 		for(var c:contenidosList) {

@@ -1,4 +1,4 @@
-package es.library.databaseserver.contenido;
+package es.library.databaseserver.contenido.model;
 
 /**
  * Enum que define los soportes en los que pueden estar los contenidos de la biblioteca

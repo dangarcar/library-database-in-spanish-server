@@ -1,42 +1,42 @@
 package es.library.databaseserver.contenido.service;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import es.library.databaseserver.contenido.Contenido;
-import es.library.databaseserver.contenido.repository.ContenidoRepository;
+import es.library.databaseserver.contenido.dao.ContenidoDAO;
+import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
+import es.library.databaseserver.contenido.model.ContenidoModel;
 
 @Service
 public class ContenidoService {
 
-	private final ContenidoRepository contenidoRepository;
+	private final ContenidoDAO contenidoRepository;
 	
 	@Autowired
-	public ContenidoService(@Qualifier("contenidoSQLite") ContenidoRepository contenidoRepository) {
+	public ContenidoService(@Qualifier("contenidoSQLite") ContenidoDAO contenidoRepository) {
 		this.contenidoRepository = contenidoRepository;
 	}
 	
-	public List<Contenido> getAllContenidos() throws SQLException {
+	public List<ContenidoModel> getAllContenidos(){
 		return contenidoRepository.getAllContenidos();
 	}
 	
-	public Contenido getContenidoByID(Long ID) throws SQLException {
+	public ContenidoModel getContenidoByID(Long ID) throws NoSuchContenidoException {
 		return contenidoRepository.getContenidoByID(ID);
 	}
 	
-	public void insertContenido(Contenido contenido) throws SQLException {
+	public void insertContenido(ContenidoModel contenido){
 		contenidoRepository.insertContenido(contenido);
 	}
 	
-	public void deleteContenidoByID(Long ID)  throws SQLException {
+	public void deleteContenidoByID(Long ID)  throws  NoSuchContenidoException {
 		contenidoRepository.deleteContenidoByID(ID);
 	}
 	
-	public void updateContenidoByID(Long ID, Contenido contenido)  throws SQLException {
+	public void updateContenidoByID(Long ID, ContenidoModel contenido) throws NoSuchContenidoException {
 		contenidoRepository.updateContenidoByID(ID, contenido);
 	}
 	

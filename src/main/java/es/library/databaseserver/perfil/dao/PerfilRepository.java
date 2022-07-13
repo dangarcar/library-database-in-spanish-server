@@ -1,4 +1,4 @@
-package es.library.databaseserver.perfil.repository;
+package es.library.databaseserver.perfil.dao;
 
 import java.sql.SQLException;
 import java.util.List;
