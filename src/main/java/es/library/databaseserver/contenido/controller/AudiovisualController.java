@@ -14,38 +14,33 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.library.databaseserver.contenido.exceptions.ContenidoNotInsertedException;
 import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
-import es.library.databaseserver.contenido.model.ContenidoModel;
+import es.library.databaseserver.contenido.model.DetallesAudiovisualModel;
 import es.library.databaseserver.contenido.service.ContenidoService;
 
-@RequestMapping("/contenidos")
+@RequestMapping("/audiovisual")
 @RestController
-public class ContenidoController {
-	
+public class AudiovisualController {
+
 	@Autowired
 	private ContenidoService contenidoService;
 	
 	@GetMapping
-	public List<ContenidoModel> getAllContenidos(){
-		return contenidoService.getAllContenidos();
-	}
+	public List<DetallesAudiovisualModel> getAllAudiovisual(){return contenidoService.getAllAudiovisual();}
 	
 	@GetMapping(path = "{id}")
-	public ContenidoModel getContenidoByID(@PathVariable(name = "id") Long ID) throws NoSuchContenidoException{
-		return contenidoService.getContenidoByID(ID);
-	}
+	public DetallesAudiovisualModel getAudiovisualByID(@PathVariable(value = "id") Long ID) 
+			throws NoSuchContenidoException{return contenidoService.getAudiovisualByID(ID);}
 	
 	@PostMapping
-	public void insertContenido(@RequestBody ContenidoModel contenido) throws ContenidoNotInsertedException{
-		contenidoService.insertContenido(contenido);
-	}
+	public void insertAudiovisual(@RequestBody DetallesAudiovisualModel audiovisual) 
+			throws ContenidoNotInsertedException{contenidoService.insertAudiovisual(audiovisual);}
 	
 	@DeleteMapping(path = "{id}")
-	public void deleteContenidoByID(@PathVariable(name = "id") Long ID) throws NoSuchContenidoException{
-		contenidoService.deleteContenidoByID(ID);
-	}
+	public void deleteAudiovisualByID(@PathVariable(value = "id") Long ID)  
+			throws NoSuchContenidoException{contenidoService.deleteAudiovisualByID(ID);}
 	
-	@PutMapping(path = "{id}")
-	public void updateContenidoByID(@PathVariable(name = "id") Long ID, @RequestBody ContenidoModel contenido) throws NoSuchContenidoException{
-		contenidoService.updateContenidoByID(ID, contenido);
-	}
+	@PutMapping(path = "{id}")		
+	public void updateAudiovisualByID(@PathVariable(value = "id") Long ID, @RequestBody DetallesAudiovisualModel audiovisual)  
+			throws NoSuchContenidoException{contenidoService.updateAudiovisualByID(ID, audiovisual);}
+	
 }

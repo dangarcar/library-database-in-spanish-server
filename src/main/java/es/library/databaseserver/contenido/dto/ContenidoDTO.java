@@ -1,11 +1,12 @@
-package es.library.databaseserver.contenido.model;
+package es.library.databaseserver.contenido.dto;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
 import es.library.databaseserver.contenido.Soporte;
+import es.library.databaseserver.contenido.model.ContenidoModel;
 
-public class ContenidoModel {
+public abstract class ContenidoDTO{
 	
 	private Long ID;
 	private String titulo;
@@ -18,12 +19,10 @@ public class ContenidoModel {
 	private Integer diasDePrestamo;
 	private Boolean disponible;
 	private LocalDate fechaDisponibilidad;
-	private Long IDLibro;
-	private Long IDAudiovisual;
 	
-	public ContenidoModel(Long iD, String titulo, String autor, String descripcion, Integer ano, String idioma,
+	public ContenidoDTO(Long iD, String titulo, String autor, String descripcion, Integer ano, String idioma,
 			Soporte soporte, Boolean prestable, Integer diasDePrestamo, Boolean disponible,
-			LocalDate fechaDisponibilidad,Long IDLibro, Long IDAudiovisual) {
+			LocalDate fechaDisponibilidad) {
 		ID = iD;
 		this.titulo = titulo;
 		this.autor = autor;
@@ -35,13 +34,9 @@ public class ContenidoModel {
 		this.diasDePrestamo = diasDePrestamo;
 		this.disponible = disponible;
 		this.fechaDisponibilidad = fechaDisponibilidad;
-		this.IDLibro = IDLibro;
-		this.IDAudiovisual = IDAudiovisual;
 	}
-
-
-
-	//TIPICOS GETTERS Y SETTERS DE UNA CLASE JAVA
+	
+	//TIPICOS GETTERS Y SETTERS DE CLASE JAVA
 	public Long getID() {return ID;}
 	public void setID(Long iD) {ID = iD;}
 	
@@ -74,12 +69,7 @@ public class ContenidoModel {
 	
 	public LocalDate getFechaDisponibilidad() {return fechaDisponibilidad;}
 	public void setFechaDisponibilidad(LocalDate fechaDisponibilidad) {this.fechaDisponibilidad = fechaDisponibilidad;}
-	
-	public Long getIDAudiovisual() {return IDAudiovisual;}
-	public void setIDAudiovisual(Long iDAudiovisual) {IDAudiovisual = iDAudiovisual;}
-	
-	public Long getIDLibro() {return IDLibro;}
-	public void setIDLibro(Long iDLibro) {IDLibro = iDLibro;}
+
 	
 	//TIPICOS hashCode(), equals() y toString() DE UNA CLASE JAVA
 	@Override
@@ -96,8 +86,8 @@ public class ContenidoModel {
 		if (getClass() != obj.getClass())
 			return false;
 		ContenidoModel other = (ContenidoModel) obj;
-		return Objects.equals(ID, other.ID) && Objects.equals(autor, other.autor) && soporte == other.soporte
-				&& Objects.equals(titulo, other.titulo);
+		return Objects.equals(ID, other.getID()) && Objects.equals(autor, other.getAutor()) && soporte == other.getSoporte()
+				&& Objects.equals(titulo, other.getTitulo());
 	}
 	
 	@Override
@@ -106,7 +96,5 @@ public class ContenidoModel {
 				+ ", soporte=" + soporte + ", prestable=" + prestable + ", diasDePrestamo=" + diasDePrestamo
 				+ ", disponible=" + disponible + ", fechaDisponibilidad=" + fechaDisponibilidad + "]";
 	}
-	
-	
 	
 }

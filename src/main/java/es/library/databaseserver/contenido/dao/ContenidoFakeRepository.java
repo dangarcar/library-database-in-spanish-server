@@ -3,14 +3,12 @@ package es.library.databaseserver.contenido.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Repository;
-
 import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
 import es.library.databaseserver.contenido.model.ContenidoModel;
 
 @Repository("contenidoFake")
-public class ContenidoFakeRepository implements ContenidoDAO {
+public abstract class ContenidoFakeRepository implements ContenidoDAO {
 	
 	private final List<ContenidoModel> contenidosList = new ArrayList<>();
 	

@@ -14,38 +14,33 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.library.databaseserver.contenido.exceptions.ContenidoNotInsertedException;
 import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
-import es.library.databaseserver.contenido.model.ContenidoModel;
+import es.library.databaseserver.contenido.model.DetallesLibroModel;
 import es.library.databaseserver.contenido.service.ContenidoService;
 
-@RequestMapping("/contenidos")
+@RequestMapping("/libros")
 @RestController
-public class ContenidoController {
-	
+public class LibrosController {
+
 	@Autowired
 	private ContenidoService contenidoService;
 	
 	@GetMapping
-	public List<ContenidoModel> getAllContenidos(){
-		return contenidoService.getAllContenidos();
-	}
+	public List<DetallesLibroModel> getAllLibro(){return contenidoService.getAllLibro();}
 	
 	@GetMapping(path = "{id}")
-	public ContenidoModel getContenidoByID(@PathVariable(name = "id") Long ID) throws NoSuchContenidoException{
-		return contenidoService.getContenidoByID(ID);
-	}
+	public DetallesLibroModel getLibroByID(@PathVariable(value = "id") Long ID) 
+			throws NoSuchContenidoException{return contenidoService.getLibroByID(ID);}
 	
 	@PostMapping
-	public void insertContenido(@RequestBody ContenidoModel contenido) throws ContenidoNotInsertedException{
-		contenidoService.insertContenido(contenido);
-	}
+	public void insertLibro(@RequestBody DetallesLibroModel libro) 
+			throws ContenidoNotInsertedException{contenidoService.insertLibro(libro);}
 	
 	@DeleteMapping(path = "{id}")
-	public void deleteContenidoByID(@PathVariable(name = "id") Long ID) throws NoSuchContenidoException{
-		contenidoService.deleteContenidoByID(ID);
-	}
+	public void deleteLibroByID(@PathVariable(value = "id") Long ID) 
+			throws NoSuchContenidoException{contenidoService.deleteLibroByID(ID);}
 	
-	@PutMapping(path = "{id}")
-	public void updateContenidoByID(@PathVariable(name = "id") Long ID, @RequestBody ContenidoModel contenido) throws NoSuchContenidoException{
-		contenidoService.updateContenidoByID(ID, contenido);
-	}
+	@PutMapping(path = "{id}")	
+	public void updateLibroByID(@PathVariable(value = "id") Long ID, @RequestBody DetallesLibroModel libro)  
+			throws NoSuchContenidoException{contenidoService.updateLibroByID(ID, libro);}
+	
 }

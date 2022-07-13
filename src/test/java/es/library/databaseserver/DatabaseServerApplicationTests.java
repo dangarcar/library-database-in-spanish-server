@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 
-import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.Soporte;
+import es.library.databaseserver.contenido.model.ContenidoModel;
 
 @SpringBootTest
 class DatabaseServerApplicationTests {
