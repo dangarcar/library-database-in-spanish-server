@@ -2,22 +2,25 @@ package es.library.databaseserver.contenido.dto;
 
 import java.time.LocalDate;
 
+import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.Soporte;
 
-public class Libros extends ContenidoDTO{
+public class Libros extends Contenido{
 	
 	private String ISBN;
 	private Integer paginas;
 	private String editorial;
+	private Long IDLibro;
 	
 	public Libros(Long iD, String titulo, String autor, String descripcion, Integer ano, String idioma, Soporte soporte,
 			Boolean prestable, Integer diasDePrestamo, Boolean disponible, LocalDate fechaDisponibilidad, String iSBN,
-			Integer paginas, String editorial) {
+			Integer paginas, String editorial,Long IDLibro) {
 		super(iD, titulo, autor, descripcion, ano, idioma, soporte, prestable, diasDePrestamo, disponible,
-				fechaDisponibilidad);
+				fechaDisponibilidad,IDLibro,null);
 		ISBN = iSBN;
 		this.paginas = paginas;
 		this.editorial = editorial;
+		this.IDLibro = IDLibro;
 	}
 	
 	public String getISBN() {return ISBN;}
@@ -29,6 +32,9 @@ public class Libros extends ContenidoDTO{
 	public String getEditorial() {return editorial;}
 	public void setEditorial(String editorial) {this.editorial = editorial;}
 
+	public Long getIDLibro() {return IDLibro;}
+	public void setIDLibro(Long iDLibro) {IDLibro = iDLibro;}
+	
 	@Override
 	public String toString() {
 		return super.toString()+"\nLibros [ISBN=" + ISBN + ", paginas=" + paginas + ", editorial=" + editorial + "]";

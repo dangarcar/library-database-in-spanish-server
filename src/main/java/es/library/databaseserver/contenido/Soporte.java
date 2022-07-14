@@ -17,16 +17,16 @@ public enum Soporte {
 	private boolean multimedia;
 	private boolean audiovisual;
 	
-	Soporte(boolean multimedia, boolean audiovisual){
+	Soporte(boolean audiovisual,boolean multimedia){
 		this.multimedia = multimedia;
 		this.audiovisual = audiovisual;
 	}
 	
-	boolean isMultimedia() {
+	public boolean isMultimedia() {
 		return multimedia;
 	}
 	
-	boolean isAudiovisual() {
+	public boolean isAudiovisual() {
 		return audiovisual;
 	}
 }

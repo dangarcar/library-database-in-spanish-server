@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.library.databaseserver.contenido.exceptions.ContenidoNotInsertedException;
+import es.library.databaseserver.contenido.exceptions.NotInsertedContenidoException;
 import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
 import es.library.databaseserver.contenido.model.DetallesAudiovisualModel;
 import es.library.databaseserver.contenido.service.ContenidoService;
@@ -33,7 +33,7 @@ public class AudiovisualController {
 	
 	@PostMapping
 	public void insertAudiovisual(@RequestBody DetallesAudiovisualModel audiovisual) 
-			throws ContenidoNotInsertedException{contenidoService.insertAudiovisual(audiovisual);}
+			throws NotInsertedContenidoException{contenidoService.insertAudiovisual(audiovisual);}
 	
 	@DeleteMapping(path = "{id}")
 	public void deleteAudiovisualByID(@PathVariable(value = "id") Long ID)  

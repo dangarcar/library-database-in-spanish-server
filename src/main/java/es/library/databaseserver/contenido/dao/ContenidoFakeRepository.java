@@ -4,26 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
+
+import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
-import es.library.databaseserver.contenido.model.ContenidoModel;
 
 @Repository("contenidoFake")
 public abstract class ContenidoFakeRepository implements ContenidoDAO {
 	
-	private final List<ContenidoModel> contenidosList = new ArrayList<>();
+	private final List<Contenido> contenidosList = new ArrayList<>();
 	
 	@Override
-	public List<ContenidoModel> getAllContenidos() {
+	public List<Contenido> getAllContenidos() {
 		return contenidosList;
 	}
 
 	@Override
-	public ContenidoModel getContenidoByID(Long ID) throws NoSuchContenidoException {
+	public Contenido getContenidoByID(Long ID) throws NoSuchContenidoException {
 		return contenidosList.stream().filter(p -> p.getID().equals(ID)).collect(Collectors.toList()).get(0);
 	}
 
 	@Override
-	public void insertContenido(ContenidoModel contenido) {
+	public void insertContenido(Contenido contenido) {
 		contenidosList.add(contenido);
 	}
 
@@ -33,7 +34,7 @@ public abstract class ContenidoFakeRepository implements ContenidoDAO {
 	}
 
 	@Override
-	public void updateContenidoByID(Long ID, ContenidoModel contenido) {
+	public void updateContenidoByID(Long ID, Contenido contenido) {
 		int index = -1;
 		
 		for(var c:contenidosList) {

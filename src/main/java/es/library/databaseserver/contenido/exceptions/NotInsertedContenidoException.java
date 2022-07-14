@@ -1,9 +1,9 @@
 package es.library.databaseserver.contenido.exceptions;
 
-public class ContenidoNotInsertedException extends Exception{
+public class NotInsertedContenidoException extends Exception{
 	private static final long serialVersionUID = -6060230511887458056L;
 
-	public ContenidoNotInsertedException(String message) {
+	public NotInsertedContenidoException(String message) {
 		super(message);
 	}
 

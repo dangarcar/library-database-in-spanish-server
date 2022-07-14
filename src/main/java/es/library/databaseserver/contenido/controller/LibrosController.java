@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.library.databaseserver.contenido.exceptions.ContenidoNotInsertedException;
+import es.library.databaseserver.contenido.exceptions.NotInsertedContenidoException;
 import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
 import es.library.databaseserver.contenido.model.DetallesLibroModel;
 import es.library.databaseserver.contenido.service.ContenidoService;
@@ -33,7 +33,7 @@ public class LibrosController {
 	
 	@PostMapping
 	public void insertLibro(@RequestBody DetallesLibroModel libro) 
-			throws ContenidoNotInsertedException{contenidoService.insertLibro(libro);}
+			throws NotInsertedContenidoException{contenidoService.insertLibro(libro);}
 	
 	@DeleteMapping(path = "{id}")
 	public void deleteLibroByID(@PathVariable(value = "id") Long ID) 

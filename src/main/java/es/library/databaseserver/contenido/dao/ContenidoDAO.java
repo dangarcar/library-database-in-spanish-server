@@ -2,24 +2,24 @@ package es.library.databaseserver.contenido.dao;
 
 import java.util.List;
 
-import es.library.databaseserver.contenido.exceptions.ContenidoNotInsertedException;
+import es.library.databaseserver.contenido.Contenido;
+import es.library.databaseserver.contenido.exceptions.NotInsertedContenidoException;
 import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
-import es.library.databaseserver.contenido.model.ContenidoModel;
 import es.library.databaseserver.contenido.model.DetallesAudiovisualModel;
 import es.library.databaseserver.contenido.model.DetallesLibroModel;
 
 public interface ContenidoDAO{
 
 	//CONTENIDO BASICO
-	public List<ContenidoModel> getAllContenidos();
+	public List<Contenido> getAllContenidos();
 	
-	public ContenidoModel getContenidoByID(Long ID) throws NoSuchContenidoException;
+	public Contenido getContenidoByID(Long ID) throws NoSuchContenidoException;
 	
-	public void insertContenido(ContenidoModel contenido) throws ContenidoNotInsertedException;
+	public void insertContenido(Contenido contenido) throws NotInsertedContenidoException;
 	
 	public void deleteContenidoByID(Long ID)  throws NoSuchContenidoException;
 	
-	public void updateContenidoByID(Long ID, ContenidoModel contenido)  throws NoSuchContenidoException;
+	public void updateContenidoByID(Long ID, Contenido contenido)  throws NoSuchContenidoException;
 	
 	
 	//DETALLES AUDIOVISUAL
@@ -27,7 +27,7 @@ public interface ContenidoDAO{
 	
 	public DetallesAudiovisualModel getAudiovisualByID(Long ID) throws NoSuchContenidoException;
 	
-	public void insertAudiovisual(DetallesAudiovisualModel audiovisual) throws ContenidoNotInsertedException;
+	public void insertAudiovisual(DetallesAudiovisualModel audiovisual) throws NotInsertedContenidoException;
 	
 	public void deleteAudiovisualByID(Long ID)  throws NoSuchContenidoException;
 	
@@ -38,7 +38,7 @@ public interface ContenidoDAO{
 		
 	public DetallesLibroModel getLibroByID(Long ID) throws NoSuchContenidoException;
 		
-	public void insertLibro(DetallesLibroModel libro) throws ContenidoNotInsertedException;
+	public void insertLibro(DetallesLibroModel libro) throws NotInsertedContenidoException;
 		
 	public void deleteLibroByID(Long ID) throws NoSuchContenidoException;
 		

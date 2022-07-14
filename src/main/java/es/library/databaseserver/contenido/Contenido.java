@@ -1,12 +1,13 @@
-package es.library.databaseserver.contenido.dto;
+package es.library.databaseserver.contenido;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
-import es.library.databaseserver.contenido.Soporte;
-import es.library.databaseserver.contenido.model.ContenidoModel;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-public abstract class ContenidoDTO{
+@JsonInclude(Include.NON_NULL)
+public class Contenido {
 	
 	private Long ID;
 	private String titulo;
@@ -19,10 +20,12 @@ public abstract class ContenidoDTO{
 	private Integer diasDePrestamo;
 	private Boolean disponible;
 	private LocalDate fechaDisponibilidad;
+	private Long IDLibro;
+	private Long IDAudiovisual;
 	
-	public ContenidoDTO(Long iD, String titulo, String autor, String descripcion, Integer ano, String idioma,
+	public Contenido(Long iD, String titulo, String autor, String descripcion, Integer ano, String idioma,
 			Soporte soporte, Boolean prestable, Integer diasDePrestamo, Boolean disponible,
-			LocalDate fechaDisponibilidad) {
+			LocalDate fechaDisponibilidad,Long IDLibro, Long IDAudiovisual) {
 		ID = iD;
 		this.titulo = titulo;
 		this.autor = autor;
@@ -34,9 +37,13 @@ public abstract class ContenidoDTO{
 		this.diasDePrestamo = diasDePrestamo;
 		this.disponible = disponible;
 		this.fechaDisponibilidad = fechaDisponibilidad;
+		this.IDLibro = IDLibro;
+		this.IDAudiovisual = IDAudiovisual;
 	}
-	
-	//TIPICOS GETTERS Y SETTERS DE CLASE JAVA
+
+
+
+	//TIPICOS GETTERS Y SETTERS DE UNA CLASE JAVA
 	public Long getID() {return ID;}
 	public void setID(Long iD) {ID = iD;}
 	
@@ -69,7 +76,12 @@ public abstract class ContenidoDTO{
 	
 	public LocalDate getFechaDisponibilidad() {return fechaDisponibilidad;}
 	public void setFechaDisponibilidad(LocalDate fechaDisponibilidad) {this.fechaDisponibilidad = fechaDisponibilidad;}
-
+	
+	public Long getIDAudiovisual() {return IDAudiovisual;}
+	public void setIDAudiovisual(Long iDAudiovisual) {IDAudiovisual = iDAudiovisual;}
+	
+	public Long getIDLibro() {return IDLibro;}
+	public void setIDLibro(Long iDLibro) {IDLibro = iDLibro;}
 	
 	//TIPICOS hashCode(), equals() y toString() DE UNA CLASE JAVA
 	@Override
@@ -85,9 +97,9 @@ public abstract class ContenidoDTO{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ContenidoModel other = (ContenidoModel) obj;
-		return Objects.equals(ID, other.getID()) && Objects.equals(autor, other.getAutor()) && soporte == other.getSoporte()
-				&& Objects.equals(titulo, other.getTitulo());
+		Contenido other = (Contenido) obj;
+		return Objects.equals(ID, other.ID) && Objects.equals(autor, other.autor) && soporte == other.soporte
+				&& Objects.equals(titulo, other.titulo);
 	}
 	
 	@Override
@@ -96,5 +108,7 @@ public abstract class ContenidoDTO{
 				+ ", soporte=" + soporte + ", prestable=" + prestable + ", diasDePrestamo=" + diasDePrestamo
 				+ ", disponible=" + disponible + ", fechaDisponibilidad=" + fechaDisponibilidad + "]";
 	}
+	
+	
 	
 }

@@ -12,10 +12,10 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.Soporte;
-import es.library.databaseserver.contenido.exceptions.ContenidoNotInsertedException;
+import es.library.databaseserver.contenido.exceptions.NotInsertedContenidoException;
 import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
-import es.library.databaseserver.contenido.model.ContenidoModel;
 import es.library.databaseserver.contenido.model.DetallesAudiovisualModel;
 import es.library.databaseserver.contenido.model.DetallesLibroModel;
 
@@ -26,15 +26,14 @@ public class ContenidoSQLiteRepository implements ContenidoDAO {
 	private NamedParameterJdbcTemplate jdbcTemplate;
 	
 	//CONTENIDO BASICO
-	
 	@Override
-	public List<ContenidoModel> getAllContenidos(){
+	public List<Contenido> getAllContenidos(){
 		final String sqlString = "SELECT ID,Titulo,Autor,Descripcion,Año,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,FechaDisponibilidad,IDLibro,IDAudiovisual FROM Contenidos";
 		
 		return jdbcTemplate.query(sqlString, new ContenidoRowMapper());
 	}
 	@Override
-	public ContenidoModel getContenidoByID(Long ID) throws NoSuchContenidoException {
+	public Contenido getContenidoByID(Long ID) throws NoSuchContenidoException {
 		final String sqlString = "SELECT ID,Titulo,Autor,Descripcion,Año,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,FechaDisponibilidad,IDLibro,IDAudiovisual FROM Contenidos WHERE ID = :id";
 		
 		var contenidos = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("id", ID), new ContenidoRowMapper());
@@ -44,7 +43,7 @@ public class ContenidoSQLiteRepository implements ContenidoDAO {
 		return contenidos.get(0);
 	}
 	@Override
-	public void insertContenido(ContenidoModel contenido) throws ContenidoNotInsertedException{
+	public void insertContenido(Contenido contenido) throws NotInsertedContenidoException{
 		final String sqlString = "INSERT INTO Contenidos(Titulo,Autor,Descripcion,Año,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,IDLibro,IDAudiovisual) "+
 				"VALUES(:titulo,:autor,:descripcion,:ano,:idioma,:soporte,:diasDePrestamo,:prestable,:disponible,:IdLibro,:IdAudiovisual)";
 		 
@@ -62,7 +61,7 @@ public class ContenidoSQLiteRepository implements ContenidoDAO {
 				.addValue("IdAudiovisual", contenido.getIDAudiovisual())
 			);
 		
-		if(i==0) throw new ContenidoNotInsertedException("No se ha podido añadir el contenido a la base de datos");
+		if(i==0) throw new NotInsertedContenidoException("No se ha podido añadir el contenido a la base de datos");
 	}
 	@Override
 	public void deleteContenidoByID(Long ID) throws NoSuchContenidoException{
@@ -73,7 +72,7 @@ public class ContenidoSQLiteRepository implements ContenidoDAO {
 		if(i == 0) throw new NoSuchContenidoException("No existe tal contenido para ser borrado");
 	}
 	@Override
-	public void updateContenidoByID(Long ID, ContenidoModel contenido) throws NoSuchContenidoException{
+	public void updateContenidoByID(Long ID, Contenido contenido) throws NoSuchContenidoException{
 		final String sqlString = "UPDATE Contenidos SET "
 				+ "Titulo = :titulo"
 				+ ",Autor = :autor"
@@ -108,14 +107,12 @@ public class ContenidoSQLiteRepository implements ContenidoDAO {
 
 	
 	//DETALLES AUDIOVISUAL
-	
 	@Override
 	public List<DetallesAudiovisualModel> getAllAudiovisual() {
 		final String sqlString = "SELECT ID,Duracion,IsVideo,EdadRecomendada,Calidad FROM Detalles_Audiovisual";
 		
 		return jdbcTemplate.query(sqlString, new AudiovisualRowMapper());
 	}
-
 	@Override
 	public DetallesAudiovisualModel getAudiovisualByID(Long ID) throws NoSuchContenidoException {
 		final String sqlString = "SELECT ID,Duracion,IsVideo,EdadRecomendada,Calidad FROM Detalles_Audiovisual WHERE ID = :id";
@@ -126,9 +123,8 @@ public class ContenidoSQLiteRepository implements ContenidoDAO {
 		
 		return contenidos.get(0);
 	}
-
 	@Override
-	public void insertAudiovisual(DetallesAudiovisualModel audiovisual) throws ContenidoNotInsertedException {
+	public void insertAudiovisual(DetallesAudiovisualModel audiovisual) throws NotInsertedContenidoException {
 		final String sqlString = "INSERT INTO Detalles_Audiovisual(ID,Duracion,IsVideo,EdadRecomendada,Calidad) "+
 				"VALUES(:id,:duracion,:isVideo,:edadRecomendada,:calidad)";
 		
@@ -140,9 +136,8 @@ public class ContenidoSQLiteRepository implements ContenidoDAO {
 				.addValue("calidad", audiovisual.getCalidad())
 			);
 		
-		if(i==0) throw new ContenidoNotInsertedException("No se ha podido añadir el contenido a la base de datos");
+		if(i==0) throw new NotInsertedContenidoException("No se ha podido añadir el contenido a la base de datos");
 	}
-
 	@Override
 	public void deleteAudiovisualByID(Long ID) throws NoSuchContenidoException {
 		final String sqlString = "DELETE FROM Detalles_Audiovisual WHERE ID = :id";
@@ -151,7 +146,6 @@ public class ContenidoSQLiteRepository implements ContenidoDAO {
 		
 		if(i == 0) throw new NoSuchContenidoException("No existe tal contenido para ser borrado");
 	}
-
 	@Override
 	public void updateAudiovisualByID(Long ID, DetallesAudiovisualModel audiovisual) throws NoSuchContenidoException {
 		final String sqlString = "UPDATE Detalles_Audiovisual SET "
@@ -173,8 +167,6 @@ public class ContenidoSQLiteRepository implements ContenidoDAO {
 	}
 	
 	//DETALLES LIBRO
-	
-
 	@Override
 	public List<DetallesLibroModel> getAllLibro() {
 		final String sqlString = "SELECT ID,ISBN,Paginas,Editorial FROM Detalles_Libros";
@@ -191,9 +183,8 @@ public class ContenidoSQLiteRepository implements ContenidoDAO {
 		
 		return contenidos.get(0);
 	}
-
 	@Override
-	public void insertLibro(DetallesLibroModel libro) throws ContenidoNotInsertedException {
+	public void insertLibro(DetallesLibroModel libro) throws NotInsertedContenidoException {
 		final String sqlString = "INSERT INTO Detalles_Libros(ID,ISBN,Paginas,Editorial) "+
 				"VALUES(:id,:isbn,:paginas,:editorial)";
 		
@@ -204,9 +195,8 @@ public class ContenidoSQLiteRepository implements ContenidoDAO {
 				.addValue("editorial", libro.getEditorial())
 			);
 		
-		if(i==0) throw new ContenidoNotInsertedException("No se ha podido añadir el contenido a la base de datos");
+		if(i==0) throw new NotInsertedContenidoException("No se ha podido añadir el contenido a la base de datos");
 	}
-
 	@Override
 	public void deleteLibroByID(Long ID) throws NoSuchContenidoException {
 		final String sqlString = "DELETE FROM Detalles_Libros WHERE ID = :id";
@@ -215,7 +205,6 @@ public class ContenidoSQLiteRepository implements ContenidoDAO {
 		
 		if(i == 0) throw new NoSuchContenidoException("No existe tal contenido para ser borrado");
 	}
-
 	@Override
 	public void updateLibroByID(Long ID, DetallesLibroModel libro) throws NoSuchContenidoException {
 		final String sqlString = "UPDATE Detalles_Libros SET "
@@ -236,11 +225,11 @@ public class ContenidoSQLiteRepository implements ContenidoDAO {
     
 }
 
-class ContenidoRowMapper implements RowMapper<ContenidoModel>{
+class ContenidoRowMapper implements RowMapper<Contenido>{
 
 	@Override
-	public ContenidoModel mapRow(ResultSet rs, int rowNum) throws SQLException {
-		return new ContenidoModel(
+	public Contenido mapRow(ResultSet rs, int rowNum) throws SQLException {
+		return new Contenido(
 				rs.getLong("ID"), 
 				rs.getString("Titulo"), 
 				rs.getString("Autor"), 
