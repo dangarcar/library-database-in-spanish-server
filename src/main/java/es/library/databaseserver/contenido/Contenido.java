@@ -5,26 +5,38 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import es.library.databaseserver.contenido.dto.Audio;
+import es.library.databaseserver.contenido.dto.Libros;
+import es.library.databaseserver.contenido.dto.Videos;
 
 @JsonInclude(Include.NON_NULL)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Audio.class, name = "audio"),
+        @JsonSubTypes.Type(value = Videos.class, name = "video"),
+        @JsonSubTypes.Type(value = Libros.class, name = "libro")
+})
 public class Contenido {
 	
 	private Long ID;
 	private String titulo;
 	private String autor;
 	private String descripcion;
-	private Integer ano;
+	private int ano;
 	private String idioma;
 	private Soporte soporte;
-	private Boolean prestable;
-	private Integer diasDePrestamo;
-	private Boolean disponible;
+	private boolean prestable;
+	private int diasDePrestamo;
+	private boolean disponible;
 	private LocalDate fechaDisponibilidad;
 	private Long IDLibro;
 	private Long IDAudiovisual;
 	
-	public Contenido(Long iD, String titulo, String autor, String descripcion, Integer ano, String idioma,
-			Soporte soporte, Boolean prestable, Integer diasDePrestamo, Boolean disponible,
+	public Contenido(Long iD, String titulo, String autor, String descripcion, int ano, String idioma,
+			Soporte soporte, boolean prestable, int diasDePrestamo, boolean disponible,
 			LocalDate fechaDisponibilidad,Long IDLibro, Long IDAudiovisual) {
 		ID = iD;
 		this.titulo = titulo;
@@ -56,8 +68,8 @@ public class Contenido {
 	public String getDescripcion() {return descripcion;}
 	public void setDescripcion(String descripcion) {this.descripcion = descripcion;}
 	
-	public Integer getAno() {return ano;}
-	public void setAno(Integer ano) {this.ano = ano;}
+	public int getAno() {return ano;}
+	public void setAno(int ano) {this.ano = ano;}
 	
 	public String getIdioma() {return idioma;}
 	public void setIdioma(String idioma) {this.idioma = idioma;}
@@ -65,14 +77,14 @@ public class Contenido {
 	public Soporte getSoporte() {return soporte;}
 	public void setSoporte(Soporte soporte) {this.soporte = soporte;}
 	
-	public Boolean getPrestable() {return prestable;}
-	public void setPrestable(Boolean prestable) {this.prestable = prestable;}
+	public boolean getPrestable() {return prestable;}
+	public void setPrestable(boolean prestable) {this.prestable = prestable;}
 	
-	public Integer getDiasDePrestamo() {return diasDePrestamo;}
-	public void setDiasDePrestamo(Integer diasDePrestamo) {this.diasDePrestamo = diasDePrestamo;}
+	public int getDiasDePrestamo() {return diasDePrestamo;}
+	public void setDiasDePrestamo(int diasDePrestamo) {this.diasDePrestamo = diasDePrestamo;}
 	
-	public Boolean getDisponible() {return disponible;}
-	public void setDisponible(Boolean disponible) {this.disponible = disponible;}
+	public boolean getDisponible() {return disponible;}
+	public void setDisponible(boolean disponible) {this.disponible = disponible;}
 	
 	public LocalDate getFechaDisponibilidad() {return fechaDisponibilidad;}
 	public void setFechaDisponibilidad(LocalDate fechaDisponibilidad) {this.fechaDisponibilidad = fechaDisponibilidad;}
@@ -98,7 +110,11 @@ public class Contenido {
 		if (getClass() != obj.getClass())
 			return false;
 		Contenido other = (Contenido) obj;
-		return Objects.equals(ID, other.ID) && Objects.equals(autor, other.autor) && soporte == other.soporte
+		return Objects.equals(ID, other.ID) && Objects.equals(IDAudiovisual, other.IDAudiovisual)
+				&& Objects.equals(IDLibro, other.IDLibro) && ano == other.ano && Objects.equals(autor, other.autor)
+				&& Objects.equals(descripcion, other.descripcion) && diasDePrestamo == other.diasDePrestamo
+				&& disponible == other.disponible && Objects.equals(fechaDisponibilidad, other.fechaDisponibilidad)
+				&& Objects.equals(idioma, other.idioma) && prestable == other.prestable && soporte == other.soporte
 				&& Objects.equals(titulo, other.titulo);
 	}
 	
@@ -107,8 +123,5 @@ public class Contenido {
 		return "Contenido [ID=" + ID + ", titulo=" + titulo + ", autor=" + autor + ", ano=" + ano + ", idioma=" + idioma
 				+ ", soporte=" + soporte + ", prestable=" + prestable + ", diasDePrestamo=" + diasDePrestamo
 				+ ", disponible=" + disponible + ", fechaDisponibilidad=" + fechaDisponibilidad + "]";
-	}
-	
-	
-	
+	}	
 }

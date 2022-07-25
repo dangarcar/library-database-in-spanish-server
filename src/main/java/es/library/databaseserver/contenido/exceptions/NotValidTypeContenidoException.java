@@ -1,10 +1,18 @@
 package es.library.databaseserver.contenido.exceptions;
 
-public class NotValidTypeContenidoException extends Exception {
-	private static final long serialVersionUID = 8332864418843879318L;
+/**
+ * Una excepcion para cuando el tipo del contenido no es correcto
+ * @author Daniel Garcia
+ *
+ */
+public class NotValidTypeContenidoException extends RuntimeException {
+
+	public NotValidTypeContenidoException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
 	public NotValidTypeContenidoException(String message) {
 		super(message);
 	}
-	
+
 }

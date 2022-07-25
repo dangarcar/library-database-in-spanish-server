@@ -16,38 +16,38 @@ import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.exceptions.NotInsertedContenidoException;
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 import es.library.databaseserver.contenido.exceptions.NotValidTypeContenidoException;
+import es.library.databaseserver.contenido.service.implementations.ContenidoServiceImpl;
 import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
-import es.library.databaseserver.contenido.service.ContenidoService;
 
 @RequestMapping("/contenidos")
 @RestController
 public class ContenidoController {
 	
 	@Autowired
-	private ContenidoService contenidoService;
+	private ContenidoServiceImpl contenidoServiceImpl;
 	
 	@GetMapping
 	public List<Contenido> getAllContenidos(){
-		return contenidoService.getAllContenidos();
+		return contenidoServiceImpl.getAllContenidos();
 	}
 	
 	@GetMapping(path = "{id}")
 	public Contenido getContenidoByID(@PathVariable(name = "id") Long ID) throws NoSuchContenidoException, NotValidTypeContenidoException, NotValidSoporteException{
-		return contenidoService.getContenidoByID(ID);
+		return contenidoServiceImpl.getContenidoByID(ID);
 	}
 	
 	@PostMapping
-	public void insertContenido(@RequestBody Contenido contenido) throws NotInsertedContenidoException{
-		contenidoService.insertContenido(contenido);
+	public void insertContenido(@RequestBody Contenido contenido) throws NotInsertedContenidoException, NotValidTypeContenidoException, NotValidSoporteException{
+		contenidoServiceImpl.insertContenido(contenido);
 	}
 	
 	@DeleteMapping(path = "{id}")
-	public void deleteContenidoByID(@PathVariable(name = "id") Long ID) throws NoSuchContenidoException{
-		contenidoService.deleteContenidoByID(ID);
+	public void deleteContenidoByID(@PathVariable(name = "id") Long ID) throws NoSuchContenidoException, NotValidTypeContenidoException, NotValidSoporteException{
+		contenidoServiceImpl.deleteContenidoByID(ID);
 	}
 	
 	@PutMapping(path = "{id}")
-	public void updateContenidoByID(@PathVariable(name = "id") Long ID, @RequestBody Contenido contenido) throws NoSuchContenidoException{
-		contenidoService.updateContenidoByID(ID, contenido);
+	public void updateContenidoByID(@PathVariable(name = "id") Long ID, @RequestBody Contenido contenido) throws NoSuchContenidoException, NotValidTypeContenidoException, NotValidSoporteException, NotInsertedContenidoException{
+		contenidoServiceImpl.updateContenidoByID(ID, contenido);
 	}
 }

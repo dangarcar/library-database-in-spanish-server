@@ -15,32 +15,32 @@ import org.springframework.web.bind.annotation.RestController;
 import es.library.databaseserver.contenido.exceptions.NotInsertedContenidoException;
 import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
 import es.library.databaseserver.contenido.model.DetallesAudiovisualModel;
-import es.library.databaseserver.contenido.service.ContenidoService;
+import es.library.databaseserver.contenido.service.implementations.ContenidoServiceImpl;
 
 @RequestMapping("/audiovisual")
 @RestController
 public class AudiovisualController {
 
 	@Autowired
-	private ContenidoService contenidoService;
+	private ContenidoServiceImpl contenidoServiceImpl;
 	
 	@GetMapping
-	public List<DetallesAudiovisualModel> getAllAudiovisual(){return contenidoService.getAllAudiovisual();}
+	public List<DetallesAudiovisualModel> getAllAudiovisual(){return contenidoServiceImpl.getAllAudiovisual();}
 	
 	@GetMapping(path = "{id}")
 	public DetallesAudiovisualModel getAudiovisualByID(@PathVariable(value = "id") Long ID) 
-			throws NoSuchContenidoException{return contenidoService.getAudiovisualByID(ID);}
+			throws NoSuchContenidoException{return contenidoServiceImpl.getAudiovisualByID(ID);}
 	
 	@PostMapping
 	public void insertAudiovisual(@RequestBody DetallesAudiovisualModel audiovisual) 
-			throws NotInsertedContenidoException{contenidoService.insertAudiovisual(audiovisual);}
+			throws NotInsertedContenidoException{contenidoServiceImpl.insertAudiovisual(audiovisual);}
 	
 	@DeleteMapping(path = "{id}")
 	public void deleteAudiovisualByID(@PathVariable(value = "id") Long ID)  
-			throws NoSuchContenidoException{contenidoService.deleteAudiovisualByID(ID);}
+			throws NoSuchContenidoException{contenidoServiceImpl.deleteAudiovisualByID(ID);}
 	
 	@PutMapping(path = "{id}")		
 	public void updateAudiovisualByID(@PathVariable(value = "id") Long ID, @RequestBody DetallesAudiovisualModel audiovisual)  
-			throws NoSuchContenidoException{contenidoService.updateAudiovisualByID(ID, audiovisual);}
+			throws NoSuchContenidoException, NotInsertedContenidoException{contenidoServiceImpl.updateAudiovisualByID(ID, audiovisual);}
 	
 }

@@ -7,23 +7,23 @@ import es.library.databaseserver.contenido.Soporte;
 
 public class Audio extends Contenido{
 	
-	private Double duracion;
-	private Long IDAudiovisual;
+	private double duracion;
+	private long IDAudiovisual;
 
-	public Audio(Long iD, String titulo, String autor, String descripcion, Integer ano, String idioma, Soporte soporte,
-			Boolean prestable, Integer diasDePrestamo, Boolean disponible, LocalDate fechaDisponibilidad,
-			Double duracion, Long IDAudiovisual) {
+	public Audio(Long iD, String titulo, String autor, String descripcion, int ano, String idioma, Soporte soporte,
+			boolean prestable, int diasDePrestamo, boolean disponible, LocalDate fechaDisponibilidad,
+			double duracion, long IDAudiovisual) {
 		super(iD, titulo, autor, descripcion, ano, idioma, soporte, prestable, diasDePrestamo, disponible,
 				fechaDisponibilidad, null, IDAudiovisual);
 		this.duracion = duracion;
 		this.IDAudiovisual = IDAudiovisual;
 	}
 	
-	public Double getDuracion() {return duracion;}
-	public void setDuracion(Double duracion) {this.duracion = duracion;}
+	public double getDuracion() {return duracion;}
+	public void setDuracion(double duracion) {this.duracion = duracion;}
 
 	public Long getIDAudiovisual() {return IDAudiovisual;}
-	public void setIDAudiovisual(Long iDAudiovisual) {IDAudiovisual = iDAudiovisual;}
+	public void setIDAudiovisual(long iDAudiovisual) {IDAudiovisual = iDAudiovisual;}
 
 	@Override
 	public String toString() {

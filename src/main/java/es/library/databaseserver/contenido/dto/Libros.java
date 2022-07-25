@@ -8,13 +8,13 @@ import es.library.databaseserver.contenido.Soporte;
 public class Libros extends Contenido{
 	
 	private String ISBN;
-	private Integer paginas;
+	private int paginas;
 	private String editorial;
 	private Long IDLibro;
 	
-	public Libros(Long iD, String titulo, String autor, String descripcion, Integer ano, String idioma, Soporte soporte,
-			Boolean prestable, Integer diasDePrestamo, Boolean disponible, LocalDate fechaDisponibilidad, String iSBN,
-			Integer paginas, String editorial,Long IDLibro) {
+	public Libros(Long iD, String titulo, String autor, String descripcion, int ano, String idioma, Soporte soporte,
+			boolean prestable, int diasDePrestamo, boolean disponible, LocalDate fechaDisponibilidad, String iSBN,
+			int paginas, String editorial,long IDLibro) {
 		super(iD, titulo, autor, descripcion, ano, idioma, soporte, prestable, diasDePrestamo, disponible,
 				fechaDisponibilidad,IDLibro,null);
 		ISBN = iSBN;

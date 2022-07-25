@@ -1,17 +1,15 @@
-package es.library.databaseserver.contenido.service;
+package es.library.databaseserver.contenido.model;
 
 import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.dto.Audio;
 import es.library.databaseserver.contenido.dto.Libros;
 import es.library.databaseserver.contenido.dto.Videos;
+import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 import es.library.databaseserver.contenido.exceptions.NotValidTypeContenidoException;
-import es.library.databaseserver.contenido.model.ContenidoModelSet;
-import es.library.databaseserver.contenido.model.DetallesAudiovisualModel;
-import es.library.databaseserver.contenido.model.DetallesLibroModel;
 
 public class ContenidoModelSetDTOMapper {	
 	
-	public static Contenido ContenidoModelSetToContenido(ContenidoModelSet cSet) throws NotValidTypeContenidoException {
+	public static Contenido ContenidoModelSetToContenido(ContenidoModelSet cSet) throws NotValidTypeContenidoException, NotValidSoporteException {
 		Contenido dto = null;
 		
 		if(cSet != null) {
@@ -83,12 +81,46 @@ public class ContenidoModelSetDTOMapper {
 	}
 	
 	//TODO
-	public static ContenidoModelSet ContenidoToContenidoModelSet(Contenido dto) {
-		ContenidoModelSet cSet = null;
+	public static ContenidoModelSet ContenidoToContenidoModelSet(Contenido dto) throws NotValidTypeContenidoException, NotValidSoporteException {		
+		DetallesAudiovisualModel audiovisual = null;
+		DetallesLibroModel libro = null;
+		Contenido c = new Contenido(
+				dto.getID(), 
+				dto.getTitulo(), 
+				dto.getAutor(), 
+				dto.getDescripcion(), 
+				dto.getAno(), 
+				dto.getIdioma(), 
+				dto.getSoporte(), 
+				dto.getPrestable(), 
+				dto.getDiasDePrestamo(), 
+				dto.getDisponible(), 
+				dto.getFechaDisponibilidad(), null, null);
 		
+		if(dto instanceof Audio) {
+			var a = (Audio) dto;
+			
+			c.setIDAudiovisual(a.getIDAudiovisual());
+			
+			audiovisual = new DetallesAudiovisualModel(a.getIDAudiovisual(), a.getDuracion(), false, 0, 0);
+			
+			if(dto instanceof Videos) {
+				var v = (Videos) dto;
+				
+				audiovisual.setIsVideo(true);
+				audiovisual.setCalidad(v.getCalidad());
+				audiovisual.setEdadRecomendada(v.getEdadRecomendada());
+			}
+		} 
+		else if(dto instanceof Libros) {
+			var l = (Libros) dto;
+			
+			c.setIDLibro(l.getIDLibro());
+			
+			libro = new DetallesLibroModel(l.getIDLibro(), l.getISBN(), l.getPaginas(), l.getEditorial());
+		}
 		
-		
-		return cSet;
+		return new ContenidoModelSet(c, audiovisual, libro);
 	}
 	
 }

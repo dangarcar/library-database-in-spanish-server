@@ -5,11 +5,16 @@ package es.library.databaseserver.contenido.exceptions;
  * @author Daniel Garcia
  *
  */
-public class NoSuchContenidoException extends Exception{
-	private static final long serialVersionUID = 944949807237723239L;
+public class NoSuchContenidoException extends RuntimeException{
+
+	public NoSuchContenidoException(String message, Throwable cause) {
+		super(message, cause);
+		// TODO Auto-generated constructor stub
+	}
 
 	public NoSuchContenidoException(String message) {
 		super(message);
+		// TODO Auto-generated constructor stub
 	}
-	
+
 }

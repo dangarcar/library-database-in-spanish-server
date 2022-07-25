@@ -6,23 +6,23 @@ import es.library.databaseserver.contenido.Soporte;
 
 public class Videos extends Audio{
 	
-	private Integer edadRecomendada;
-	private Integer calidad;
+	private int edadRecomendada;
+	private int calidad;
 	
-	public Videos(Long iD, String titulo, String autor, String descripcion, Integer ano, String idioma, Soporte soporte,
-			Boolean prestable, Integer diasDePrestamo, Boolean disponible, LocalDate fechaDisponibilidad,
-			Double duracion, Long IDAudiovisual, Integer edadRecomendada, Integer calidad) {
+	public Videos(Long iD, String titulo, String autor, String descripcion, int ano, String idioma, Soporte soporte,
+			boolean prestable, int diasDePrestamo, boolean disponible, LocalDate fechaDisponibilidad,
+			double duracion, long IDAudiovisual, int edadRecomendada, int calidad) {
 		super(iD, titulo, autor, descripcion, ano, idioma, soporte, prestable, diasDePrestamo, disponible,
 				fechaDisponibilidad, duracion, IDAudiovisual);
 		this.edadRecomendada = edadRecomendada;
 		this.calidad = calidad;
 	}
 	
-	public Integer getEdadRecomendada() {return edadRecomendada;}
-	public void setEdadRecomendada(Integer edadRecomendada) {this.edadRecomendada = edadRecomendada;}
+	public int getEdadRecomendada() {return edadRecomendada;}
+	public void setEdadRecomendada(int edadRecomendada) {this.edadRecomendada = edadRecomendada;}
 	
-	public Integer getCalidad() {return calidad;}
-	public void setCalidad(Integer calidad) {this.calidad = calidad;}
+	public int getCalidad() {return calidad;}
+	public void setCalidad(int calidad) {this.calidad = calidad;}
 
 	@Override
 	public String toString() {

@@ -5,13 +5,13 @@ import java.util.Objects;
 public class DetallesAudiovisualModel {
 
 	private Long ID;
-	private Double duracion;
-	private Boolean isVideo;
-	private Integer edadRecomendada;
-	private Integer calidad;
+	private double duracion;
+	private boolean isVideo;
+	private int edadRecomendada;
+	private int calidad;
 	
-	public DetallesAudiovisualModel(Long iD, Double duracion, Boolean isVideo, Integer edadRecomendada,
-			Integer calidad) {
+	public DetallesAudiovisualModel(Long iD, double duracion, boolean isVideo, int edadRecomendada,
+			int calidad) {
 		super();
 		ID = iD;
 		this.duracion = duracion;
@@ -23,17 +23,17 @@ public class DetallesAudiovisualModel {
 	public Long getID() {return ID;}
 	public void setID(Long iD) {ID = iD;}
 	
-	public Double getDuracion() {return duracion;}
-	public void setDuracion(Double duracion) {this.duracion = duracion;}
+	public double getDuracion() {return duracion;}
+	public void setDuracion(double duracion) {this.duracion = duracion;}
 	
-	public Boolean getIsVideo() {return isVideo;}
-	public void setIsVideo(Boolean isVideo) {this.isVideo = isVideo;}
+	public boolean getIsVideo() {return isVideo;}
+	public void setIsVideo(boolean isVideo) {this.isVideo = isVideo;}
 	
-	public Integer getEdadRecomendada() {return edadRecomendada;}
-	public void setEdadRecomendada(Integer edadRecomendada) {this.edadRecomendada = edadRecomendada;}
+	public int getEdadRecomendada() {return edadRecomendada;}
+	public void setEdadRecomendada(int edadRecomendada) {this.edadRecomendada = edadRecomendada;}
 	
-	public Integer getCalidad() {return calidad;}
-	public void setCalidad(Integer calidad) {this.calidad = calidad;}
+	public int getCalidad() {return calidad;}
+	public void setCalidad(int calidad) {this.calidad = calidad;}
 
 	@Override
 	public int hashCode() {
