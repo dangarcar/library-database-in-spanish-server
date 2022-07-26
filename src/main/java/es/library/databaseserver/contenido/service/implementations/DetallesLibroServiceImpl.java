@@ -38,8 +38,8 @@ public class DetallesLibroServiceImpl implements DetallesLibroService {
 		return cDetallesLibroDAO.insertLibro(libro);
 	}
 			
-	public DetallesLibroModel deleteLibroByID(long ID) throws NoSuchContenidoException{
-		return cDetallesLibroDAO.deleteLibroByID(ID);
+	public void deleteLibroByID(long ID) throws NoSuchContenidoException{
+		cDetallesLibroDAO.deleteLibroByID(ID);
 	}
 			
 	public DetallesLibroModel updateLibroByID(long ID, DetallesLibroModel libro)  throws NoSuchContenidoException, NotInsertedContenidoException{

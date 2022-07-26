@@ -38,8 +38,8 @@ public class DetallesAudiovisualServiceImpl implements DetallesAudiovisualServic
 		return cDetallesAudiovisualDAO.insertAudiovisual(audiovisual);
 	}
 		
-	public DetallesAudiovisualModel deleteAudiovisualByID(long ID)  throws NoSuchContenidoException {
-		return cDetallesAudiovisualDAO.deleteAudiovisualByID(ID);
+	public void deleteAudiovisualByID(long ID)  throws NoSuchContenidoException {
+		cDetallesAudiovisualDAO.deleteAudiovisualByID(ID);
 	}
 		
 	public DetallesAudiovisualModel updateAudiovisualByID(long ID, DetallesAudiovisualModel audiovisual)  throws NoSuchContenidoException, NotInsertedContenidoException{

@@ -25,8 +25,6 @@ import es.library.databaseserver.contenido.model.ContenidoModelSet;
 import es.library.databaseserver.contenido.model.DetallesAudiovisualModel;
 import es.library.databaseserver.contenido.model.DetallesLibroModel;
 import es.library.databaseserver.contenido.service.ContenidoService;
-import es.library.databaseserver.contenido.service.DetallesAudiovisualService;
-import es.library.databaseserver.contenido.service.DetallesLibroService;;
 
 @Service
 public class ContenidoServiceImpl implements ContenidoService{
@@ -47,10 +45,9 @@ public class ContenidoServiceImpl implements ContenidoService{
 			try {
 				resultadoList.add(getContenidoByID(id));
 			} catch(Exception e) {
-				System.err.println(e.getMessage());
+				System.err.println(e.getClass().getName());
 			}
 		}
-		
 		
 		return resultadoList;
 	}
@@ -61,11 +58,10 @@ public class ContenidoServiceImpl implements ContenidoService{
 		return ContenidoModelSetToContenido(cSet);
 	}
 	
-	//TODO
 	public Contenido insertContenido(Contenido contenido) throws NotInsertedContenidoException, NotValidTypeContenidoException, NotValidSoporteException, ContenidoAlreadyExistsException{
 		var cSet = ContenidoToContenidoModelSet(contenido);
-		Optional<DetallesAudiovisualModel> audiovisualModel = null;
-		Optional<DetallesLibroModel> libroModel = null;
+		Optional<DetallesAudiovisualModel> audiovisualModel = Optional.empty();
+		Optional<DetallesLibroModel> libroModel = Optional.empty();
 		
 		if(contenido instanceof Audio) {
 			audiovisualModel = this.insertAudio(cSet);
@@ -81,48 +77,46 @@ public class ContenidoServiceImpl implements ContenidoService{
 		
 		if(audiovisualModel.isEmpty() && libroModel.isEmpty()) throw new NotValidTypeContenidoException("Un contenido debe ser un libro o un audiovisual");
 		
-		return ContenidoModelSetToContenido(new ContenidoModelSet(c, audiovisualModel.get(), libroModel.get()));
+		return ContenidoModelSetToContenido(new ContenidoModelSet(c, audiovisualModel.orElse(null), libroModel.orElse(null)));
 	}
 	
-	public Contenido deleteContenidoByID(long ID) throws NoSuchContenidoException, NotValidTypeContenidoException, NotValidSoporteException {
-		var cSet = getContenidoModelSetByID(ID);
-		
-		if(cSet.getAudiovisual() != null) {
-			dAudiovisualService.deleteAudiovisualByID(cSet.getAudiovisual().getID());
-		}	
-		
-		if(cSet.getLibro() != null) {
-			dLibroService.deleteLibroByID(cSet.getLibro().getID());
-		}
-		
-		return contenidoRepository.deleteContenidoByID(ID);
+	public void deleteContenidoByID(long ID) throws NoSuchContenidoException {
+		contenidoRepository.deleteContenidoByID(ID);
 	}
 	
-	//TODO No actualiza en las tablas de detalles
 	public Contenido updateContenidoByID(long ID, Contenido contenido) throws NoSuchContenidoException, NotValidTypeContenidoException, NotValidSoporteException, NotInsertedContenidoException {
-		ContenidoModelSet cSetTo = ContenidoToContenidoModelSet(contenido);
-		ContenidoModelSet cSetFrom = getContenidoModelSetByID(ID);
+		ContenidoModelSet cSetNew = ContenidoToContenidoModelSet(contenido);
+		ContenidoModelSet cSetOld = getContenidoModelSetByID(ID);
 		
-		if(cSetFrom.equals(cSetTo)) return;
+		Contenido c = null;
+		Optional<DetallesLibroModel> dLibro = Optional.empty();
+		Optional<DetallesAudiovisualModel> dAudiovisual = Optional.empty();
 		
-		if(!(cSetFrom.getContenido().equals(cSetTo.getContenido()))) {
-			contenidoRepository.updateContenidoByID(ID, cSetTo.getContenido());
+		//Si cSet viejo y el nuevo son iguales, devuelve el nuevo
+		if(cSetOld.equals(cSetNew)) {
+			return ContenidoModelSetToContenido(cSetNew);
 		}
 		
-		if(cSetTo.getAudiovisual() != null && cSetFrom.getAudiovisual() != null) {
-			if(!(cSetFrom.getAudiovisual().equals(cSetTo.getAudiovisual()))) {
-				updateAudiovisualByID(
-						cSetFrom.getContenido().getIDAudiovisual(),
-						cSetTo.getAudiovisual());
-			}
+		//Si el audiovisual no es nulo
+		if(cSetNew.getAudiovisual() != null) {
+			dAudiovisual = insertAudio(cSetNew);
 		}
-		else if (cSetTo.getLibro() != null && cSetFrom.getLibro() != null) {
-			if(!(cSetFrom.getLibro().equals(cSetTo.getLibro()))) {
-				updateLibroByID(
-						cSetFrom.getContenido().getIDLibro(), 
-						cSetTo.getLibro());
-			}
+		
+		//Si el libro no es nulo
+		if (cSetNew.getLibro() != null) {
+			dLibro = insertLibro(cSetNew);
 		}
+		
+		
+		//Si el contenido antiguo no es igual al nuevo, lo actualizo
+		if(!(cSetOld.getContenido().equals(cSetNew.getContenido()))) {
+			c = contenidoRepository.updateContenidoByID(ID, cSetNew.getContenido());
+		}
+		else {
+			c = cSetNew.getContenido();
+		}
+		
+		return ContenidoModelSetToContenido(new ContenidoModelSet(c, dAudiovisual.orElse(null), dLibro.orElse(null)));
 	}
 	
 	private ContenidoModelSet getContenidoModelSetByID(long ID) throws NoSuchContenidoException, NotValidTypeContenidoException {
@@ -135,37 +129,50 @@ public class ContenidoServiceImpl implements ContenidoService{
 			throw new NotValidTypeContenidoException("Un contenido no puede ser ni libro ni audiovisual");
 		}
 		
-		return new ContenidoModelSet(c, audio.get(),libro.get());
+		return new ContenidoModelSet(c, audio.orElse(null),libro.orElse(null));
 	}
 	
 	private Optional<DetallesAudiovisualModel> insertAudio(ContenidoModelSet cSet) {
 		Optional<DetallesAudiovisualModel> a = dAudiovisualDAO.getAudiovisualByID(cSet.getContenido().getIDAudiovisual());
 		
-		//Si los detalles audiovisual no estan definidos se deja que se coja el que ya esta hecho
-		if(cSet.getAudiovisual().getCalidad() <= 0 &&
-				!cSet.getAudiovisual().getIsVideo() &&
-				cSet.getAudiovisual().getDuracion() <= 0&&
-				cSet.getAudiovisual().getEdadRecomendada() <= 0) {
-			return Optional.empty();
+		if(a.isPresent()) {
+			//Si los detalles audiovisual no estan definidos se deja que se coja el que ya esta hecho
+			if(cSet.getAudiovisual().getCalidad() <= 0 &&
+					!cSet.getAudiovisual().getIsVideo() &&
+					cSet.getAudiovisual().getDuracion() <= 0&&
+					cSet.getAudiovisual().getEdadRecomendada() <= 0) {
+				return a;
+			}
+			if(!cSet.getAudiovisual().equals(a.get()))
+				throw new NotValidTypeContenidoException("No se puede añadir este contenido audiovisual a la base de datos por que existe otro con la misma ID");
+			else {
+				return a;
+			}
 		}
-		if(!cSet.getAudiovisual().equals(a.get()))
-			throw new NotValidTypeContenidoException("No se puede añadir este contenido audiovisual a la base de datos por que existe otro con la misma ID");
 		
+		//Si el audiovisual no existia en la tabla,lo creo
 		return Optional.ofNullable(dAudiovisualDAO.insertAudiovisual(cSet.getAudiovisual()));
 	}
 	
 	private Optional<DetallesLibroModel> insertLibro(ContenidoModelSet cSet) {
 		Optional<DetallesLibroModel> l = dLibroDAO.getLibroByID(cSet.getContenido().getIDLibro());
 		
-		//Si los detalles libro no estan definidos se deja que se coja el que ya esta hecho
-		if(cSet.getLibro().getEditorial() == null && 
-				cSet.getLibro().getISBN() == null && 
-				cSet.getLibro().getPaginas() <= 0) {
-			return Optional.empty();
+		if(l.isPresent()) {
+			//Si los detalles libro no estan definidos se deja que se coja el que ya esta hecho
+			if(cSet.getLibro().getEditorial() == null && 
+					cSet.getLibro().getISBN() == null && 
+					cSet.getLibro().getPaginas() <= 0) {
+				return l;
+			}
+			if(!cSet.getLibro().equals(l.get())) {
+				throw new NotValidTypeContenidoException("No se puede añadir este libro a la base de datos por que existe otro con la misma ID y es distinto");
+			}
+			else {
+				return l;
+			}
 		}
-		if(!cSet.getLibro().equals(l.get()))
-			throw new NotValidTypeContenidoException("No se puede añadir este libro a la base de datos por que existe otro con la misma ID y es distinto");
 		
+		//Si el libro no existia en la tabla,lo creo
 		return Optional.ofNullable(dLibroDAO.insertLibro(cSet.getLibro()));
 	}
 	

@@ -41,23 +41,26 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 	}
 	
 	@Override
-	public Optional<Contenido> getContenidoByID(Long ID) throws NoSuchContenidoException {
+	public Optional<Contenido> getContenidoByID(Long ID) {
 		final String sqlString = "SELECT ID,Titulo,Autor,Descripcion,Año,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,FechaDisponibilidad,IDLibro,IDAudiovisual FROM Contenidos WHERE ID = :id";
 		
 		var contenidos = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("id", ID), new ContenidoRowMapper());
+		
+		if(contenidos.isEmpty()) return Optional.empty();
 		
 		return Optional.ofNullable(contenidos.get(0));
 	}
 	
 	@Override
 	public Contenido insertContenido(Contenido contenido) throws NotInsertedContenidoException,ContenidoAlreadyExistsException {
-		final String sqlString = "INSERT INTO Contenidos(Titulo,Autor,Descripcion,Año,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,IDLibro,IDAudiovisual) "+
-				"VALUES(:titulo,:autor,:descripcion,:ano,:idioma,:soporte,:diasDePrestamo,:prestable,:disponible,:IdLibro,:IdAudiovisual)";
+		final String sqlString = "INSERT INTO Contenidos(ID,Titulo,Autor,Descripcion,Año,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,IDLibro,IDAudiovisual) "+
+				"VALUES(:id,:titulo,:autor,:descripcion,:ano,:idioma,:soporte,:diasDePrestamo,:prestable,:disponible,:IdLibro,:IdAudiovisual)";
 		 
 		var a = this.getContenidoByID(contenido.getID());
 		
 		if(a.isEmpty()) {
 			jdbcTemplate.update(sqlString, new MapSqlParameterSource()
+					.addValue("id", contenido.getID())
 					.addValue("titulo", contenido.getTitulo())
 					.addValue("autor", contenido.getAutor())
 					.addValue("descripcion", contenido.getDescripcion())
@@ -80,7 +83,7 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 	}
 	
 	@Override
-	public Contenido deleteContenidoByID(Long ID) throws NoSuchContenidoException{
+	public void deleteContenidoByID(Long ID) throws NoSuchContenidoException{
 		final String sqlString = "DELETE FROM Contenidos WHERE ID = :id";
 		
 		var a = this.getContenidoByID(ID);
@@ -91,8 +94,6 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 		else {
 			throw new NoSuchContenidoException("No existe tal contenido para ser borrado");
 		}
-
-		return this.getContenidoByID(ID).isEmpty()? a.get():null;
 	}
 	
 	@Override
@@ -107,6 +108,7 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 				+ ",DiasDePrestamo = :diasDePrestamo"
 				+ ",Prestable = :prestable"
 				+ ",Disponible = :disponible"
+				+ ",FechaDisponibilidad = :fecha"
 				+ ",IDLibro = :IdLibro"
 				+ ",IDAudiovisual = :IdAudiovisual "
 				+ " WHERE ID = :id";
@@ -124,6 +126,7 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 					.addValue("diasDePrestamo", contenido.getDiasDePrestamo())
 					.addValue("prestable", contenido.getPrestable())
 					.addValue("disponible", contenido.getDisponible())
+					.addValue("fecha", contenido.getFechaDisponibilidad())
 					.addValue("IdLibro", contenido.getIDLibro())
 					.addValue("IdAudiovisual", contenido.getIDAudiovisual())
 					.addValue("id", ID)
@@ -133,7 +136,7 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 			throw new NoSuchContenidoException("No existe tal contenido para ser actualizado");
 		}
 		
-		return this.getContenidoByID(ID).isEmpty()? a.get():null;
+		return this.getContenidoByID(ID).get();
 	}
     
 	private class ContenidoRowMapper implements RowMapper<Contenido>{
@@ -152,8 +155,8 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 					rs.getInt("DiasDePrestamo"), 
 					rs.getBoolean("Disponible"), 
 					((rs.getString("FechaDisponibilidad") != null)? LocalDate.parse(rs.getString("FechaDisponibilidad"), DateTimeFormatter.ofPattern("yyyy-MM-dd")):null),
-					rs.getLong("IDLibro"),
-					rs.getLong("IDAudiovisual")
+					rs.getLong("IDLibro")==0L? null:rs.getLong("IDLibro"),
+					rs.getLong("IDAudiovisual")==0L? null:rs.getLong("IDAudiovisual")
 				);
 		}
 		

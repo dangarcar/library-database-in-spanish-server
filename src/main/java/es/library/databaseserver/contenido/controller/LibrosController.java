@@ -15,32 +15,32 @@ import org.springframework.web.bind.annotation.RestController;
 import es.library.databaseserver.contenido.exceptions.NotInsertedContenidoException;
 import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
 import es.library.databaseserver.contenido.model.DetallesLibroModel;
-import es.library.databaseserver.contenido.service.implementations.ContenidoServiceImpl;
+import es.library.databaseserver.contenido.service.DetallesLibroService;
 
 @RequestMapping("/libros")
 @RestController
 public class LibrosController {
 
 	@Autowired
-	private ContenidoServiceImpl contenidoServiceImpl;
+	private DetallesLibroService dLibroService;
 	
 	@GetMapping
-	public List<DetallesLibroModel> getAllLibro(){return contenidoServiceImpl.getAllLibro();}
+	public List<DetallesLibroModel> getAllLibro(){return dLibroService.getAllLibro();}
 	
 	@GetMapping(path = "{id}")
 	public DetallesLibroModel getLibroByID(@PathVariable(value = "id") Long ID) 
-			throws NoSuchContenidoException{return contenidoServiceImpl.getLibroByID(ID);}
+			throws NoSuchContenidoException{return dLibroService.getLibroByID(ID);}
 	
 	@PostMapping
-	public void insertLibro(@RequestBody DetallesLibroModel libro) 
-			throws NotInsertedContenidoException{contenidoServiceImpl.insertLibro(libro);}
+	public DetallesLibroModel insertLibro(@RequestBody DetallesLibroModel libro) 
+			throws NotInsertedContenidoException{return dLibroService.insertLibro(libro);}
 	
 	@DeleteMapping(path = "{id}")
 	public void deleteLibroByID(@PathVariable(value = "id") Long ID) 
-			throws NoSuchContenidoException{contenidoServiceImpl.deleteLibroByID(ID);}
+			throws NoSuchContenidoException{dLibroService.deleteLibroByID(ID);}
 	
 	@PutMapping(path = "{id}")	
-	public void updateLibroByID(@PathVariable(value = "id") Long ID, @RequestBody DetallesLibroModel libro)  
-			throws NoSuchContenidoException, NotInsertedContenidoException{contenidoServiceImpl.updateLibroByID(ID, libro);}
+	public DetallesLibroModel updateLibroByID(@PathVariable(value = "id") Long ID, @RequestBody DetallesLibroModel libro)  
+			throws NoSuchContenidoException, NotInsertedContenidoException{return dLibroService.updateLibroByID(ID, libro);}
 	
 }

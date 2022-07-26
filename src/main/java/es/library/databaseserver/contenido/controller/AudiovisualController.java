@@ -15,32 +15,32 @@ import org.springframework.web.bind.annotation.RestController;
 import es.library.databaseserver.contenido.exceptions.NotInsertedContenidoException;
 import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
 import es.library.databaseserver.contenido.model.DetallesAudiovisualModel;
-import es.library.databaseserver.contenido.service.implementations.ContenidoServiceImpl;
+import es.library.databaseserver.contenido.service.DetallesAudiovisualService;
 
 @RequestMapping("/audiovisual")
 @RestController
 public class AudiovisualController {
 
 	@Autowired
-	private ContenidoServiceImpl contenidoServiceImpl;
+	private DetallesAudiovisualService dAudiovisualService;
 	
 	@GetMapping
-	public List<DetallesAudiovisualModel> getAllAudiovisual(){return contenidoServiceImpl.getAllAudiovisual();}
+	public List<DetallesAudiovisualModel> getAllAudiovisual(){return dAudiovisualService.getAllAudiovisual();}
 	
 	@GetMapping(path = "{id}")
 	public DetallesAudiovisualModel getAudiovisualByID(@PathVariable(value = "id") Long ID) 
-			throws NoSuchContenidoException{return contenidoServiceImpl.getAudiovisualByID(ID);}
+			throws NoSuchContenidoException{return dAudiovisualService.getAudiovisualByID(ID);}
 	
 	@PostMapping
-	public void insertAudiovisual(@RequestBody DetallesAudiovisualModel audiovisual) 
-			throws NotInsertedContenidoException{contenidoServiceImpl.insertAudiovisual(audiovisual);}
+	public DetallesAudiovisualModel insertAudiovisual(@RequestBody DetallesAudiovisualModel audiovisual) 
+			throws NotInsertedContenidoException{return dAudiovisualService.insertAudiovisual(audiovisual);}
 	
 	@DeleteMapping(path = "{id}")
 	public void deleteAudiovisualByID(@PathVariable(value = "id") Long ID)  
-			throws NoSuchContenidoException{contenidoServiceImpl.deleteAudiovisualByID(ID);}
+			throws NoSuchContenidoException{dAudiovisualService.deleteAudiovisualByID(ID);}
 	
 	@PutMapping(path = "{id}")		
-	public void updateAudiovisualByID(@PathVariable(value = "id") Long ID, @RequestBody DetallesAudiovisualModel audiovisual)  
-			throws NoSuchContenidoException, NotInsertedContenidoException{contenidoServiceImpl.updateAudiovisualByID(ID, audiovisual);}
+	public DetallesAudiovisualModel updateAudiovisualByID(@PathVariable(value = "id") Long ID, @RequestBody DetallesAudiovisualModel audiovisual)  
+			throws NoSuchContenidoException, NotInsertedContenidoException{return dAudiovisualService.updateAudiovisualByID(ID, audiovisual);}
 	
 }

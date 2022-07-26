@@ -14,7 +14,7 @@ public interface DetallesAudiovisualService {
 		
 	public DetallesAudiovisualModel insertAudiovisual(DetallesAudiovisualModel audiovisual) throws NotInsertedContenidoException;
 		
-	public DetallesAudiovisualModel deleteAudiovisualByID(long ID)  throws NoSuchContenidoException;
+	public void deleteAudiovisualByID(long ID)  throws NoSuchContenidoException;
 		
 	public DetallesAudiovisualModel updateAudiovisualByID(long ID, DetallesAudiovisualModel audiovisual)  throws NoSuchContenidoException, NotInsertedContenidoException;
 	

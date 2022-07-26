@@ -41,6 +41,8 @@ public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
 		
 		var contenidos = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("id", ID), new LibroRowMapper());
 		
+		if(contenidos.isEmpty()) return Optional.empty();
+		
 		return Optional.ofNullable(contenidos.get(0));
 	}
 	
@@ -102,7 +104,7 @@ public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
 			throw new NoSuchContenidoException("No se ha actualizado ningún contenido porque no existe ese contenido");
 		}
 		
-		return this.getLibroByID(ID).isEmpty()? a.get():null;
+		return this.getLibroByID(ID).get();
 	}
 
 	private class LibroRowMapper implements RowMapper<DetallesLibroModel>{

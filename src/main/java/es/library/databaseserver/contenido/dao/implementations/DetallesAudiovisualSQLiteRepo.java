@@ -41,6 +41,8 @@ public class DetallesAudiovisualSQLiteRepo implements ContenidoDetallesAudiovisu
 		
 		var contenidos = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("id", ID), new AudiovisualRowMapper());
 		
+		if(contenidos.isEmpty()) return Optional.empty();
+		
 		return Optional.ofNullable(contenidos.get(0));
 	}
 	
@@ -105,7 +107,7 @@ public class DetallesAudiovisualSQLiteRepo implements ContenidoDetallesAudiovisu
 			throw new NoSuchContenidoException("No se ha actualizado ningún contenido porque no existe ese contenido");
 		}
 		
-		return this.getAudiovisualByID(ID).isEmpty()? a.get():null;
+		return this.getAudiovisualByID(ID).get();
 	}
 	
 	private class AudiovisualRowMapper implements RowMapper<DetallesAudiovisualModel>{

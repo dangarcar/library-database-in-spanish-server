@@ -14,7 +14,7 @@ public interface DetallesLibroService {
 		
 	public DetallesLibroModel insertLibro(DetallesLibroModel libro) throws NotInsertedContenidoException;
 			
-	public DetallesLibroModel deleteLibroByID(long ID) throws NoSuchContenidoException;
+	public void deleteLibroByID(long ID) throws NoSuchContenidoException;
 			
 	public DetallesLibroModel updateLibroByID(long ID, DetallesLibroModel libro)  throws NoSuchContenidoException, NotInsertedContenidoException;
 }

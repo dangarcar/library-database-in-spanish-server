@@ -17,7 +17,7 @@ public interface ContenidoService {
 	
 	public Contenido insertContenido(Contenido contenido) throws NotInsertedContenidoException, NotValidTypeContenidoException, NotValidSoporteException, ContenidoAlreadyExistsException;
 	
-	public Contenido deleteContenidoByID(long ID)  throws NoSuchContenidoException, NotValidTypeContenidoException, NotValidSoporteException;
+	public void deleteContenidoByID(long ID)  throws NoSuchContenidoException, NotValidTypeContenidoException, NotValidSoporteException;
 	
 	public Contenido updateContenidoByID(long ID, Contenido contenido) throws NoSuchContenidoException, NotValidTypeContenidoException, NotValidSoporteException, NotInsertedContenidoException;
 	

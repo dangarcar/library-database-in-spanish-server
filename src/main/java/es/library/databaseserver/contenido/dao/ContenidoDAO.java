@@ -16,7 +16,7 @@ public interface ContenidoDAO{
 	
 	public Contenido insertContenido(Contenido contenido) throws NotInsertedContenidoException,ContenidoAlreadyExistsException;
 	
-	public Contenido deleteContenidoByID(Long ID)  throws NoSuchContenidoException;
+	public void deleteContenidoByID(Long ID)  throws NoSuchContenidoException;
 	
 	public Contenido updateContenidoByID(Long ID, Contenido contenido)  throws NoSuchContenidoException;
 
