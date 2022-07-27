@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import es.library.databaseserver.contenido.dto.Audio;
 import es.library.databaseserver.contenido.dto.Libros;
 import es.library.databaseserver.contenido.dto.Videos;
+import es.library.databaseserver.contenido.exceptions.IllegalContenidoException;
 
 @JsonInclude(Include.NON_NULL)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -52,8 +53,6 @@ public class Contenido {
 		this.IDLibro = IDLibro;
 		this.IDAudiovisual = IDAudiovisual;
 	}
-
-
 
 	//TIPICOS GETTERS Y SETTERS DE UNA CLASE JAVA
 	public Long getID() {return ID;}
@@ -123,5 +122,15 @@ public class Contenido {
 		return "Contenido [ID=" + ID + ", titulo=" + titulo + ", autor=" + autor + ", ano=" + ano + ", idioma=" + idioma
 				+ ", soporte=" + soporte + ", prestable=" + prestable + ", diasDePrestamo=" + diasDePrestamo
 				+ ", disponible=" + disponible + ", fechaDisponibilidad=" + fechaDisponibilidad + "]";
-	}	
+	}
+	
+	public void checkIsCorrect() throws IllegalContenidoException {
+		if(getAno() <= 0) throw new IllegalContenidoException("El año de creación del contenido debe ser mayor que cero");
+
+		if(getDiasDePrestamo() <= 0) throw new IllegalContenidoException("El numero de dias que un contenido puede ser prestado debe ser mayor que cero");
+
+		if(getFechaDisponibilidad() != null)
+			if(getFechaDisponibilidad().isBefore(LocalDate.now()))
+				throw new IllegalContenidoException("La fecha de devolucion del contenido debe ser después de la fecha de hoy");
+	}
 }

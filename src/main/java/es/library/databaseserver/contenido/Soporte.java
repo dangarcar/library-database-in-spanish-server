@@ -15,18 +15,18 @@ public enum Soporte {
 	CASETE(true,false);
 	
 	private boolean multimedia;
-	private boolean audiovisual;
+	private boolean audio;
 	
-	Soporte(boolean audiovisual,boolean multimedia){
+	Soporte(boolean audio,boolean multimedia){
 		this.multimedia = multimedia;
-		this.audiovisual = audiovisual;
+		this.audio = audio;
 	}
 	
 	public boolean isMultimedia() {
 		return multimedia;
 	}
 	
-	public boolean isAudiovisual() {
-		return audiovisual;
+	public boolean isAudio() {
+		return audio;
 	}
 }

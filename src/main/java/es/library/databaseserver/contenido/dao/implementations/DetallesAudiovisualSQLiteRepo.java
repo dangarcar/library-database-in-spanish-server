@@ -12,8 +12,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import es.library.databaseserver.contenido.dao.ContenidoDetallesAudiovisualDAO;
-import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
-import es.library.databaseserver.contenido.exceptions.NotInsertedContenidoException;
+import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
+import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException;
 import es.library.databaseserver.contenido.model.DetallesAudiovisualModel;
 
 @Repository
@@ -47,7 +47,7 @@ public class DetallesAudiovisualSQLiteRepo implements ContenidoDetallesAudiovisu
 	}
 	
 	@Override
-	public DetallesAudiovisualModel insertAudiovisual(DetallesAudiovisualModel audiovisual) throws NotInsertedContenidoException {
+	public DetallesAudiovisualModel insertAudiovisual(DetallesAudiovisualModel audiovisual) throws DatabaseContenidoException {
 		final String sqlString = "INSERT INTO Detalles_Audiovisual(ID,Duracion,IsVideo,EdadRecomendada,Calidad) "+
 				"VALUES(:id,:duracion,:isVideo,:edadRecomendada,:calidad)";
 		
@@ -64,11 +64,11 @@ public class DetallesAudiovisualSQLiteRepo implements ContenidoDetallesAudiovisu
 		}
 
 		return this.getAudiovisualByID(audiovisual.getID()).orElseThrow(
-				() -> new NotInsertedContenidoException("El contenido no ha sido insertado en la base de datos por alguna razon"));
+				() -> new DatabaseContenidoException("El contenido no ha sido insertado en la base de datos por alguna razon"));
 	}
 	
 	@Override
-	public DetallesAudiovisualModel deleteAudiovisualByID(Long ID) throws NoSuchContenidoException{
+	public DetallesAudiovisualModel deleteAudiovisualByID(Long ID) throws ContenidoNotFoundException{
 		final String sqlString = "DELETE FROM Detalles_Audiovisual WHERE ID = :id";
 		
 		var a = this.getAudiovisualByID(ID);
@@ -77,14 +77,14 @@ public class DetallesAudiovisualSQLiteRepo implements ContenidoDetallesAudiovisu
 			jdbcTemplate.update(sqlString, new MapSqlParameterSource().addValue("id", ID));
 		} 
 		else {
-			throw new NoSuchContenidoException("No existe tal contenido para ser borrado");
+			throw new ContenidoNotFoundException("No existe tal contenido para ser borrado");
 		}
 		
 		return this.getAudiovisualByID(ID).isEmpty()? a.get():null;
 	}
 	
 	@Override
-	public DetallesAudiovisualModel updateAudiovisualByID(Long ID, DetallesAudiovisualModel audiovisual) throws NoSuchContenidoException {
+	public DetallesAudiovisualModel updateAudiovisualByID(Long ID, DetallesAudiovisualModel audiovisual) throws ContenidoNotFoundException {
 		final String sqlString = "UPDATE Detalles_Audiovisual SET "
 				+ "Duracion = :duracion"
 				+ ",IsVideo = :isVideo"
@@ -104,7 +104,7 @@ public class DetallesAudiovisualSQLiteRepo implements ContenidoDetallesAudiovisu
 				);
 		}
 		else {
-			throw new NoSuchContenidoException("No se ha actualizado ningún contenido porque no existe ese contenido");
+			throw new ContenidoNotFoundException("No se ha actualizado ningún contenido porque no existe ese contenido");
 		}
 		
 		return this.getAudiovisualByID(ID).get();

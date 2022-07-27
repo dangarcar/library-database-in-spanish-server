@@ -16,9 +16,10 @@ import org.springframework.stereotype.Repository;
 import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.Soporte;
 import es.library.databaseserver.contenido.dao.ContenidoDAO;
-import es.library.databaseserver.contenido.exceptions.NotInsertedContenidoException;
+import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException;
+import es.library.databaseserver.contenido.exceptions.IllegalContenidoException;
 import es.library.databaseserver.contenido.exceptions.ContenidoAlreadyExistsException;
-import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
+import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
 
 @Repository
 public class ContenidoSQLiteRepo implements ContenidoDAO {
@@ -52,7 +53,10 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 	}
 	
 	@Override
-	public Contenido insertContenido(Contenido contenido) throws NotInsertedContenidoException,ContenidoAlreadyExistsException {
+	public Contenido insertContenido(Contenido contenido) throws DatabaseContenidoException,ContenidoAlreadyExistsException, IllegalContenidoException {
+		//Miro si el contenido es correcto para guardarlo en la base de datos
+		contenido.checkIsCorrect();
+		
 		final String sqlString = "INSERT INTO Contenidos(ID,Titulo,Autor,Descripcion,Año,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,IDLibro,IDAudiovisual) "+
 				"VALUES(:id,:titulo,:autor,:descripcion,:ano,:idioma,:soporte,:diasDePrestamo,:prestable,:disponible,:IdLibro,:IdAudiovisual)";
 		 
@@ -79,11 +83,11 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 		}
 		
 		return this.getContenidoByID(contenido.getID()).orElseThrow(
-				() -> new NotInsertedContenidoException("El contenido no ha sido insertado en la base de datos por alguna razon"));
+				() -> new DatabaseContenidoException("El contenido no ha sido insertado en la base de datos por alguna razon"));
 	}
 	
 	@Override
-	public void deleteContenidoByID(Long ID) throws NoSuchContenidoException{
+	public void deleteContenidoByID(Long ID) throws ContenidoNotFoundException{
 		final String sqlString = "DELETE FROM Contenidos WHERE ID = :id";
 		
 		var a = this.getContenidoByID(ID);
@@ -92,12 +96,15 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 			jdbcTemplate.update(sqlString, new MapSqlParameterSource().addValue("id", ID));
 		}
 		else {
-			throw new NoSuchContenidoException("No existe tal contenido para ser borrado");
+			throw new ContenidoNotFoundException("No existe tal contenido para ser borrado");
 		}
 	}
 	
 	@Override
-	public Contenido updateContenidoByID(Long ID, Contenido contenido) throws NoSuchContenidoException{
+	public Contenido updateContenidoByID(Long ID, Contenido contenido) throws ContenidoNotFoundException{
+		//Miro si el contenido es correcto para guardarlo en la base de datos
+		contenido.checkIsCorrect();
+		
 		final String sqlString = "UPDATE Contenidos SET "
 				+ "Titulo = :titulo"
 				+ ",Autor = :autor"
@@ -133,10 +140,10 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 				);
 		}
 		else {
-			throw new NoSuchContenidoException("No existe tal contenido para ser actualizado");
+			throw new ContenidoNotFoundException("No existe tal contenido para ser actualizado");
 		}
 		
-		return this.getContenidoByID(ID).get();
+		return this.getContenidoByID(ID).orElse(null);
 	}
     
 	private class ContenidoRowMapper implements RowMapper<Contenido>{

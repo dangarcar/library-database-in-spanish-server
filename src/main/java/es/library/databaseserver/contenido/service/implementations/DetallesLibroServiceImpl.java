@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import es.library.databaseserver.contenido.dao.ContenidoDetallesLibroDAO;
-import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
-import es.library.databaseserver.contenido.exceptions.NotInsertedContenidoException;
+import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
+import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException;
 import es.library.databaseserver.contenido.model.DetallesLibroModel;
 import es.library.databaseserver.contenido.service.DetallesLibroService;
 
@@ -30,19 +30,19 @@ public class DetallesLibroServiceImpl implements DetallesLibroService {
 		return lista;
 	}
 		
-	public DetallesLibroModel getLibroByID(long ID) throws NoSuchContenidoException {
-		return cDetallesLibroDAO.getLibroByID(ID).orElseThrow(() -> new NoSuchContenidoException("El contenido que busca no existe"));
+	public DetallesLibroModel getLibroByID(long ID) throws ContenidoNotFoundException {
+		return cDetallesLibroDAO.getLibroByID(ID).orElseThrow(() -> new ContenidoNotFoundException("El contenido que busca no existe"));
 	}
 		
-	public DetallesLibroModel insertLibro(DetallesLibroModel libro) throws NotInsertedContenidoException{
+	public DetallesLibroModel insertLibro(DetallesLibroModel libro) throws DatabaseContenidoException{
 		return cDetallesLibroDAO.insertLibro(libro);
 	}
 			
-	public void deleteLibroByID(long ID) throws NoSuchContenidoException{
+	public void deleteLibroByID(long ID) throws ContenidoNotFoundException{
 		cDetallesLibroDAO.deleteLibroByID(ID);
 	}
 			
-	public DetallesLibroModel updateLibroByID(long ID, DetallesLibroModel libro)  throws NoSuchContenidoException, NotInsertedContenidoException{
+	public DetallesLibroModel updateLibroByID(long ID, DetallesLibroModel libro)  throws ContenidoNotFoundException, DatabaseContenidoException{
 		if(cDetallesLibroDAO.getLibroByID(ID).isEmpty()) {
 			return cDetallesLibroDAO.insertLibro(libro);
 		}

@@ -4,18 +4,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Una excepcion para cuando el tipo del contenido no es correcto
+ * Excepcion para cuando un contenido tiene algun parametro no permitido
  * @author Daniel Garcia
  *
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class NotValidTypeContenidoException extends Exception {
+public class IllegalContenidoException extends RuntimeException{
 
-	public NotValidTypeContenidoException(String message, Throwable cause) {
+	public IllegalContenidoException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	public NotValidTypeContenidoException(String message) {
+	public IllegalContenidoException(String message) {
 		super(message);
 	}
 

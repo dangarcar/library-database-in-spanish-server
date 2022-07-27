@@ -13,13 +13,13 @@ public class ContenidoModelSet {
 	private final DetallesLibroModel libro;
 	private int type = -1;
 	
-	public ContenidoModelSet(Contenido contenido, DetallesAudiovisualModel audiovisual, DetallesLibroModel libro) throws NotValidTypeContenidoException {				
+	public ContenidoModelSet(Contenido contenido, DetallesAudiovisualModel audiovisual, DetallesLibroModel libro) {				
 		this.contenido = contenido;
 		this.audiovisual = audiovisual;
 		this.libro = libro;
 		
 		if(contenido == null) 
-			throw new NotValidTypeContenidoException("El contenido pasado por parametro es nulo");
+			throw new IllegalArgumentException("El contenido pasado por parametro es nulo");
 	}
 	
 	public Contenido getContenido() {return contenido;}	
@@ -36,7 +36,7 @@ public class ContenidoModelSet {
 		int i = -1;
 		
 		//SI ES AUDIOVISUAL
-		if(contenido.getIDAudiovisual() != null && audiovisual != null && contenido.getSoporte().isAudiovisual()) {
+		if(contenido.getIDAudiovisual() != null && audiovisual != null && contenido.getSoporte().isAudio()) {
 			
 			if(audiovisual.getID().longValue() != contenido.getIDAudiovisual().longValue())
 				throw new NotValidTypeContenidoException("El contenido parece no corresponderse con nada en la base de datos");
@@ -57,12 +57,12 @@ public class ContenidoModelSet {
 			if(libro.getID().longValue() != contenido.getIDLibro().longValue())
 				throw new NotValidTypeContenidoException("El contenido parece no corresponderse con nada en la base de datos");
 			
-			if(contenido.getSoporte().isAudiovisual() || contenido.getSoporte().isMultimedia())
+			if(contenido.getSoporte().isAudio() || contenido.getSoporte().isMultimedia())
 				throw new NotValidSoporteException("El contenido de tipo libro debe estar en plataformas compatibles");
 			
 			i = LIBRO;	
 		}
-		else if(!contenido.getSoporte().isAudiovisual()) {
+		else if(!contenido.getSoporte().isAudio()) {
 			throw new NotValidSoporteException("El contenido de tipo libro debe estar en plataformas compatibles");
 		}
 		

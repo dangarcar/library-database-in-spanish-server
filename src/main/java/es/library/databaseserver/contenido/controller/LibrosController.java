@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.library.databaseserver.contenido.exceptions.NotInsertedContenidoException;
-import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
+import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException;
+import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
 import es.library.databaseserver.contenido.model.DetallesLibroModel;
 import es.library.databaseserver.contenido.service.DetallesLibroService;
 
@@ -29,18 +29,18 @@ public class LibrosController {
 	
 	@GetMapping(path = "{id}")
 	public DetallesLibroModel getLibroByID(@PathVariable(value = "id") Long ID) 
-			throws NoSuchContenidoException{return dLibroService.getLibroByID(ID);}
+			throws ContenidoNotFoundException{return dLibroService.getLibroByID(ID);}
 	
 	@PostMapping
 	public DetallesLibroModel insertLibro(@RequestBody DetallesLibroModel libro) 
-			throws NotInsertedContenidoException{return dLibroService.insertLibro(libro);}
+			throws DatabaseContenidoException{return dLibroService.insertLibro(libro);}
 	
 	@DeleteMapping(path = "{id}")
 	public void deleteLibroByID(@PathVariable(value = "id") Long ID) 
-			throws NoSuchContenidoException{dLibroService.deleteLibroByID(ID);}
+			throws ContenidoNotFoundException{dLibroService.deleteLibroByID(ID);}
 	
 	@PutMapping(path = "{id}")	
 	public DetallesLibroModel updateLibroByID(@PathVariable(value = "id") Long ID, @RequestBody DetallesLibroModel libro)  
-			throws NoSuchContenidoException, NotInsertedContenidoException{return dLibroService.updateLibroByID(ID, libro);}
+			throws ContenidoNotFoundException, DatabaseContenidoException{return dLibroService.updateLibroByID(ID, libro);}
 	
 }

@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.Soporte;
+import es.library.databaseserver.contenido.exceptions.IllegalContenidoException;
+import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 
 public class Audio extends Contenido{
 	
@@ -28,5 +30,11 @@ public class Audio extends Contenido{
 	@Override
 	public String toString() {
 		return super.toString()+"\nAudio [duracion=" + duracion +"]";
+	}
+	
+	public void checkIsCorrect() throws IllegalContenidoException {
+		super.checkIsCorrect();
+		
+		if(!getSoporte().isAudio()) throw new IllegalContenidoException("El soporte no es correcto",new NotValidSoporteException("El soporte debe ser compatible con audio"));
 	}
 }

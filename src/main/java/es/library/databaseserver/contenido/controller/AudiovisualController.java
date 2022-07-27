@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.library.databaseserver.contenido.exceptions.NotInsertedContenidoException;
-import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
+import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException;
+import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
 import es.library.databaseserver.contenido.model.DetallesAudiovisualModel;
 import es.library.databaseserver.contenido.service.DetallesAudiovisualService;
 
@@ -29,18 +29,18 @@ public class AudiovisualController {
 	
 	@GetMapping(path = "{id}")
 	public DetallesAudiovisualModel getAudiovisualByID(@PathVariable(value = "id") Long ID) 
-			throws NoSuchContenidoException{return dAudiovisualService.getAudiovisualByID(ID);}
+			throws ContenidoNotFoundException{return dAudiovisualService.getAudiovisualByID(ID);}
 	
 	@PostMapping
 	public DetallesAudiovisualModel insertAudiovisual(@RequestBody DetallesAudiovisualModel audiovisual) 
-			throws NotInsertedContenidoException{return dAudiovisualService.insertAudiovisual(audiovisual);}
+			throws DatabaseContenidoException{return dAudiovisualService.insertAudiovisual(audiovisual);}
 	
 	@DeleteMapping(path = "{id}")
 	public void deleteAudiovisualByID(@PathVariable(value = "id") Long ID)  
-			throws NoSuchContenidoException{dAudiovisualService.deleteAudiovisualByID(ID);}
+			throws ContenidoNotFoundException{dAudiovisualService.deleteAudiovisualByID(ID);}
 	
 	@PutMapping(path = "{id}")		
 	public DetallesAudiovisualModel updateAudiovisualByID(@PathVariable(value = "id") Long ID, @RequestBody DetallesAudiovisualModel audiovisual)  
-			throws NoSuchContenidoException, NotInsertedContenidoException{return dAudiovisualService.updateAudiovisualByID(ID, audiovisual);}
+			throws ContenidoNotFoundException, DatabaseContenidoException{return dAudiovisualService.updateAudiovisualByID(ID, audiovisual);}
 	
 }

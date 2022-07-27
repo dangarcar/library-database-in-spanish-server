@@ -3,8 +3,8 @@ package es.library.databaseserver.contenido.dao;
 import java.util.List;
 import java.util.Optional;
 
-import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
-import es.library.databaseserver.contenido.exceptions.NotInsertedContenidoException;
+import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
+import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException;
 import es.library.databaseserver.contenido.model.DetallesAudiovisualModel;
 
 public interface ContenidoDetallesAudiovisualDAO {
@@ -13,10 +13,10 @@ public interface ContenidoDetallesAudiovisualDAO {
 	
 	public Optional<DetallesAudiovisualModel> getAudiovisualByID(Long ID);
 	
-	public DetallesAudiovisualModel insertAudiovisual(DetallesAudiovisualModel audiovisual) throws NotInsertedContenidoException;
+	public DetallesAudiovisualModel insertAudiovisual(DetallesAudiovisualModel audiovisual) throws DatabaseContenidoException;
 	
-	public DetallesAudiovisualModel deleteAudiovisualByID(Long ID)  throws NoSuchContenidoException;
+	public DetallesAudiovisualModel deleteAudiovisualByID(Long ID)  throws ContenidoNotFoundException;
 	
-	public DetallesAudiovisualModel updateAudiovisualByID(Long ID, DetallesAudiovisualModel audiovisual)  throws NoSuchContenidoException;
+	public DetallesAudiovisualModel updateAudiovisualByID(Long ID, DetallesAudiovisualModel audiovisual)  throws ContenidoNotFoundException;
 	
 }

@@ -13,11 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.library.databaseserver.contenido.Contenido;
-import es.library.databaseserver.contenido.exceptions.NotInsertedContenidoException;
+import es.library.databaseserver.contenido.exceptions.ContenidoAlreadyExistsException;
+import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException;
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 import es.library.databaseserver.contenido.exceptions.NotValidTypeContenidoException;
 import es.library.databaseserver.contenido.service.ContenidoService;
-import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
+import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
 
 @RequestMapping("/contenidos")
 @RestController
@@ -32,22 +33,22 @@ public class ContenidoController {
 	}
 	
 	@GetMapping(path = "{id}")
-	public Contenido getContenidoByID(@PathVariable(name = "id") Long ID) throws NoSuchContenidoException, NotValidTypeContenidoException, NotValidSoporteException{
+	public Contenido getContenidoByID(@PathVariable(name = "id") Long ID) throws ContenidoNotFoundException, NotValidTypeContenidoException, NotValidSoporteException{
 		return contenidoService.getContenidoByID(ID);
 	}
 	
 	@PostMapping
-	public Contenido insertContenido(@RequestBody Contenido contenido) throws NotInsertedContenidoException, NotValidTypeContenidoException, NotValidSoporteException{
+	public Contenido insertContenido(@RequestBody Contenido contenido) throws DatabaseContenidoException, NotValidTypeContenidoException, NotValidSoporteException, ContenidoAlreadyExistsException{
 		return contenidoService.insertContenido(contenido);
 	}
 	
 	@DeleteMapping(path = "{id}")
-	public void deleteContenidoByID(@PathVariable(name = "id") Long ID) throws NoSuchContenidoException {
+	public void deleteContenidoByID(@PathVariable(name = "id") Long ID) throws ContenidoNotFoundException, NotValidTypeContenidoException, NotValidSoporteException {
 		contenidoService.deleteContenidoByID(ID);
 	}
 	
 	@PutMapping(path = "{id}")
-	public Contenido updateContenidoByID(@PathVariable(name = "id") Long ID, @RequestBody Contenido contenido) throws NoSuchContenidoException, NotValidTypeContenidoException, NotValidSoporteException, NotInsertedContenidoException{
+	public Contenido updateContenidoByID(@PathVariable(name = "id") Long ID, @RequestBody Contenido contenido) throws ContenidoNotFoundException, NotValidTypeContenidoException, NotValidSoporteException, DatabaseContenidoException, ContenidoAlreadyExistsException{
 		return contenidoService.updateContenidoByID(ID, contenido);
 	}
 }

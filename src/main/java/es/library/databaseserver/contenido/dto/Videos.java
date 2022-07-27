@@ -3,6 +3,8 @@ package es.library.databaseserver.contenido.dto;
 import java.time.LocalDate;
 
 import es.library.databaseserver.contenido.Soporte;
+import es.library.databaseserver.contenido.exceptions.IllegalContenidoException;
+import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 
 public class Videos extends Audio{
 	
@@ -27,5 +29,11 @@ public class Videos extends Audio{
 	@Override
 	public String toString() {
 		return super.toString()+"\nVideos [edadRecomendada=" + edadRecomendada + ", calidad=" + calidad + "]";
+	}
+	
+	public void checkIsCorrect() throws IllegalContenidoException {
+		super.checkIsCorrect();
+		
+		if(!getSoporte().isAudio() || !getSoporte().isMultimedia()) throw new IllegalContenidoException("El soporte no es correcto",new NotValidSoporteException("El soporte debe ser compatible con video"));
 	}
 }

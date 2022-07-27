@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import es.library.databaseserver.contenido.dao.ContenidoDetallesAudiovisualDAO;
-import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
-import es.library.databaseserver.contenido.exceptions.NotInsertedContenidoException;
+import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
+import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException;
 import es.library.databaseserver.contenido.model.DetallesAudiovisualModel;
 import es.library.databaseserver.contenido.service.DetallesAudiovisualService;
 
@@ -30,19 +30,19 @@ public class DetallesAudiovisualServiceImpl implements DetallesAudiovisualServic
 		return lista;
 	}
 		
-	public DetallesAudiovisualModel getAudiovisualByID(long ID) throws NoSuchContenidoException {
-		return cDetallesAudiovisualDAO.getAudiovisualByID(ID).orElseThrow(() -> new NoSuchContenidoException("El contenido que busca no existe"));
+	public DetallesAudiovisualModel getAudiovisualByID(long ID) throws ContenidoNotFoundException {
+		return cDetallesAudiovisualDAO.getAudiovisualByID(ID).orElseThrow(() -> new ContenidoNotFoundException("El contenido que busca no existe"));
 	}
 		
-	public DetallesAudiovisualModel insertAudiovisual(DetallesAudiovisualModel audiovisual) throws NotInsertedContenidoException {
+	public DetallesAudiovisualModel insertAudiovisual(DetallesAudiovisualModel audiovisual) throws DatabaseContenidoException {
 		return cDetallesAudiovisualDAO.insertAudiovisual(audiovisual);
 	}
 		
-	public void deleteAudiovisualByID(long ID)  throws NoSuchContenidoException {
+	public void deleteAudiovisualByID(long ID)  throws ContenidoNotFoundException {
 		cDetallesAudiovisualDAO.deleteAudiovisualByID(ID);
 	}
 		
-	public DetallesAudiovisualModel updateAudiovisualByID(long ID, DetallesAudiovisualModel audiovisual)  throws NoSuchContenidoException, NotInsertedContenidoException{
+	public DetallesAudiovisualModel updateAudiovisualByID(long ID, DetallesAudiovisualModel audiovisual)  throws ContenidoNotFoundException, DatabaseContenidoException{
 		if(cDetallesAudiovisualDAO.getAudiovisualByID(ID).isEmpty()) {
 			return cDetallesAudiovisualDAO.insertAudiovisual(audiovisual);
 		}

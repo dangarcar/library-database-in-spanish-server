@@ -12,8 +12,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import es.library.databaseserver.contenido.dao.ContenidoDetallesLibroDAO;
-import es.library.databaseserver.contenido.exceptions.NoSuchContenidoException;
-import es.library.databaseserver.contenido.exceptions.NotInsertedContenidoException;
+import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
+import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException;
 import es.library.databaseserver.contenido.model.DetallesLibroModel;
 
 @Repository
@@ -47,7 +47,7 @@ public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
 	}
 	
 	@Override
-	public DetallesLibroModel insertLibro(DetallesLibroModel libro) throws NotInsertedContenidoException {
+	public DetallesLibroModel insertLibro(DetallesLibroModel libro) throws DatabaseContenidoException {
 		final String sqlString = "INSERT INTO Detalles_Libros(ID,ISBN,Paginas,Editorial) "+
 				"VALUES(:id,:isbn,:paginas,:editorial)";
 		
@@ -63,11 +63,11 @@ public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
 		}
 		
 		return this.getLibroByID(libro.getID()).orElseThrow(
-				() -> new NotInsertedContenidoException("El contenido no ha sido insertado en la base de datos por alguna razon"));
+				() -> new DatabaseContenidoException("El contenido no ha sido insertado en la base de datos por alguna razon"));
 	}
 	
 	@Override
-	public DetallesLibroModel deleteLibroByID(Long ID) throws NoSuchContenidoException {
+	public DetallesLibroModel deleteLibroByID(Long ID) throws ContenidoNotFoundException {
 		final String sqlString = "DELETE FROM Detalles_Libros WHERE ID = :id";
 		
 		var a = this.getLibroByID(ID);
@@ -76,14 +76,14 @@ public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
 			jdbcTemplate.update(sqlString, new MapSqlParameterSource().addValue("id", ID));
 		}
 		else {
-			throw new NoSuchContenidoException("No existe tal contenido para ser borrado");
+			throw new ContenidoNotFoundException("No existe tal contenido para ser borrado");
 		}
 
 		return this.getLibroByID(ID).isEmpty()? a.get():null;
 	}
 	
 	@Override
-	public DetallesLibroModel updateLibroByID(Long ID, DetallesLibroModel libro) throws NoSuchContenidoException {
+	public DetallesLibroModel updateLibroByID(Long ID, DetallesLibroModel libro) throws ContenidoNotFoundException {
 		final String sqlString = "UPDATE Detalles_Libros SET "
 				+ "ISBN = :isbn"
 				+ ",Paginas = :paginas"
@@ -101,7 +101,7 @@ public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
 				);
 		}
 		else {
-			throw new NoSuchContenidoException("No se ha actualizado ningún contenido porque no existe ese contenido");
+			throw new ContenidoNotFoundException("No se ha actualizado ningún contenido porque no existe ese contenido");
 		}
 		
 		return this.getLibroByID(ID).get();
