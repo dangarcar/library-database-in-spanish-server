@@ -13,10 +13,14 @@ public interface ContenidoDetallesAudiovisualDAO {
 	
 	public Optional<DetallesAudiovisualModel> getAudiovisualByID(Long ID);
 	
+	public Optional<DetallesAudiovisualModel> getAudiovisualIfIdIsNull(DetallesAudiovisualModel audiovisualIdNull);
+	
 	public DetallesAudiovisualModel insertAudiovisual(DetallesAudiovisualModel audiovisual) throws DatabaseContenidoException;
 	
-	public DetallesAudiovisualModel deleteAudiovisualByID(Long ID)  throws ContenidoNotFoundException;
+	public DetallesAudiovisualModel deleteAudiovisualByID(Long ID) throws ContenidoNotFoundException;
 	
-	public DetallesAudiovisualModel updateAudiovisualByID(Long ID, DetallesAudiovisualModel audiovisual)  throws ContenidoNotFoundException;
+	public DetallesAudiovisualModel updateAudiovisualByID(Long ID, DetallesAudiovisualModel audiovisual) throws ContenidoNotFoundException;
+
+	public void deleteAudiovisualByIDIfIsNotPointed(Long ID, boolean ifOne) throws ContenidoNotFoundException;
 	
 }

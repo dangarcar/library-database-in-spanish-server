@@ -36,10 +36,10 @@ public class ContenidoModelSet {
 		int i = -1;
 		
 		//SI ES AUDIOVISUAL
-		if(contenido.getIDAudiovisual() != null && audiovisual != null && contenido.getSoporte().isAudio()) {
+		if(audiovisual != null && contenido.getSoporte().isAudio()) {
 			
-			if(audiovisual.getID().longValue() != contenido.getIDAudiovisual().longValue())
-				throw new NotValidTypeContenidoException("El contenido parece no corresponderse con nada en la base de datos");
+			/*if(audiovisual.getID().longValue() != contenido.getIDAudiovisual().longValue())
+				throw new NotValidTypeContenidoException("El contenido parece no corresponderse con nada en la base de datos");*/
 				
 			i = AUDIO;
 			
@@ -53,9 +53,9 @@ public class ContenidoModelSet {
 				
 		}
 		//SI ES UN LIBRO
-		else if(contenido.getIDLibro() != null && libro != null) {
-			if(libro.getID().longValue() != contenido.getIDLibro().longValue())
-				throw new NotValidTypeContenidoException("El contenido parece no corresponderse con nada en la base de datos");
+		else if(libro != null) {
+			/*if(libro.getID().longValue() != contenido.getIDLibro().longValue())
+				throw new NotValidTypeContenidoException("El contenido parece no corresponderse con nada en la base de datos");*/
 			
 			if(contenido.getSoporte().isAudio() || contenido.getSoporte().isMultimedia())
 				throw new NotValidSoporteException("El contenido de tipo libro debe estar en plataformas compatibles");

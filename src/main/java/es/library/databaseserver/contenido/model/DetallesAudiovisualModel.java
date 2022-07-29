@@ -7,11 +7,11 @@ public class DetallesAudiovisualModel {
 	private Long ID;
 	private double duracion;
 	private boolean isVideo;
-	private int edadRecomendada;
-	private int calidad;
+	private Integer edadRecomendada;
+	private Integer calidad;
 	
-	public DetallesAudiovisualModel(Long iD, double duracion, boolean isVideo, int edadRecomendada,
-			int calidad) {
+	public DetallesAudiovisualModel(Long iD, double duracion, boolean isVideo, Integer edadRecomendada,
+			Integer calidad) {
 		super();
 		ID = iD;
 		this.duracion = duracion;
@@ -29,11 +29,11 @@ public class DetallesAudiovisualModel {
 	public boolean getIsVideo() {return isVideo;}
 	public void setIsVideo(boolean isVideo) {this.isVideo = isVideo;}
 	
-	public int getEdadRecomendada() {return edadRecomendada;}
-	public void setEdadRecomendada(int edadRecomendada) {this.edadRecomendada = edadRecomendada;}
+	public Integer getEdadRecomendada() {return edadRecomendada;}
+	public void setEdadRecomendada(Integer edadRecomendada) {this.edadRecomendada = edadRecomendada;}
 	
-	public int getCalidad() {return calidad;}
-	public void setCalidad(int calidad) {this.calidad = calidad;}
+	public Integer getCalidad() {return calidad;}
+	public void setCalidad(Integer calidad) {this.calidad = calidad;}
 
 	@Override
 	public int hashCode() {

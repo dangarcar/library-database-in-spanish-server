@@ -33,9 +33,10 @@ public class ContenidoModelSetDTOMapper {
 						c.getFechaDisponibilidad(), 
 						l.getISBN(), 
 						l.getPaginas(), 
-						l.getEditorial(), 
-						l.getID()
+						l.getEditorial()
+//						,l.getID()
 					);
+				dto.setIDLibro(l.getID());
 				break;
 			case ContenidoModelSet.AUDIO:
 				dto = new Audio(
@@ -50,10 +51,11 @@ public class ContenidoModelSetDTOMapper {
 						c.getDiasDePrestamo(), 
 						c.getDisponible(), 
 						c.getFechaDisponibilidad(),
-						a.getDuracion(),
-						a.getID()
+						a.getDuracion()
+//						,a.getID()
 						
 					);
+				dto.setIDAudiovisual(a.getID());
 				break;
 			case ContenidoModelSet.VIDEO:
 				dto = new Videos(
@@ -69,10 +71,11 @@ public class ContenidoModelSetDTOMapper {
 						c.getDisponible(), 
 						c.getFechaDisponibilidad(),
 						a.getDuracion(),
-						a.getID(),
+//						a.getID(),
 						a.getEdadRecomendada(),
 						a.getCalidad()
 					);
+				dto.setIDAudiovisual(a.getID());
 				break;
 			}
 		}
@@ -95,7 +98,7 @@ public class ContenidoModelSetDTOMapper {
 				dto.getPrestable(), 
 				dto.getDiasDePrestamo(), 
 				dto.getDisponible(), 
-				dto.getFechaDisponibilidad(), null, null);
+				dto.getFechaDisponibilidad());
 		
 		if(dto instanceof Audio) {
 			var a = (Audio) dto;

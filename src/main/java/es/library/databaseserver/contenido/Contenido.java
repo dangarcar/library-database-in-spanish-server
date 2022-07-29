@@ -3,6 +3,7 @@ package es.library.databaseserver.contenido;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -22,6 +23,7 @@ import es.library.databaseserver.contenido.exceptions.IllegalContenidoException;
 })
 public class Contenido {
 	
+	//TODO Debo poner la ID automatica generada por la base de datos
 	private Long ID;
 	private String titulo;
 	private String autor;
@@ -38,7 +40,7 @@ public class Contenido {
 	
 	public Contenido(Long iD, String titulo, String autor, String descripcion, int ano, String idioma,
 			Soporte soporte, boolean prestable, int diasDePrestamo, boolean disponible,
-			LocalDate fechaDisponibilidad,Long IDLibro, Long IDAudiovisual) {
+			LocalDate fechaDisponibilidad) {
 		ID = iD;
 		this.titulo = titulo;
 		this.autor = autor;
@@ -50,8 +52,6 @@ public class Contenido {
 		this.diasDePrestamo = diasDePrestamo;
 		this.disponible = disponible;
 		this.fechaDisponibilidad = fechaDisponibilidad;
-		this.IDLibro = IDLibro;
-		this.IDAudiovisual = IDAudiovisual;
 	}
 
 	//TIPICOS GETTERS Y SETTERS DE UNA CLASE JAVA
@@ -88,10 +88,14 @@ public class Contenido {
 	public LocalDate getFechaDisponibilidad() {return fechaDisponibilidad;}
 	public void setFechaDisponibilidad(LocalDate fechaDisponibilidad) {this.fechaDisponibilidad = fechaDisponibilidad;}
 	
+	@JsonIgnore
 	public Long getIDAudiovisual() {return IDAudiovisual;}
+	@JsonIgnore
 	public void setIDAudiovisual(Long iDAudiovisual) {IDAudiovisual = iDAudiovisual;}
 	
+	@JsonIgnore
 	public Long getIDLibro() {return IDLibro;}
+	@JsonIgnore
 	public void setIDLibro(Long iDLibro) {IDLibro = iDLibro;}
 	
 	//TIPICOS hashCode(), equals() y toString() DE UNA CLASE JAVA

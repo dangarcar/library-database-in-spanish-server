@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.exceptions.ContenidoAlreadyExistsException;
 import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException;
+import es.library.databaseserver.contenido.exceptions.IllegalContenidoException;
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 import es.library.databaseserver.contenido.exceptions.NotValidTypeContenidoException;
 import es.library.databaseserver.contenido.service.ContenidoService;
@@ -48,7 +49,7 @@ public class ContenidoController {
 	}
 	
 	@PutMapping(path = "{id}")
-	public Contenido updateContenidoByID(@PathVariable(name = "id") Long ID, @RequestBody Contenido contenido) throws ContenidoNotFoundException, NotValidTypeContenidoException, NotValidSoporteException, DatabaseContenidoException, ContenidoAlreadyExistsException{
+	public Contenido updateContenidoByID(@PathVariable(name = "id") Long ID, @RequestBody Contenido contenido) throws ContenidoNotFoundException, NotValidTypeContenidoException, NotValidSoporteException, DatabaseContenidoException, ContenidoAlreadyExistsException, IllegalContenidoException{
 		return contenidoService.updateContenidoByID(ID, contenido);
 	}
 }

@@ -48,25 +48,28 @@ public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
 	
 	@Override
 	public DetallesLibroModel insertLibro(DetallesLibroModel libro) throws DatabaseContenidoException {
-		final String sqlString = "INSERT INTO Detalles_Libros(ID,ISBN,Paginas,Editorial) "+
-				"VALUES(:id,:isbn,:paginas,:editorial)";
+		final String sqlString = "INSERT INTO Detalles_Libros(ISBN,Paginas,Editorial) "+
+				"VALUES(:isbn,:paginas,:editorial)";
 		
 		var a = this.getLibroByID(libro.getID());
 		
 		if(a.isEmpty()) {
 			jdbcTemplate.update(sqlString, new MapSqlParameterSource()
-					.addValue("id", libro.getID())
 					.addValue("isbn", libro.getISBN())
 					.addValue("paginas", libro.getPaginas())
 					.addValue("editorial", libro.getEditorial())
 				);
 		}
 		
-		return this.getLibroByID(libro.getID()).orElseThrow(
+		return this.getLibroIfIdIsNull(libro).orElseThrow(
 				() -> new DatabaseContenidoException("El contenido no ha sido insertado en la base de datos por alguna razon"));
 	}
 	
+	/**
+	 * Se prefiere usar <link>es.library.databaseserver.contenido.dao.ContenidoDetallesLibroDAO::deleteLibroByIDIfIsNotPointed </link>
+	 */
 	@Override
+	@Deprecated
 	public DetallesLibroModel deleteLibroByID(Long ID) throws ContenidoNotFoundException {
 		final String sqlString = "DELETE FROM Detalles_Libros WHERE ID = :id";
 		
@@ -107,6 +110,35 @@ public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
 		return this.getLibroByID(ID).get();
 	}
 
+	@Override
+	public Optional<DetallesLibroModel> getLibroIfIdIsNull(DetallesLibroModel libroIdNull) {
+		final String sqlString = "SELECT ID,ISBN,Paginas,Editorial FROM Detalles_Libros WHERE ISBN = :isbn AND Paginas = :paginas AND Editorial = :edit;";
+		
+		var contenidos = jdbcTemplate.query(sqlString, new MapSqlParameterSource()
+					.addValue("isbn", libroIdNull.getISBN())
+					.addValue("paginas", libroIdNull.getPaginas())
+					.addValue("edit", libroIdNull.getEditorial())
+			,new LibroRowMapper());
+		
+		if(contenidos.isEmpty()) return Optional.empty();
+		
+		return Optional.ofNullable(contenidos.get(0));
+	}
+
+	@Override
+	public void deleteLibroByIDIfIsNotPointed(Long ID, boolean ifOne) throws ContenidoNotFoundException {
+		final String sqlString = "DELETE FROM Detalles_Libros WHERE ID = :id AND (SELECT count(*) FROM Contenidos WHERE IDLibro = :id) <= :num;";
+		
+		var a = this.getLibroByID(ID);
+		
+		if(a.isPresent()) {
+			jdbcTemplate.update(sqlString, new MapSqlParameterSource().addValue("id", ID).addValue("num", ifOne? 1:0));
+		}
+		else {
+			throw new ContenidoNotFoundException("No existe tal contenido para ser borrado");
+		}
+	}
+	
 	private class LibroRowMapper implements RowMapper<DetallesLibroModel>{
 
 		@Override
@@ -120,5 +152,4 @@ public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
 		}
 		
 	}
-	
 }

@@ -13,9 +13,9 @@ public class Videos extends Audio{
 	
 	public Videos(Long iD, String titulo, String autor, String descripcion, int ano, String idioma, Soporte soporte,
 			boolean prestable, int diasDePrestamo, boolean disponible, LocalDate fechaDisponibilidad,
-			double duracion, long IDAudiovisual, int edadRecomendada, int calidad) {
+			double duracion, int edadRecomendada, int calidad) {
 		super(iD, titulo, autor, descripcion, ano, idioma, soporte, prestable, diasDePrestamo, disponible,
-				fechaDisponibilidad, duracion, IDAudiovisual);
+				fechaDisponibilidad, duracion);
 		this.edadRecomendada = edadRecomendada;
 		this.calidad = calidad;
 	}

@@ -150,7 +150,7 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 
 		@Override
 		public Contenido mapRow(ResultSet rs, int rowNum) throws SQLException {
-			return new Contenido(
+			var c = new Contenido(
 					rs.getLong("ID"), 
 					rs.getString("Titulo"), 
 					rs.getString("Autor"), 
@@ -161,10 +161,11 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 					rs.getBoolean("Prestable"), 
 					rs.getInt("DiasDePrestamo"), 
 					rs.getBoolean("Disponible"), 
-					((rs.getString("FechaDisponibilidad") != null)? LocalDate.parse(rs.getString("FechaDisponibilidad"), DateTimeFormatter.ofPattern("yyyy-MM-dd")):null),
-					rs.getLong("IDLibro")==0L? null:rs.getLong("IDLibro"),
-					rs.getLong("IDAudiovisual")==0L? null:rs.getLong("IDAudiovisual")
+					((rs.getString("FechaDisponibilidad") != null)? LocalDate.parse(rs.getString("FechaDisponibilidad"), DateTimeFormatter.ofPattern("yyyy-MM-dd")):null)
 				);
+			c.setIDLibro(rs.getLong("IDLibro")==0L? null:rs.getLong("IDLibro"));
+			c.setIDAudiovisual(rs.getLong("IDAudiovisual")==0L? null:rs.getLong("IDAudiovisual"));
+			return c;
 		}
 		
 	}
