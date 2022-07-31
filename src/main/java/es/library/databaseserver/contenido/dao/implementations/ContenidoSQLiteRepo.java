@@ -31,14 +31,7 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 	public List<Long> getAllContenidosID(){
 		final String sqlString = "SELECT ID FROM Contenidos";
 		
-		return jdbcTemplate.query(sqlString, new RowMapper<Long>() {
-
-			@Override
-			public Long mapRow(ResultSet rs, int rowNum) throws SQLException {
-				return rs.getLong("ID");
-			}
-			
-		});
+		return jdbcTemplate.query(sqlString, new IdRowMapper());
 	}
 	
 	@Override
@@ -52,19 +45,25 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 		return Optional.ofNullable(contenidos.get(0));
 	}
 	
+	private long getIdLastInserted() {
+		final String sqlString = "SELECT seq AS ID FROM sqlite_sequence WHERE name = 'Contenidos';";
+		
+		var id = jdbcTemplate.query(sqlString, new IdRowMapper());
+		
+		if(id.isEmpty()) return -1L;
+		
+		return id.get(0);
+	}
+	
 	@Override
 	public Contenido insertContenido(Contenido contenido) throws DatabaseContenidoException,ContenidoAlreadyExistsException, IllegalContenidoException {
 		//Miro si el contenido es correcto para guardarlo en la base de datos
 		contenido.checkIsCorrect();
 		
-		final String sqlString = "INSERT INTO Contenidos(ID,Titulo,Autor,Descripcion,Año,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,IDLibro,IDAudiovisual) "+
-				"VALUES(:id,:titulo,:autor,:descripcion,:ano,:idioma,:soporte,:diasDePrestamo,:prestable,:disponible,:IdLibro,:IdAudiovisual)";
+		final String sqlString = "INSERT INTO Contenidos(Titulo,Autor,Descripcion,Año,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,IDLibro,IDAudiovisual) "+
+				"VALUES(:titulo,:autor,:descripcion,:ano,:idioma,:soporte,:diasDePrestamo,:prestable,:disponible,:IdLibro,:IdAudiovisual)";
 		 
-		var a = this.getContenidoByID(contenido.getID());
-		
-		if(a.isEmpty()) {
-			jdbcTemplate.update(sqlString, new MapSqlParameterSource()
-					.addValue("id", contenido.getID())
+		final int i = jdbcTemplate.update(sqlString, new MapSqlParameterSource()
 					.addValue("titulo", contenido.getTitulo())
 					.addValue("autor", contenido.getAutor())
 					.addValue("descripcion", contenido.getDescripcion())
@@ -77,12 +76,12 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 					.addValue("IdLibro", contenido.getIDLibro())
 					.addValue("IdAudiovisual", contenido.getIDAudiovisual())
 				);
-		}
-		else {
-			throw new ContenidoAlreadyExistsException("El contenido no puede ser insertado en la base de datos porque ya existe otro con su misma ID");
-		}
 		
-		return this.getContenidoByID(contenido.getID()).orElseThrow(
+		if(i == 0) throw new DatabaseContenidoException("El contenido no ha sido insertado en la base de datos por alguna razon");
+		
+		long idContenido = getIdLastInserted();
+		
+		return this.getContenidoByID(idContenido).orElseThrow(
 				() -> new DatabaseContenidoException("El contenido no ha sido insertado en la base de datos por alguna razon"));
 	}
 	
@@ -145,7 +144,7 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 		
 		return this.getContenidoByID(ID).orElse(null);
 	}
-    
+	
 	private class ContenidoRowMapper implements RowMapper<Contenido>{
 
 		@Override
@@ -170,4 +169,12 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 		
 	}
 	
+	private class IdRowMapper implements RowMapper<Long> {
+
+		@Override
+		public Long mapRow(ResultSet rs, int rowNum) throws SQLException {
+			return rs.getLong("ID");
+		}
+		
+	}
 }

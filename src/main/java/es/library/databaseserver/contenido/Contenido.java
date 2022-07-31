@@ -23,7 +23,6 @@ import es.library.databaseserver.contenido.exceptions.IllegalContenidoException;
 })
 public class Contenido {
 	
-	//TODO Debo poner la ID automatica generada por la base de datos
 	private Long ID;
 	private String titulo;
 	private String autor;
