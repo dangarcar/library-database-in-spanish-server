@@ -7,19 +7,26 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import es.library.databaseserver.contenido.dto.Audio;
 import es.library.databaseserver.contenido.dto.Libros;
+import es.library.databaseserver.contenido.dto.Videos;
+import es.library.databaseserver.contenido.exceptions.ContenidoAlreadyExistsException;
+import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
+import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException;
+import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
+import es.library.databaseserver.contenido.exceptions.NotValidTypeContenidoException;
+import es.library.databaseserver.contenido.service.ContenidoService;
 import es.library.databaseserver.contenido.service.implementations.ContenidoServiceImpl;
 
 @SpringBootTest
-@Disabled
 public class ContenidoServiceImplTest {
 
 	@Autowired
-	private ContenidoServiceImpl testService;
+	private ContenidoService testService;
 	
 	@Test
 	@Disabled
-	void getContenidoByIDTest() {
+	void getContenidoByIDTest() throws ContenidoNotFoundException, NotValidTypeContenidoException, NotValidSoporteException {
 		long id = 35l;
 		
 		Contenido expected = new Libros(id, 
@@ -35,8 +42,7 @@ public class ContenidoServiceImplTest {
 				null, 
 				"678362-5-2387429874",
 				79,
-				"SM",
-				1024l
+				"SM"
 			);
 		
 		var result = testService.getContenidoByID(id);
@@ -58,59 +64,62 @@ public class ContenidoServiceImplTest {
 	
 	@Test
 	@Disabled
-	void insertContenidoTest() {
-		long id = 36l;
-		Contenido expected = new Libros(id, 
+	void insertContenidoTest() throws DatabaseContenidoException, NotValidTypeContenidoException, NotValidSoporteException, ContenidoAlreadyExistsException {
+		long id = 37l;
+		Contenido expected = new Audio(id, 
 				"El principito", 
 				"g",
 				"un libro para leer", 
 				1860, 
 				"Japones", 
-				Soporte.E_BOOK, 
+				Soporte.CD, 
 				true, 
 				7, 
 				true, 
 				null, 
-				"678362-5-2387429874",
-				100,
-				"SM",
-				1025l
+				100.67
+//				16,
+//				1080
 			);
 		
 		var result = testService.insertContenido(expected);
+		
+		expected.setIDAudiovisual(result.getIDAudiovisual());
 		
 		assertThat(result).isEqualTo(expected);
 	}
 	
 	@Test
 	@Disabled
-	void deleteContenidoTest() {
-		long id = 36L;
+	void deleteContenidoTest() throws ContenidoNotFoundException, NotValidTypeContenidoException, NotValidSoporteException {
+		long id = 37L;
 		
 		testService.deleteContenidoByID(id);
 	}
 	
 	@Test
-	void updateContenidoByIdTest() {
-		long id = 35l;
-		Contenido expected = new Libros(id, 
+//	@Disabled
+	void updateContenidoByIdTest() throws ContenidoNotFoundException, NotValidTypeContenidoException, NotValidSoporteException, DatabaseContenidoException, ContenidoAlreadyExistsException {
+		long id = 37l;
+		Contenido expected = new Audio(id, 
 				"El principito", 
 				"g",
 				"un libro para leer", 
 				1860, 
 				"Japones", 
-				Soporte.E_BOOK, 
+				Soporte.VINILO, 
 				true, 
 				7, 
 				true, 
 				null, 
-				"678362-5-2387429874",
-				100,
-				"SM",
-				1025l
+				45.327743
+//				16,
+//				1080
 			);
 		
 		var result = testService.updateContenidoByID(id, expected);
+		
+		expected.setIDAudiovisual(result.getIDAudiovisual());
 		
 		assertThat(result).usingRecursiveComparison().isEqualTo(expected);
 	}

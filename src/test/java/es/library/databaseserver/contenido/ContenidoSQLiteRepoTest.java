@@ -9,12 +9,13 @@ import static org.assertj.core.api.Assertions.*;
 
 import es.library.databaseserver.contenido.dao.implementations.ContenidoSQLiteRepo;
 import es.library.databaseserver.contenido.exceptions.ContenidoAlreadyExistsException;
+import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
 
 @SpringBootTest
 @Disabled
 public class ContenidoSQLiteRepoTest {
 
-	@Autowired
+	/*@Autowired
 	private ContenidoSQLiteRepo testRepo;
 	
 	@Test
@@ -66,7 +67,7 @@ public class ContenidoSQLiteRepoTest {
 	}
 	
 	@Test
-	void updateContenidoByIDTest() {
+	void updateContenidoByIDTest() throws ContenidoNotFoundException {
 		long id = 45L;
 		Contenido expected = new Contenido(id, 
 				"El principito", 
@@ -87,5 +88,5 @@ public class ContenidoSQLiteRepoTest {
 		
 		assertThat(result).isEqualTo(expected);
 		
-	}
+	}*/
 }

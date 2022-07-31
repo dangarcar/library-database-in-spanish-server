@@ -57,9 +57,6 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 	
 	@Override
 	public Contenido insertContenido(Contenido contenido) throws DatabaseContenidoException,ContenidoAlreadyExistsException, IllegalContenidoException {
-		//Miro si el contenido es correcto para guardarlo en la base de datos
-		contenido.checkIsCorrect();
-		
 		final String sqlString = "INSERT INTO Contenidos(Titulo,Autor,Descripcion,Año,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,IDLibro,IDAudiovisual) "+
 				"VALUES(:titulo,:autor,:descripcion,:ano,:idioma,:soporte,:diasDePrestamo,:prestable,:disponible,:IdLibro,:IdAudiovisual)";
 		 
