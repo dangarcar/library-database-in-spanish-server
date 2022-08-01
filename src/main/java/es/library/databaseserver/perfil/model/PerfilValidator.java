@@ -1,9 +1,13 @@
 package es.library.databaseserver.perfil.model;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
+
+import es.library.databaseserver.perfil.Perfil;
+import es.library.databaseserver.perfil.exceptions.IllegalPerfilException;
 
 @Component
 public class PerfilValidator {
@@ -24,9 +28,33 @@ public class PerfilValidator {
 	}
 	
 	public boolean validateFechaNacimiento(LocalDate fecha) {
-		boolean afterYearZero = fecha.isAfter(LocalDate.of(0, 1, 1));
+		boolean afterYearZero = fecha.isAfter(LocalDate.of(1, 1, 1));
 		boolean beforeNow = fecha.isBefore(LocalDate.now().minusYears(EDAD_MINIMA).plusDays(1));
 		
 		return afterYearZero && beforeNow;
+	}
+	
+	public void validatePerfilCorrect(Perfil perfil) throws IllegalPerfilException{
+		StringBuilder errorBuilder = new StringBuilder();
+
+		if(!validateEmail(perfil.getCorreoElectronico())) {
+			errorBuilder.append(System.lineSeparator());
+			errorBuilder.append("El email ");
+			errorBuilder.append(perfil.getCorreoElectronico());
+			errorBuilder.append(" no es valido");
+		}
+		if(!validateFechaNacimiento(perfil.getFechaNacimiento())) {
+			errorBuilder.append(System.lineSeparator());
+			errorBuilder.append("La fecha ");
+			errorBuilder.append(perfil.getFechaNacimiento().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+			errorBuilder.append(" no es valida");
+		}
+		if(!validatePassword(perfil.getContrasena())) {
+			errorBuilder.append(System.lineSeparator());
+			errorBuilder.append("La contraseña no es valida");
+		}
+
+		//Si el StringBuilder no esta vacio, lanzo una excepcion de perfil ilegal
+		if(!errorBuilder.isEmpty()) throw new IllegalPerfilException(errorBuilder.toString());
 	}
 }

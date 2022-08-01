@@ -123,7 +123,7 @@ public class PerfilSQLiteRepo implements PerfilDAO{
 			var p = new Perfil(
 					rs.getLong("ID"),
 					rs.getString("Nombre"),
-					((rs.getString("FechaDeNacimiento")!= null)? LocalDate.parse(rs.getString("FechaDeNacimiento"), DateTimeFormatter.ofPattern("yyyy-MM-dd")):null),
+					rs.getString("FechaDeNacimiento")!= null? LocalDate.parse(rs.getString("FechaDeNacimiento"), DateTimeFormatter.ofPattern("yyyy-MM-dd")):null,
 					rs.getString("CorreoElectronico"),
 					rs.getString("Password"),
 					rs.getBoolean("Admin")

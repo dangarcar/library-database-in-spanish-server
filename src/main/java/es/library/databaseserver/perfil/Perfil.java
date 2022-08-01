@@ -7,6 +7,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(Include.NON_NULL)
 public class Perfil {
@@ -20,7 +21,7 @@ public class Perfil {
 	@JsonIgnore
 	private int edad;
 	
-	public Perfil(Long iD, String nombre, LocalDate fechaNacimiento, String correoElectronico, String contrasena,
+	public Perfil(Long iD, String nombre, LocalDate fechaNacimiento, @JsonProperty("email") String correoElectronico, @JsonProperty("password") String contrasena,
 			boolean admin) {
 		ID = iD;
 		this.nombre = nombre;
@@ -54,10 +55,10 @@ public class Perfil {
 	public void setCorreoElectronico(String correoElectronico) {
 		this.correoElectronico = correoElectronico;
 	}
-	@JsonIgnore
 	public String getContrasena() {
 		return contrasena;
 	}
+	@JsonIgnore
 	public void setContrasena(String contrasena) {
 		this.contrasena = contrasena;
 	}
