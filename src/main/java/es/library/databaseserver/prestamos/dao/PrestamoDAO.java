@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import es.library.databaseserver.prestamos.Prestamo;
-import es.library.databaseserver.prestamos.exceptions.IllegalPrestamoException;
 import es.library.databaseserver.prestamos.exceptions.PrestamoNotFoundException;
 
 public interface PrestamoDAO {
