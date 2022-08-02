@@ -1,6 +1,6 @@
 package es.library.databaseserver.contenido;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -9,14 +9,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import es.library.databaseserver.contenido.dto.Audio;
 import es.library.databaseserver.contenido.dto.Libros;
-import es.library.databaseserver.contenido.dto.Videos;
 import es.library.databaseserver.contenido.exceptions.ContenidoAlreadyExistsException;
 import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
 import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException;
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 import es.library.databaseserver.contenido.exceptions.NotValidTypeContenidoException;
 import es.library.databaseserver.contenido.service.ContenidoService;
-import es.library.databaseserver.contenido.service.implementations.ContenidoServiceImpl;
 
 @SpringBootTest
 public class ContenidoServiceImplTest {

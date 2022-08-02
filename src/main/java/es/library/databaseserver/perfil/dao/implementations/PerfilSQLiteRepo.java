@@ -67,9 +67,9 @@ public class PerfilSQLiteRepo implements PerfilDAO{
 
 		if(i == 0) throw new DatabasePerfilException("El perfil no ha sido insertado en la base de datos por alguna razon");
 
-		long idContenido = getIdLastInserted();
+		long idPerfil = getIdLastInserted();
 
-		return this.getPerfilByID(idContenido).orElseThrow(
+		return this.getPerfilByID(idPerfil).orElseThrow(
 				() -> new DatabasePerfilException("El perfil no ha sido insertado en la base de datos por alguna razon"));
 	}
 

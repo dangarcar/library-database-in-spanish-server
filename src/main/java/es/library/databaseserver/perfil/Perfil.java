@@ -31,47 +31,27 @@ public class Perfil {
 		this.admin = admin;
 	}
 	
-	public Long getID() {
-		return ID;
-	}
-	public void setID(Long iD) {
-		ID = iD;
-	}
-	public String getNombre() {
-		return nombre;
-	}
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-	public LocalDate getFechaNacimiento() {
-		return fechaNacimiento;
-	}
-	public void setFechaNacimiento(LocalDate fechaNacimiento) {
-		this.fechaNacimiento = fechaNacimiento;
-	}
-	public String getCorreoElectronico() {
-		return correoElectronico;
-	}
-	public void setCorreoElectronico(String correoElectronico) {
-		this.correoElectronico = correoElectronico;
-	}
-	public String getContrasena() {
-		return contrasena;
-	}
+	public Long getID() {return ID;}
+	public void setID(Long iD) {ID = iD;}
+	
+	public String getNombre() { return nombre;}
+	public void setNombre(String nombre) { this.nombre = nombre;}
+	
+	public LocalDate getFechaNacimiento() { return fechaNacimiento;}
+	public void setFechaNacimiento(LocalDate fechaNacimiento) { this.fechaNacimiento = fechaNacimiento;}
+	
+	public String getCorreoElectronico() { return correoElectronico;}
+	public void setCorreoElectronico(String correoElectronico) { this.correoElectronico = correoElectronico;}
+	
+	public String getContrasena() { return contrasena;}
 	@JsonIgnore
-	public void setContrasena(String contrasena) {
-		this.contrasena = contrasena;
-	}
-	public boolean isAdmin() {
-		return admin;
-	}
-	public void setAdmin(boolean admin) {
-		this.admin = admin;
-	}
+	public void setContrasena(String contrasena) { this.contrasena = contrasena;}
+	
+	public boolean isAdmin() { return admin;}
+	public void setAdmin(boolean admin) { this.admin = admin;}
+	
 	@JsonIgnore
-	public int getEdad() {
-		return edad = Period.between(fechaNacimiento, LocalDate.now()).getYears();
-	}
+	public int getEdad() { return edad = Period.between(fechaNacimiento, LocalDate.now()).getYears(); }
 
 	@Override
 	public int hashCode() {

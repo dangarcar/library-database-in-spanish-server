@@ -1,0 +1,7 @@
+CREATE TABLE "Detalles_Libros" (
+	"ID"	INTEGER NOT NULL,
+	"Paginas"	INTEGER,
+	"Editorial"	TEXT,
+	"ISBN"	TEXT,
+	CONSTRAINT "PK_Detalles_Libros" PRIMARY KEY("ID" AUTOINCREMENT)
+)

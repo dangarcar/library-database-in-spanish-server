@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Una excepcion para cuando no existe dicho contenido en la base de datos
+ * Una excepcion para cuando no existe dicho perfil en la base de datos
  * @author Daniel Garcia
  *
  */

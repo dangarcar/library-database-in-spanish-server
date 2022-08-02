@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Excepcion para cuando un contenido tiene algun parametro no permitido
+ * Excepcion para cuando un perfil tiene algun parametro no permitido
  * @author Daniel Garcia
  *
  */

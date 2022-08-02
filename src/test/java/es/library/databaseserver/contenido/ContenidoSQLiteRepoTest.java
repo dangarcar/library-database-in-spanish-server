@@ -1,15 +1,7 @@
 package es.library.databaseserver.contenido;
 
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.assertj.core.api.Assertions.*;
-
-import es.library.databaseserver.contenido.dao.implementations.ContenidoSQLiteRepo;
-import es.library.databaseserver.contenido.exceptions.ContenidoAlreadyExistsException;
-import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
 
 @SpringBootTest
 @Disabled

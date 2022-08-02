@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import es.library.databaseserver.contenido.Contenido;
-import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException;
 import es.library.databaseserver.contenido.exceptions.ContenidoAlreadyExistsException;
 import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
+import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException;
 
 public interface ContenidoDAO{
 

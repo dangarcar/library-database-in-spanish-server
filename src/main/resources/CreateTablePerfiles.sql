@@ -1,0 +1,9 @@
+CREATE TABLE "Perfiles" (
+	"Nombre"	TEXT NOT NULL,
+	"FechaDeNacimiento"	TEXT NOT NULL,
+	"Password"	TEXT NOT NULL,
+	"CorreoElectronico"	TEXT NOT NULL UNIQUE,
+	"Admin"	INTEGER NOT NULL DEFAULT 0,
+	"ID"	INTEGER,
+	PRIMARY KEY("ID" AUTOINCREMENT)
+)
