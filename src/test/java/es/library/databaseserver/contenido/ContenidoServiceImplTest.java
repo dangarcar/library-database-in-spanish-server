@@ -7,14 +7,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import es.library.databaseserver.contenido.dto.Audio;
-import es.library.databaseserver.contenido.dto.Libros;
+import es.library.databaseserver.contenido.crud.Audio;
+import es.library.databaseserver.contenido.crud.Libros;
+import es.library.databaseserver.contenido.crud.service.ContenidoService;
 import es.library.databaseserver.contenido.exceptions.ContenidoAlreadyExistsException;
 import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
 import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException;
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 import es.library.databaseserver.contenido.exceptions.NotValidTypeContenidoException;
-import es.library.databaseserver.contenido.service.ContenidoService;
 
 @SpringBootTest
 public class ContenidoServiceImplTest {

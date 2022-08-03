@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class NotValidTypeContenidoException extends Exception {
+public class NotValidTypeContenidoException extends RuntimeException {
 
 	public NotValidTypeContenidoException(String message, Throwable cause) {
 		super(message, cause);

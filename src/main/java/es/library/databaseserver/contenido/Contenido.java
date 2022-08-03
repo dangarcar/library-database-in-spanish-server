@@ -6,13 +6,14 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import es.library.databaseserver.contenido.crud.Audio;
+import es.library.databaseserver.contenido.crud.Libros;
+import es.library.databaseserver.contenido.crud.Videos;
+import es.library.databaseserver.contenido.exceptions.IllegalContenidoException;
+
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
-import es.library.databaseserver.contenido.dto.Audio;
-import es.library.databaseserver.contenido.dto.Libros;
-import es.library.databaseserver.contenido.dto.Videos;
-import es.library.databaseserver.contenido.exceptions.IllegalContenidoException;
 
 @JsonInclude(Include.NON_NULL)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")

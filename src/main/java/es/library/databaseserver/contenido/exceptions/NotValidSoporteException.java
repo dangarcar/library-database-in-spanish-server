@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class NotValidSoporteException extends Exception{
+public class NotValidSoporteException extends RuntimeException{
 
 	public NotValidSoporteException(String message, Throwable cause) {
 		super(message, cause);

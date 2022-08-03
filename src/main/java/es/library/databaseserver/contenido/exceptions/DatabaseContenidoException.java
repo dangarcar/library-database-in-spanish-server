@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  */
 @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-public class DatabaseContenidoException extends Exception{
+public class DatabaseContenidoException extends RuntimeException{
 
 	public DatabaseContenidoException(String message, Throwable cause) {
 		super(message, cause);

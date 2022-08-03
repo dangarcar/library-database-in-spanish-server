@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  */
 @ResponseStatus(HttpStatus.CONFLICT)
-public class ContenidoAlreadyExistsException extends Exception{
+public class ContenidoAlreadyExistsException extends RuntimeException{
 
 	public ContenidoAlreadyExistsException(String message, Throwable cause) {
 		super(message, cause);

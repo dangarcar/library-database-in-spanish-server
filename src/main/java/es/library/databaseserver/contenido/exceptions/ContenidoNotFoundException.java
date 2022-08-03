@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class ContenidoNotFoundException extends Exception{
+public class ContenidoNotFoundException extends RuntimeException{
 
 	public ContenidoNotFoundException(String message, Throwable cause) {
 		super(message, cause);
