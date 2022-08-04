@@ -2,12 +2,11 @@ package es.library.databaseserver.contenido.search.dao;
 
 import java.util.List;
 
-import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.Soporte;
 
 public interface ContenidoSearchDAO {
 
-	public List<Contenido> getUniqueContenidos();
+	public List<Long> getContenidosIDByPrompt(String prompt);
 	
 	
 	//Detalles Contenido
@@ -36,7 +35,7 @@ public interface ContenidoSearchDAO {
 	
 	public List<Long> getContenidosIDByEdadRecomendada(Integer edad);
 	
-	public List<Long> getContenidosIDByDuracion(Double durecion);
+	public List<Long> getContenidosIDByDuracion(Double duracion);
 	
 	public List<Long> getContenidosIDByCalidad(Integer calidad);
 	
