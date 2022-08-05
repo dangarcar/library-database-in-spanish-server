@@ -19,39 +19,9 @@ public class ContenidoSearchSqliteRepo implements ContenidoSearchDAO{
 	
 	@Override
 	public List<Long> getContenidosIDByPrompt(String prompt){
-		final String titulo = "SELECT ID FROM Contenidos WHERE Titulo LIKE :titulo";
-		final String autor = "SELECT ID FROM Contenidos WHERE Autor LIKE :autor";
-		final String descripcion = "SELECT ID FROM Contenidos WHERE Descripcion LIKE :descripcion";
-		final String ano = "SELECT ID FROM Contenidos WHERE Año = :ano";
-		final String soporte = "SELECT ID FROM Contenidos WHERE Soporte LIKE :soporte";
-		final String isbn = "SELECT C.ID AS ID FROM Contenidos AS C INNER JOIN Detalles_Libros as DL on C.IDLibro = DL.ID WHERE DL.ISBN LIKE :isbn";
+		final String sqlString = "SELECT ID FROM BusquedaContenidos WHERE BusquedaContenidos = :word ORDER BY RANK;";
 		
-		StringBuilder queryBuilder = new StringBuilder();		
-		queryBuilder.append(titulo);
-		queryBuilder.append(" UNION ");
-		queryBuilder.append(autor);
-		queryBuilder.append(" UNION ");
-		queryBuilder.append(descripcion);
-		queryBuilder.append(" UNION ");
-		queryBuilder.append(ano);
-		queryBuilder.append(" UNION ");
-		queryBuilder.append(soporte);
-		queryBuilder.append(" UNION ");
-		queryBuilder.append(isbn);
-		
-		var sqlParameterSource = new MapSqlParameterSource()
-				.addValue("titulo", "%"+prompt+"%")
-				.addValue("autor", "%"+prompt+"%")
-				.addValue("descripcion", "%"+prompt+"%")
-				.addValue("soporte",  "%"+prompt+"%")
-				.addValue("isbn", "%"+prompt+"%");
-		
-		try {
-			Integer.parseInt(prompt);
-			sqlParameterSource.addValue("ano", Integer.parseInt(prompt));
-		} catch (NumberFormatException e) {sqlParameterSource.addValue("ano", -1);}
-		
-		return jdbcTemplate.query(queryBuilder.toString(), sqlParameterSource, new IdRowMapper());
+		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("word", prompt), new IdRowMapper());
 	}
 
 	

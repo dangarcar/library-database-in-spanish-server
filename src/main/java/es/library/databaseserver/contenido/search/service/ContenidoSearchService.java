@@ -5,12 +5,13 @@ import java.util.List;
 import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.Soporte;
 import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
+import es.library.databaseserver.contenido.search.ContenidoModel;
 
 public interface ContenidoSearchService {
 
 	public List<Contenido> getAllContenidos();
 	
-	public List<Contenido> getContenidosByPrompt(String prompt);
+	public List<ContenidoModel> getContenidoModelsByPrompt(String prompt);
 	
 	public Contenido getContenidoById(Long id) throws ContenidoNotFoundException;
 	
@@ -42,4 +43,14 @@ public interface ContenidoSearchService {
 	public List<Contenido> getContenidosByDuracion(Double duracion);
 	
 	public List<Contenido> getContenidosByCalidad(Integer calidad);
+	
+	
+	//Util methods
+	
+	/**
+	 * Si disponibles es null, se devuelve la lista conts como tal
+	 */
+	public List<Contenido> filterContenidosByDisponibilidad(List<Contenido> conts, Boolean disponibles);
+	
+	public List<ContenidoModel> getUniqueContenidos(List<Contenido> conts);
 }

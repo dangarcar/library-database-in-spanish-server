@@ -32,14 +32,14 @@ public class Contenido {
 	private String idioma;
 	private Soporte soporte;
 	private boolean prestable;
-	private int diasDePrestamo;
+	private Integer diasDePrestamo;
 	private boolean disponible;
 	private LocalDate fechaDisponibilidad;
 	private Long IDLibro;
 	private Long IDAudiovisual;
 	
 	public Contenido(Long iD, String titulo, String autor, String descripcion, int ano, String idioma,
-			Soporte soporte, boolean prestable, int diasDePrestamo, boolean disponible,
+			Soporte soporte, boolean prestable, Integer diasDePrestamo, boolean disponible,
 			LocalDate fechaDisponibilidad) {
 		ID = iD;
 		this.titulo = titulo;
@@ -67,8 +67,8 @@ public class Contenido {
 	public String getDescripcion() {return descripcion;}
 	public void setDescripcion(String descripcion) {this.descripcion = descripcion;}
 	
-	public int getAno() {return ano;}
-	public void setAno(int ano) {this.ano = ano;}
+	public Integer getAno() {return ano;}
+	public void setAno(Integer ano) {this.ano = ano;}
 	
 	public String getIdioma() {return idioma;}
 	public void setIdioma(String idioma) {this.idioma = idioma;}

@@ -2,6 +2,7 @@ package es.library.databaseserver.contenido.search.service.implementations;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import es.library.databaseserver.contenido.crud.service.ContenidoService;
 import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 import es.library.databaseserver.contenido.exceptions.NotValidTypeContenidoException;
+import es.library.databaseserver.contenido.search.ContenidoModel;
 import es.library.databaseserver.contenido.search.dao.ContenidoSearchDAO;
 import es.library.databaseserver.contenido.search.service.ContenidoSearchService;
 
@@ -33,8 +35,8 @@ public class ContenidoSearchServiceImpl implements ContenidoSearchService {
 	}
 
 	@Override
-	public List<Contenido> getContenidosByPrompt(String prompt) {
-		return contenidoCRUDService.idListToContenidoList(contenidoSearchDAO.getContenidosIDByPrompt(prompt));
+	public List<ContenidoModel> getContenidoModelsByPrompt(String prompt) {
+		return getUniqueContenidos(contenidoCRUDService.idListToContenidoList(contenidoSearchDAO.getContenidosIDByPrompt(prompt)));
 	}
 	
 	@Override
@@ -105,6 +107,26 @@ public class ContenidoSearchServiceImpl implements ContenidoSearchService {
 		
 		return contenidoCRUDService.getAllContenidos().stream()
 				.filter(c -> c.getClass().equals(map.get(typeName)))
+				.toList();
+	}
+
+	public List<Contenido> filterContenidosByDisponibilidad(List<Contenido> conts, Boolean disponibles) {
+		if(disponibles == null) return conts;
+		
+		return conts.stream()
+				.filter(c -> c.getDisponible() == disponibles)
+				.collect(Collectors.toList());
+	}
+	
+	public List<ContenidoModel> getUniqueContenidos(List<Contenido> conts) {
+		return conts.stream()
+				.collect(Collectors.groupingBy(ContenidoModel::ofContenido,Collectors.mapping(Contenido::getID, Collectors.toList())))
+				.entrySet().stream()
+				.map(entry -> {
+					var c = entry.getKey();
+					c.setIds(entry.getValue());
+					return c;
+				})
 				.toList();
 	}
 
