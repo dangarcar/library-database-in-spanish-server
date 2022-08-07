@@ -17,5 +17,7 @@ public interface PerfilService {
 	public void deletePerfilByID(Long id) throws PerfilNotFoundException;
 	
 	public Perfil updatePerfilByID(Long id, Perfil perfil) throws IllegalPerfilException, PerfilNotFoundException;
+
+	public List<Perfil> idListToPerfilList(List<Long> ids);
 	
 }

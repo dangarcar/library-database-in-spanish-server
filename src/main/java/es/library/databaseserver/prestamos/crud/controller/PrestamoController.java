@@ -1,10 +1,7 @@
 package es.library.databaseserver.prestamos.crud.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,16 +18,6 @@ public class PrestamoController {
 
 	@Autowired
 	private PrestamoService prestamoService;
-	
-	@GetMapping
-	public List<Prestamo> getAllPrestamos() {
-		return prestamoService.getAllPrestamos();
-	}
-	
-	@GetMapping(path = "{id}")
-	public Prestamo getPrestamoByID(@PathVariable(name = "id") Long id) {
-		return prestamoService.getPrestamoByID(id);
-	}
 	
 	@PostMapping
 	public Prestamo insertPrestamo(@RequestBody Prestamo prestamo) {

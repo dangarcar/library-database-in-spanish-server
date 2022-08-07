@@ -103,5 +103,4 @@ public class ContenidoSearchSqliteRepo implements ContenidoSearchDAO{
 		
 		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("calidad", calidad), new IdRowMapper());
 	}
-
 }

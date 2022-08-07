@@ -3,6 +3,7 @@ package es.library.databaseserver.prestamos.crud.dao.implementations;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,8 +60,8 @@ public class PrestamoSQLiteRepo implements PrestamoDAO {
 		final int i = jdbcTemplate.update(sqlString, new MapSqlParameterSource()
 				.addValue("idContenido", prestamo.getIDContenido())
 				.addValue("idPerfil", prestamo.getIDPerfil())
-				.addValue("fechaHoraPrestamo", prestamo.getFechaHoraPrestamo())
-				.addValue("fechaHoraDevolucion", prestamo.getFechaHoraDevolucion())
+				.addValue("fechaHoraPrestamo", prestamo.getFechaHoraPrestamo().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+				.addValue("fechaHoraDevolucion", prestamo.getFechaHoraDevolucion().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
 				.addValue("diasDePrestamo", prestamo.getDiasdePrestamo())
 				.addValue("devuelto", prestamo.isDevuelto())
 			);
@@ -105,8 +106,8 @@ public class PrestamoSQLiteRepo implements PrestamoDAO {
 			jdbcTemplate.update(sqlString, new MapSqlParameterSource()
 					.addValue("idContenido", prestamo.getIDContenido())
 					.addValue("idPerfil", prestamo.getIDPerfil())
-					.addValue("fechaHoraPrestamo", prestamo.getFechaHoraPrestamo())
-					.addValue("fechaHoraDevolucion", prestamo.getFechaHoraDevolucion())
+					.addValue("fechaHoraPrestamo", prestamo.getFechaHoraPrestamo().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+					.addValue("fechaHoraDevolucion", prestamo.getFechaHoraDevolucion().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
 					.addValue("diasDePrestamo", prestamo.getDiasdePrestamo())
 					.addValue("devuelto", prestamo.isDevuelto())
 					.addValue("id", ID)
@@ -127,8 +128,8 @@ public class PrestamoSQLiteRepo implements PrestamoDAO {
 					rs.getLong("ID"),
 					rs.getLong("IDContenido"),
 					rs.getLong("IDPerfil"),
-					rs.getString("FechaHoraPrestamo") != null? LocalDateTime.parse(rs.getString("FechaHoraPrestamo")):null,
-					rs.getString("FechaHoraDevolucion")!= null? LocalDateTime.parse(rs.getString("FechaHoraDevolucion")):null,
+					rs.getString("FechaHoraPrestamo") != null? LocalDateTime.parse(rs.getString("FechaHoraPrestamo"),DateTimeFormatter.ISO_LOCAL_DATE_TIME):null,
+					rs.getString("FechaHoraDevolucion")!= null? LocalDateTime.parse(rs.getString("FechaHoraDevolucion"),DateTimeFormatter.ISO_LOCAL_DATE_TIME):null,
 					rs.getInt("DiasDePrestamo"),
 					rs.getBoolean("Devuelto")
 				);

@@ -24,10 +24,7 @@ public class PerfilServiceImpl implements PerfilService{
 	
 	@Override
 	public List<Perfil> getAllPerfiles() {
-		return perfilDAO.getAllPerfilesID()
-				.stream()
-				.map(id -> getPerfilByID(id))
-				.collect(Collectors.toList());
+		return idListToPerfilList(perfilDAO.getAllPerfilesID());
 	}
 
 	@Override
@@ -57,4 +54,11 @@ public class PerfilServiceImpl implements PerfilService{
 		return perfilDAO.updatePerfilByID(id, perfil);
 	}
 
+	@Override
+	public List<Perfil> idListToPerfilList(List<Long> ids){
+		return ids.stream()
+				.map(id -> getPerfilByID(id))
+				.collect(Collectors.toList());
+	}
+	
 }

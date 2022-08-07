@@ -43,6 +43,7 @@ public class Perfil {
 	public String getCorreoElectronico() { return correoElectronico;}
 	public void setCorreoElectronico(String correoElectronico) { this.correoElectronico = correoElectronico;}
 	
+	@JsonIgnore
 	public String getContrasena() { return contrasena;}
 	@JsonIgnore
 	public void setContrasena(String contrasena) { this.contrasena = contrasena;}

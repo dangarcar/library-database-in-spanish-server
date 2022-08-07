@@ -24,10 +24,7 @@ public class PrestamoServiceImpl implements PrestamoService {
 	
 	@Override
 	public List<Prestamo> getAllPrestamos() {
-		return prestamoDAO.getAllPrestamosID()
-				.stream()
-				.map(id -> getPrestamoByID(id))
-				.collect(Collectors.toList());
+		return idListToPrestamoList(prestamoDAO.getAllPrestamosID());			
 	}
 
 	@Override
@@ -57,4 +54,9 @@ public class PrestamoServiceImpl implements PrestamoService {
 		return prestamoDAO.updatePrestamoByID(id, prestamo);
 	}
 	
+	public List<Prestamo> idListToPrestamoList(List<Long> prests) {
+		return prests.stream()
+				.map(id -> getPrestamoByID(id))
+				.collect(Collectors.toList());
+	}
 }

@@ -18,4 +18,6 @@ public interface PrestamoService {
 	
 	public Prestamo updatePrestamoByID(Long id, Prestamo prestamo) throws IllegalPrestamoException, PrestamoNotFoundException;
 	
+	public List<Prestamo> idListToPrestamoList(List<Long> prests);
+	
 }
