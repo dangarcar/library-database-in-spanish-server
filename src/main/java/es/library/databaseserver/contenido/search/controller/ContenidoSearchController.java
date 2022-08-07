@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.Soporte;
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
+import es.library.databaseserver.contenido.search.AbstractContenido;
 import es.library.databaseserver.contenido.search.ContenidoModel;
 import es.library.databaseserver.contenido.search.service.ContenidoSearchService;
 
@@ -21,10 +22,51 @@ public class ContenidoSearchController {
 	
 	@Autowired
 	private ContenidoSearchService searchService;
-	
+
 	@GetMapping
-	public List<Contenido> getAllContenidos(){
-		return searchService.getAllContenidos();
+	public List<? extends AbstractContenido> getContenidosByParams(
+			@RequestParam(required = false) String titulo,
+			@RequestParam(required = false) String autor,
+			@RequestParam(required = false) Integer ano,
+			@RequestParam(required = false) String idioma,
+			@RequestParam(required = false,name = "soporte") String soporteS,
+			@RequestParam(required = false) Integer paginas,
+			@RequestParam(required = false) String editorial,
+			@RequestParam(required = false) String isbn,
+			@RequestParam(required = false) Integer edad,
+			@RequestParam(required = false) Double duracion,
+			@RequestParam(required = false) Integer calidad,
+			@RequestParam(required = false) String type,
+			@RequestParam(required = false) Boolean d,
+			@RequestParam(required = false) Boolean p,
+			@RequestParam(defaultValue = "false") Boolean unique
+			){
+		if (titulo == null && autor == null && ano == null && idioma == null && soporteS == null
+				&& paginas == null && editorial == null && isbn == null && edad == null && duracion == null
+				&& calidad == null && type == null) {
+			if (unique) {
+				return searchService.getUniqueContenidos(searchService.getAllContenidos());
+			}
+			return searchService.filterContenidosByDisponibilidadAndPrestable(searchService.getAllContenidos(), d, p);
+		}
+		
+		return searchService.getContenidosByMultipleParams(
+				titulo, 
+				autor, 
+				ano, 
+				idioma, 
+				soporteS!=null? Soporte.valueOf(soporteS):null, 
+				paginas, 
+				editorial, 
+				isbn, 
+				edad, 
+				duracion, 
+				calidad, 
+				type, 
+				d, 
+				unique,
+				p
+			);
 	}
 	
 	@GetMapping(path = "{word}")

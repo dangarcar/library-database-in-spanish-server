@@ -11,6 +11,7 @@ import es.library.databaseserver.contenido.crud.Audio;
 import es.library.databaseserver.contenido.crud.Libros;
 import es.library.databaseserver.contenido.crud.Videos;
 import es.library.databaseserver.contenido.exceptions.IllegalContenidoException;
+import es.library.databaseserver.contenido.search.AbstractContenido;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -22,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = Videos.class, name = "video"),
         @JsonSubTypes.Type(value = Libros.class, name = "libro")
 })
-public class Contenido {
+public class Contenido implements AbstractContenido{
 	
 	private Long ID;
 	private String titulo;

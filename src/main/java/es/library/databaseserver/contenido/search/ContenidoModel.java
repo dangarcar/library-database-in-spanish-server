@@ -6,7 +6,7 @@ import java.util.Objects;
 import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.Soporte;
 
-public class ContenidoModel{
+public class ContenidoModel implements AbstractContenido{
 
 	private String titulo;
 	private String autor;

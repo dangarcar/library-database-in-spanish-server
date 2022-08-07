@@ -1,13 +1,12 @@
 package es.library.databaseserver.perfil.search.service.implementations;
 
+import static es.library.databaseserver.utils.Utils.*;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -87,15 +86,6 @@ public class PerfilSearchServiceImpl implements PerfilSearchService{
 		if(to == null) to = LocalDate.of(9999, 12, 31);
 		
 		return crudService.idListToPerfilList(searchDAO.getPerfilesBetweenTwoBirthDates(from, to));
-	}
-	
-	public <T> Set<T> intersection(Collection<Set<T>> input) {
-	    if(input.isEmpty()) {
-	        return Collections.emptySet();
-	    } else {
-	        Set<T> first = input.iterator().next();
-	        return first.stream().filter(e -> input.stream().allMatch(s -> s.contains(e))).collect(Collectors.toCollection(HashSet::new));
-	    }
 	}
 	
 }

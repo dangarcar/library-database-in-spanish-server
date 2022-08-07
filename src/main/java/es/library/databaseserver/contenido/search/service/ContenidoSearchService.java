@@ -5,6 +5,7 @@ import java.util.List;
 import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.Soporte;
 import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
+import es.library.databaseserver.contenido.search.AbstractContenido;
 import es.library.databaseserver.contenido.search.ContenidoModel;
 
 public interface ContenidoSearchService {
@@ -52,5 +53,13 @@ public interface ContenidoSearchService {
 	 */
 	public List<Contenido> filterContenidosByDisponibilidad(List<Contenido> conts, Boolean disponibles);
 	
+	public List<Contenido> filterContenidosByPrestable(List<Contenido> conts, Boolean prestable);
+	
+	public List<Contenido> filterContenidosByDisponibilidadAndPrestable(List<Contenido> conts, Boolean disponibles, Boolean prestables);
+	
 	public List<ContenidoModel> getUniqueContenidos(List<Contenido> conts);
+	
+	public List<? extends AbstractContenido> getContenidosByMultipleParams(String titulo, String autor, Integer ano, String idioma,
+			Soporte soporte, Integer paginas, String editorial, String isbn, Integer edad, Double duracion,
+			Integer calidad, String type, Boolean d, Boolean unique, Boolean prestable);
 }

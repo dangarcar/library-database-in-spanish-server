@@ -1,7 +1,12 @@
 package es.library.databaseserver.contenido.search.service.implementations;
 
+import static es.library.databaseserver.utils.Utils.*;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +21,7 @@ import es.library.databaseserver.contenido.crud.service.ContenidoService;
 import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 import es.library.databaseserver.contenido.exceptions.NotValidTypeContenidoException;
+import es.library.databaseserver.contenido.search.AbstractContenido;
 import es.library.databaseserver.contenido.search.ContenidoModel;
 import es.library.databaseserver.contenido.search.dao.ContenidoSearchDAO;
 import es.library.databaseserver.contenido.search.service.ContenidoSearchService;
@@ -128,6 +134,65 @@ public class ContenidoSearchServiceImpl implements ContenidoSearchService {
 					return c;
 				})
 				.toList();
+	}
+
+	@Override
+	public List<? extends AbstractContenido> getContenidosByMultipleParams(String titulo, String autor, Integer ano, String idioma,
+			Soporte soporte, Integer paginas, String editorial, String isbn, Integer edad, Double duracion,
+			Integer calidad, String type, Boolean d, Boolean unique, Boolean prestable) {
+		List<Set<Contenido>> contenidoSets = new ArrayList<>();
+		
+		
+		
+		if(titulo != null)    contenidoSets.add(new HashSet<>(getContenidosByTitulo(titulo))); 
+		
+		if(autor != null)     contenidoSets.add(new HashSet<>(getContenidosByAutor(autor)));
+		
+		if(ano != null)       contenidoSets.add(new HashSet<>(getContenidosByAno(ano)));
+		
+		if(idioma != null)    contenidoSets.add(new HashSet<>(getContenidosByIdioma(idioma))); 
+		
+		if(soporte != null)   contenidoSets.add(new HashSet<>(getContenidosBySoporte(soporte)));
+		
+		if(paginas != null)   contenidoSets.add(new HashSet<>(getContenidosByPaginas(paginas)));
+		
+		if(editorial != null) contenidoSets.add(new HashSet<>(getContenidosByEditorial(editorial)));
+		
+		if(isbn != null)      contenidoSets.add(new HashSet<>(getContenidosByISBN(isbn)));
+		
+		if(edad != null)      contenidoSets.add(new HashSet<>(getContenidosByEdadRecomendada(edad)));
+		
+		if(duracion != null)  contenidoSets.add(new HashSet<>(getContenidosByDuracion(duracion)));
+		 
+		if(calidad != null)   contenidoSets.add(new HashSet<>(getContenidosByCalidad(calidad)));
+		
+		if(type != null)      contenidoSets.add(new HashSet<>(getContenidosByType(type)));
+		
+		
+		
+		var contenidoList = intersection(contenidoSets).stream().toList();
+		
+		if(unique) {
+			return getUniqueContenidos(contenidoList);
+		}
+		return filterContenidosByDisponibilidadAndPrestable(contenidoList, d,prestable);
+	}
+
+	@Override
+	public List<Contenido> filterContenidosByPrestable(List<Contenido> conts, Boolean prestable) {
+		if(prestable == null) return conts;
+		
+		return conts.stream()
+				.filter(c -> c.getPrestable() == prestable)
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Contenido> filterContenidosByDisponibilidadAndPrestable(List<Contenido> conts, Boolean disponibles,
+			Boolean prestables) {
+		if(prestables == null && disponibles == null) return conts;
+		
+		return filterContenidosByPrestable(filterContenidosByDisponibilidad(conts, disponibles),prestables);
 	}
 
 }
