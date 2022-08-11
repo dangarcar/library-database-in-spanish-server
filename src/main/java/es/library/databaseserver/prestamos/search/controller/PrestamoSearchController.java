@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.prestamos.Prestamo;
-import es.library.databaseserver.prestamos.exceptions.PrestamoNotFoundException;
 import es.library.databaseserver.prestamos.search.service.PrestamoSearchService;
 
 @RequestMapping("/prestamos/search")
@@ -22,7 +22,7 @@ public class PrestamoSearchController {
 	private PrestamoSearchService searchService;
 	
 	@GetMapping(path = "/id/{id}")
-	public Prestamo getPrestamoByID(@PathVariable(name = "id") Long id) throws PrestamoNotFoundException {
+	public Prestamo getPrestamoByID(@PathVariable(name = "id") Long id){
 		return searchService.getPrestamoByID(id);
 	}
 	
@@ -30,28 +30,33 @@ public class PrestamoSearchController {
 	public List<Prestamo> getPrestamosByIdContenido(@PathVariable(name = "idCon") Long id, @RequestParam(required = false) Boolean d) {
 		var a = searchService.getPrestamosByIdContenido(id);
 		
-		return searchService.filterDevueltosPrestamos(a, d);
+		return PrestamoSearchService.filterDevueltosPrestamos(a, d);
 	}
 	
 	@GetMapping(path = "/perfil/{idPer}")
 	public List<Prestamo> getPrestamosIdPerfil(@PathVariable(name = "idPer") Long id, @RequestParam(required = false) Boolean d) {
 		var a = searchService.getPrestamosIdPerfil(id);
 		
-		return searchService.filterDevueltosPrestamos(a, d);
+		return PrestamoSearchService.filterDevueltosPrestamos(a, d);
+	}
+	
+	@GetMapping(path = "/perfilCont/{idPer}")
+	public List<Contenido> getContenidosIdPerfil(@PathVariable(name = "idPer") Long id, @RequestParam(required = false) Boolean d) {
+		return searchService.getContenidosByPerfilID(id, d);
 	}
 	
 	@GetMapping(path = "dias/{dias}")
 	public List<Prestamo> getPrestamosByDiasDePrestamo(@PathVariable(name = "dias") int dias, @RequestParam(required = false) Boolean d) {
 		var a = searchService.getPrestamosByDiasDePrestamo(dias);
 		
-		return searchService.filterDevueltosPrestamos(a, d);
+		return PrestamoSearchService.filterDevueltosPrestamos(a, d);
 	}
 	
 	@GetMapping(path = "fecha/{fecha}")
 	public List<Prestamo> getPrestamosByFechaPrestamo(@PathVariable(name = "fecha") String fecha, @RequestParam(required = false) Boolean d) {
 		var a = searchService.getPrestamosByFechaPrestamo(fecha);
 		
-		return searchService.filterDevueltosPrestamos(a, d);
+		return PrestamoSearchService.filterDevueltosPrestamos(a, d);
 	}
 	
 	@GetMapping(path = "devolucion/{fecha}")
@@ -70,7 +75,7 @@ public class PrestamoSearchController {
 			@RequestParam(required = false) String toDevolucion,
 			@RequestParam(required = false) Boolean d){
 		if(idContenido==null && idPerfil==null && dias==null && fromPrestamo==null && toPrestamo==null && fromDevolucion==null && toDevolucion==null) {
-			return searchService.filterDevueltosPrestamos(searchService.getAllPrestamos(), d);
+			return PrestamoSearchService.filterDevueltosPrestamos(searchService.getAllPrestamos(), d);
 		}
 		
 		return searchService.getPrestamoByMultipleParams(

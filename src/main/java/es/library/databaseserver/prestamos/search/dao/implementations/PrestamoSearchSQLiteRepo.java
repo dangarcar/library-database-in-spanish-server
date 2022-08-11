@@ -71,4 +71,10 @@ public class PrestamoSearchSQLiteRepo implements PrestamoSearchDAO{
 				.addValue("to", to.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)), new IdRowMapper());
 	}
 	
+	public List<Long> getContenidosMasPrestados(int nContenidos) {
+		final String sqlString = "SELECT IDContenido AS ID FROM Prestamos GROUP BY IDContenido ORDER BY COUNT(*) DESC LIMIT :n;";
+		
+		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("n", nContenidos), new IdRowMapper());
+	}
+	
 }

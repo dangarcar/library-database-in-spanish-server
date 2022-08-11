@@ -62,7 +62,7 @@ public class PerfilSearchController {
 			@RequestParam(required = false) String toNacimiento, 
 			@RequestParam(required = false) Boolean admin) {
 		if(nombre==null && email==null && fromNacimiento==null && toNacimiento==null) {
-			return perfilService.filterPerfilAdmin(perfilService.getAllPerfiles(), admin);
+			return PerfilSearchService.filterPerfilAdmin(perfilService.getAllPerfiles(), admin);
 		}
 		
 		return perfilService.getPerfilesByMultipleParams(

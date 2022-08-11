@@ -60,7 +60,7 @@ public class PerfilSearchServiceImpl implements PerfilSearchService{
 	public List<Perfil> getAllAdmins() {
 		return crudService.idListToPerfilList(searchDAO.getAllAdmins());
 	}
-
+	
 	public List<Perfil> getPerfilesByMultipleParams(String nombre, String email, LocalDate fromNacimiento, LocalDate toNacimiento, Boolean admin) {
 		List<Set<Perfil>> perfilSet = new ArrayList<>();
 		
@@ -70,15 +70,7 @@ public class PerfilSearchServiceImpl implements PerfilSearchService{
 		
 		if(fromNacimiento != null || toNacimiento != null) perfilSet.add(new HashSet<>(getPerfilesBetweenTwoBirthDates(fromNacimiento, toNacimiento)));
 		
-		return filterPerfilAdmin(intersection(perfilSet).stream().toList(), admin);
-	}
-	
-	public List<Perfil> filterPerfilAdmin(List<Perfil> perfs, Boolean admin) {
-		if(admin == null) return perfs;
-		
-		return perfs.stream()
-				.filter(p -> p.isAdmin() == admin)
-				.toList();
+		return PerfilSearchService.filterPerfilAdmin(intersection(perfilSet).stream().toList(), admin);
 	}
 	
 	public List<Perfil> getPerfilesBetweenTwoBirthDates(LocalDate from, LocalDate to) {

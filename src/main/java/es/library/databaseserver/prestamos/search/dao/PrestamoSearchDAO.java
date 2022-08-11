@@ -18,4 +18,6 @@ public interface PrestamoSearchDAO {
 	public List<Long> getPrestamosBetweenTwoPrestamoDates(LocalDateTime from, LocalDateTime to);
 	
 	public List<Long> getPrestamosBetweenTwoDevolucionDates(LocalDateTime from, LocalDateTime to);
+	
+	public List<Long> getContenidosMasPrestados(int nContenidos);
 }

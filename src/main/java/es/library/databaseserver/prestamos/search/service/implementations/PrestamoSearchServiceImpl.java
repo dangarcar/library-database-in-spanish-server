@@ -11,6 +11,11 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import es.library.databaseserver.contenido.Contenido;
+import es.library.databaseserver.contenido.crud.service.ContenidoService;
+import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
+import es.library.databaseserver.perfil.crud.service.PerfilService;
+import es.library.databaseserver.perfil.exceptions.PerfilNotFoundException;
 import es.library.databaseserver.prestamos.Prestamo;
 import es.library.databaseserver.prestamos.crud.service.PrestamoService;
 import es.library.databaseserver.prestamos.exceptions.PrestamoNotFoundException;
@@ -26,6 +31,12 @@ public class PrestamoSearchServiceImpl implements PrestamoSearchService{
 	@Autowired
 	private PrestamoService crudService;
 	
+	@Autowired
+	private PerfilService perfilService;
+	
+	@Autowired
+	private ContenidoService contenidoService;
+	
 	@Override
 	public List<Prestamo> getAllPrestamos() {
 		return crudService.getAllPrestamos();
@@ -37,12 +48,18 @@ public class PrestamoSearchServiceImpl implements PrestamoSearchService{
 	}
 
 	@Override
-	public List<Prestamo> getPrestamosByIdContenido(Long id) {
+	public List<Prestamo> getPrestamosByIdContenido(Long id) throws ContenidoNotFoundException {
+		//Compruebo que el contenido existe, sino lanzo una excepcion
+		contenidoService.getContenidoByID(id);
+		
 		return crudService.idListToPrestamoList(searchDAO.getPrestamosByIdContenido(id));
 	}
 
 	@Override
-	public List<Prestamo> getPrestamosIdPerfil(Long id) {
+	public List<Prestamo> getPrestamosIdPerfil(Long id) throws PerfilNotFoundException {
+		//Compruebo que el perfil existe, sino lanzo una excepcion
+		perfilService.getPerfilByID(id);
+		
 		return crudService.idListToPrestamoList(searchDAO.getPrestamosIdPerfil(id));
 	}
 
@@ -61,13 +78,12 @@ public class PrestamoSearchServiceImpl implements PrestamoSearchService{
 		return crudService.idListToPrestamoList(searchDAO.getPrestamosByFechaDevolucion(fecha));
 	}
 
-	@Override
-	public List<Prestamo> filterDevueltosPrestamos(List<Prestamo> prests, Boolean devueltos) {
-		if(devueltos == null) return prests;
+	public List<Contenido> getContenidosByPerfilID(Long idPerfil, Boolean d) {
+		List<Prestamo> prestamosFiltered = PrestamoSearchService.filterDevueltosPrestamos(getPrestamosIdPerfil(idPerfil), d);
 		
-		return prests.stream()
-				.filter(p -> p.isDevuelto() == devueltos)
-				.toList();
+		List<Long> contenidosList = prestamosFiltered.stream().map(Prestamo::getIDContenido).toList();
+		
+		return contenidoService.idListToContenidoList(contenidosList);
 	}
 	
 	@Override
@@ -84,7 +100,7 @@ public class PrestamoSearchServiceImpl implements PrestamoSearchService{
 		
 		if(fromDevolucion != null || toDevolucion != null) prestamoSet.add(new HashSet<>(getPrestamosBetweenTwoDevolucionDates(fromDevolucion, toDevolucion)));
 		
-		return filterDevueltosPrestamos(intersection(prestamoSet).stream().toList(), d);
+		return PrestamoSearchService.filterDevueltosPrestamos(intersection(prestamoSet).stream().toList(), d);
 	}
 
 	@Override

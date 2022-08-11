@@ -1,7 +1,6 @@
 package es.library.databaseserver.prestamos.crud.model;
 
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 
 import org.springframework.stereotype.Component;
@@ -13,10 +12,7 @@ import es.library.databaseserver.prestamos.exceptions.IllegalPrestamoException;
 public class PrestamoValidator {
 		
 	public boolean validateFecha(LocalDateTime fecha) {
-		boolean afterYearZero = fecha.isAfter(LocalDateTime.of(1, Month.JANUARY, 1,0,0));
-		boolean beforeNow = fecha.isBefore(LocalDateTime.now());
-		
-		return afterYearZero && beforeNow;
+		return fecha.isBefore(LocalDateTime.now()) || fecha.isEqual(LocalDateTime.now());
 	}
 	
 	public boolean validateDiasPrestamo(int dias) {
@@ -24,7 +20,7 @@ public class PrestamoValidator {
 	}
 	
 	public boolean validateFechasPrestamoDevolucion(LocalDateTime prestamo, LocalDateTime devolucion) {
-		return prestamo.isBefore(devolucion);
+		return prestamo.isBefore(devolucion) || prestamo.isEqual(devolucion);
 	}
 	
 	public void validatePrestamoCorrect(Prestamo prestamo) throws IllegalPrestamoException{

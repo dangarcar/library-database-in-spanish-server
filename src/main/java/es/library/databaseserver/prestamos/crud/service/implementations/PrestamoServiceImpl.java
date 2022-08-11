@@ -54,6 +54,7 @@ public class PrestamoServiceImpl implements PrestamoService {
 		return prestamoDAO.updatePrestamoByID(id, prestamo);
 	}
 	
+	@Override
 	public List<Prestamo> idListToPrestamoList(List<Long> prests) {
 		return prests.stream()
 				.map(id -> getPrestamoByID(id))

@@ -44,10 +44,10 @@ public class ContenidoSearchController {
 		if (titulo == null && autor == null && ano == null && idioma == null && soporteS == null
 				&& paginas == null && editorial == null && isbn == null && edad == null && duracion == null
 				&& calidad == null && type == null) {
-			if (unique) {
-				return searchService.getUniqueContenidos(searchService.getAllContenidos());
+			if (unique!=null) {
+				if(unique.booleanValue()) return ContenidoSearchService.getUniqueContenidos(searchService.getAllContenidos());
 			}
-			return searchService.filterContenidosByDisponibilidadAndPrestable(searchService.getAllContenidos(), d, p);
+			return ContenidoSearchService.filterContenidosByDisponibilidadAndPrestable(searchService.getAllContenidos(), d, p);
 		}
 		
 		return searchService.getContenidosByMultipleParams(
@@ -69,6 +69,11 @@ public class ContenidoSearchController {
 			);
 	}
 	
+	@GetMapping(path = "/topprestamos")
+	public List<Contenido> getContenidosMasPrestados(@RequestParam(defaultValue = "10", name = "limit") int nContenidos) {
+		return searchService.getContenidosMasPrestados(nContenidos);
+	}
+	
 	@GetMapping(path = "{word}")
 	public List<ContenidoModel> getContenidoModelsByPrompt(@PathVariable(name = "word") String prompt){
 		return searchService.getContenidoModelsByPrompt(prompt);
@@ -83,7 +88,7 @@ public class ContenidoSearchController {
 	public List<Contenido> getContenidosByType(@PathVariable(name = "type") String type, @RequestParam(required = false) Boolean d){
 		var conts = searchService.getContenidosByType(type);
 		
-		return searchService.filterContenidosByDisponibilidad(conts, d);
+		return ContenidoSearchService.filterContenidosByDisponibilidad(conts, d);
 	}
 	
 	@GetMapping(path = "/titulo/{titulo}")
@@ -92,7 +97,7 @@ public class ContenidoSearchController {
 		
 		var conts = searchService.getContenidosByTitulo(titulo);
 		
-		return searchService.filterContenidosByDisponibilidad(conts, d);
+		return ContenidoSearchService.filterContenidosByDisponibilidad(conts, d);
 	}
 	
 	@GetMapping(path = "/autor/{autor}")
@@ -101,14 +106,14 @@ public class ContenidoSearchController {
 		
 		var conts = searchService.getContenidosByAutor(autor);
 		
-		return searchService.filterContenidosByDisponibilidad(conts, d);
+		return ContenidoSearchService.filterContenidosByDisponibilidad(conts, d);
 	}
 	
 	@GetMapping(path = "/ano/{ano}")
 	public List<Contenido> getContenidosByAno(@PathVariable(name = "ano") Integer ano, @RequestParam(required = false) Boolean d) {
 		var conts = searchService.getContenidosByAno(ano);
 		
-		return searchService.filterContenidosByDisponibilidad(conts, d);
+		return ContenidoSearchService.filterContenidosByDisponibilidad(conts, d);
 	}
 	
 	@GetMapping(path = "/idioma/{idioma}")
@@ -117,7 +122,7 @@ public class ContenidoSearchController {
 		
 		var conts = searchService.getContenidosByIdioma(idioma);
 		
-		return searchService.filterContenidosByDisponibilidad(conts, d);
+		return ContenidoSearchService.filterContenidosByDisponibilidad(conts, d);
 	}
 	
 	@GetMapping(path = "/soporte/{soporte}")
@@ -132,7 +137,7 @@ public class ContenidoSearchController {
 		
 		var conts = searchService.getContenidosBySoporte(soporte);
 		
-		return searchService.filterContenidosByDisponibilidad(conts, d);
+		return ContenidoSearchService.filterContenidosByDisponibilidad(conts, d);
 	}
 	
 	
@@ -142,7 +147,7 @@ public class ContenidoSearchController {
 	public List<Contenido> getContenidosByPaginas(@PathVariable(name = "paginas") Integer paginas, @RequestParam(required = false) Boolean d) {
 		var conts = searchService.getContenidosByPaginas(paginas);
 		
-		return searchService.filterContenidosByDisponibilidad(conts, d);
+		return ContenidoSearchService.filterContenidosByDisponibilidad(conts, d);
 	}
 	
 	@GetMapping(path = "/editorial/{editorial}")
@@ -151,14 +156,14 @@ public class ContenidoSearchController {
 		
 		var conts = searchService.getContenidosByEditorial(editorial);
 		
-		return searchService.filterContenidosByDisponibilidad(conts, d);
+		return ContenidoSearchService.filterContenidosByDisponibilidad(conts, d);
 	}
 	
 	@GetMapping(path = "/isbn/{isbn}")
 	public List<Contenido> getContenidosByISBN(@PathVariable(name = "isbn") String isbn, @RequestParam(required = false) Boolean d) {
 		var conts = searchService.getContenidosByISBN(isbn);
 		
-		return searchService.filterContenidosByDisponibilidad(conts, d);
+		return ContenidoSearchService.filterContenidosByDisponibilidad(conts, d);
 	}
 	
 	
@@ -168,20 +173,20 @@ public class ContenidoSearchController {
 	public List<Contenido> getContenidosByEdadRecomendada(@PathVariable(name = "edad") Integer edad, @RequestParam(required = false) Boolean d) {
 		var conts = searchService.getContenidosByEdadRecomendada(edad);
 		
-		return searchService.filterContenidosByDisponibilidad(conts, d);
+		return ContenidoSearchService.filterContenidosByDisponibilidad(conts, d);
 	}
 	
 	@GetMapping(path = "/duracion/{duracion}")
 	public List<Contenido> getContenidosByDuracion(@PathVariable(name = "duracion") Double duracion, @RequestParam(required = false) Boolean d) {
 		var conts = searchService.getContenidosByDuracion(duracion);
 		
-		return searchService.filterContenidosByDisponibilidad(conts, d);
+		return ContenidoSearchService.filterContenidosByDisponibilidad(conts, d);
 	}
 	
 	@GetMapping(path = "/calidad/{calidad}")
 	public List<Contenido> getContenidosByCalidad(@PathVariable(name = "calidad") Integer calidad, @RequestParam(required = false) Boolean d) {
 		var conts = searchService.getContenidosByCalidad(calidad);
 		
-		return searchService.filterContenidosByDisponibilidad(conts, d);
+		return ContenidoSearchService.filterContenidosByDisponibilidad(conts, d);
 	}
 }

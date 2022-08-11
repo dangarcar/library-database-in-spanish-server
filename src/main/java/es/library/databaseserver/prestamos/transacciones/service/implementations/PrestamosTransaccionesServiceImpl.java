@@ -36,15 +36,15 @@ public class PrestamosTransaccionesServiceImpl implements PrestamosTransacciones
 		Perfil perfil = perfilService.getPerfilByID(perfilId);
 		Contenido contenido = contenidoService.getContenidoByID(contenidoId);
 
+		if (!contenido.getPrestable())
+			throw new IllegalPrestamoException("El contenido " + contenidoId + " no es prestable");
+		
 		if (!contenido.getDisponible()) {
 			throw new IllegalPrestamoException(
 					"El contenido " + contenidoId + " ya está prestado." + (contenido.getFechaDisponibilidad() == null
 							? ""
 							: "Creemos que estara disponible el "+contenido.getFechaDisponibilidad().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))));
 		}
-
-		if (!contenido.getPrestable())
-			throw new IllegalPrestamoException("El contenido " + contenidoId + " no es prestable");
 		
 		Prestamo prestamo = prestamoService.insertPrestamo(new Prestamo(null, contenido.getID(), perfil.getID(),
 				LocalDateTime.now(), null, contenido.getDiasDePrestamo(), false));
@@ -65,10 +65,10 @@ public class PrestamosTransaccionesServiceImpl implements PrestamosTransacciones
 		Perfil perfil = perfilService.getPerfilByID(perfilId);
 		Contenido contenido = contenidoService.getContenidoByID(contenidoId);
 		
-		if (contenido.getDisponible()) throw new IllegalPrestamoException("El contenido " + contenidoId + " parece haber sido ya devuelto");
-
 		if (!contenido.getPrestable())
 			throw new IllegalPrestamoException("El contenido " + contenidoId + " no es prestable");
+		
+		if (contenido.getDisponible()) throw new IllegalPrestamoException("El contenido " + contenidoId + " parece haber sido ya devuelto");
 		
 		var prestamos = prestamoSearchService.getPrestamoByMultipleParams(contenidoId, perfilId, contenido.getDiasDePrestamo(), null, null, null, null, false);
 		if(prestamos.isEmpty()) throw new IllegalPrestamoException("Parece no haber ningun prestamo con el perfil "+perfilId+" y contenido"+contenidoId);

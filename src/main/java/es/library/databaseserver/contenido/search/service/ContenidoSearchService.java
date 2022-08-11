@@ -1,6 +1,7 @@
 package es.library.databaseserver.contenido.search.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.Soporte;
@@ -48,16 +49,42 @@ public interface ContenidoSearchService {
 	
 	//Util methods
 	
-	/**
-	 * Si disponibles es null, se devuelve la lista conts como tal
-	 */
-	public List<Contenido> filterContenidosByDisponibilidad(List<Contenido> conts, Boolean disponibles);
+	public List<Contenido> getContenidosMasPrestados(int nContenidos);
 	
-	public List<Contenido> filterContenidosByPrestable(List<Contenido> conts, Boolean prestable);
+	public static List<Contenido> filterContenidosByDisponibilidad(List<Contenido> conts, Boolean disponibles) {
+		if(disponibles == null) return conts;
+		
+		return conts.stream()
+				.filter(c -> c.getDisponible() == disponibles)
+				.collect(Collectors.toList());
+	}
+
+	public static List<Contenido> filterContenidosByPrestable(List<Contenido> conts, Boolean prestable) {
+		if(prestable == null) return conts;
+		
+		return conts.stream()
+				.filter(c -> c.getPrestable() == prestable)
+				.collect(Collectors.toList());
+	}
 	
-	public List<Contenido> filterContenidosByDisponibilidadAndPrestable(List<Contenido> conts, Boolean disponibles, Boolean prestables);
+	public static List<Contenido> filterContenidosByDisponibilidadAndPrestable(List<Contenido> conts, Boolean disponibles,
+			Boolean prestables) {
+		if(prestables == null && disponibles == null) return conts;
+		
+		return filterContenidosByPrestable(filterContenidosByDisponibilidad(conts, disponibles),prestables);
+	}
 	
-	public List<ContenidoModel> getUniqueContenidos(List<Contenido> conts);
+	public static List<ContenidoModel> getUniqueContenidos(List<Contenido> conts) {
+		return conts.stream()
+				.collect(Collectors.groupingBy(ContenidoModel::ofContenido,Collectors.mapping(Contenido::getID, Collectors.toList())))
+				.entrySet().stream()
+				.map(entry -> {
+					var c = entry.getKey();
+					c.setIds(entry.getValue());
+					return c;
+				})
+				.toList();
+	}
 	
 	public List<? extends AbstractContenido> getContenidosByMultipleParams(String titulo, String autor, Integer ano, String idioma,
 			Soporte soporte, Integer paginas, String editorial, String isbn, Integer edad, Double duracion,

@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +24,7 @@ import es.library.databaseserver.contenido.search.AbstractContenido;
 import es.library.databaseserver.contenido.search.ContenidoModel;
 import es.library.databaseserver.contenido.search.dao.ContenidoSearchDAO;
 import es.library.databaseserver.contenido.search.service.ContenidoSearchService;
+import es.library.databaseserver.prestamos.search.dao.PrestamoSearchDAO;
 
 @Service
 public class ContenidoSearchServiceImpl implements ContenidoSearchService {
@@ -35,6 +35,9 @@ public class ContenidoSearchServiceImpl implements ContenidoSearchService {
 	@Autowired
 	private ContenidoSearchDAO contenidoSearchDAO;
 	
+	@Autowired
+	private PrestamoSearchDAO prestamoSearchDAO;
+	
 	@Override
 	public List<Contenido> getAllContenidos() {
 		return contenidoCRUDService.getAllContenidos();
@@ -42,7 +45,7 @@ public class ContenidoSearchServiceImpl implements ContenidoSearchService {
 
 	@Override
 	public List<ContenidoModel> getContenidoModelsByPrompt(String prompt) {
-		return getUniqueContenidos(contenidoCRUDService.idListToContenidoList(contenidoSearchDAO.getContenidosIDByPrompt(prompt)));
+		return ContenidoSearchService.getUniqueContenidos(contenidoCRUDService.idListToContenidoList(contenidoSearchDAO.getContenidosIDByPrompt(prompt)));
 	}
 	
 	@Override
@@ -105,6 +108,10 @@ public class ContenidoSearchServiceImpl implements ContenidoSearchService {
 		return contenidoCRUDService.idListToContenidoList(contenidoSearchDAO.getContenidosIDByCalidad(calidad));
 	}
 
+	public List<Contenido> getContenidosMasPrestados(int nContenidos) {
+		return contenidoCRUDService.idListToContenidoList(prestamoSearchDAO.getContenidosMasPrestados(nContenidos));
+	}
+	
 	@Override
 	public List<Contenido> getContenidosByType(String typeName) {
 		Map<String, Class<?>> map = Map.of("audio",Audio.class,
@@ -113,26 +120,6 @@ public class ContenidoSearchServiceImpl implements ContenidoSearchService {
 		
 		return contenidoCRUDService.getAllContenidos().stream()
 				.filter(c -> c.getClass().equals(map.get(typeName)))
-				.toList();
-	}
-
-	public List<Contenido> filterContenidosByDisponibilidad(List<Contenido> conts, Boolean disponibles) {
-		if(disponibles == null) return conts;
-		
-		return conts.stream()
-				.filter(c -> c.getDisponible() == disponibles)
-				.collect(Collectors.toList());
-	}
-	
-	public List<ContenidoModel> getUniqueContenidos(List<Contenido> conts) {
-		return conts.stream()
-				.collect(Collectors.groupingBy(ContenidoModel::ofContenido,Collectors.mapping(Contenido::getID, Collectors.toList())))
-				.entrySet().stream()
-				.map(entry -> {
-					var c = entry.getKey();
-					c.setIds(entry.getValue());
-					return c;
-				})
 				.toList();
 	}
 
@@ -173,26 +160,10 @@ public class ContenidoSearchServiceImpl implements ContenidoSearchService {
 		var contenidoList = intersection(contenidoSets).stream().toList();
 		
 		if(unique) {
-			return getUniqueContenidos(contenidoList);
+			return ContenidoSearchService.getUniqueContenidos(contenidoList);
 		}
-		return filterContenidosByDisponibilidadAndPrestable(contenidoList, d,prestable);
+		return ContenidoSearchService.filterContenidosByDisponibilidadAndPrestable(contenidoList, d,prestable);
 	}
 
-	@Override
-	public List<Contenido> filterContenidosByPrestable(List<Contenido> conts, Boolean prestable) {
-		if(prestable == null) return conts;
-		
-		return conts.stream()
-				.filter(c -> c.getPrestable() == prestable)
-				.collect(Collectors.toList());
-	}
-
-	@Override
-	public List<Contenido> filterContenidosByDisponibilidadAndPrestable(List<Contenido> conts, Boolean disponibles,
-			Boolean prestables) {
-		if(prestables == null && disponibles == null) return conts;
-		
-		return filterContenidosByPrestable(filterContenidosByDisponibilidad(conts, disponibles),prestables);
-	}
 
 }

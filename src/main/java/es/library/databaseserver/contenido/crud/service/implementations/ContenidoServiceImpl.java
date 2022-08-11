@@ -100,14 +100,12 @@ public class ContenidoServiceImpl implements ContenidoService{
 		//Si el audiovisual no es nulo
 		if(cSetNew.getAudiovisual() != null) {
 			dAudiovisual = insertAudio(cSetNew);
-			dAudiovisualDAO.deleteAudiovisualByIDIfIsNotPointed(cSetOld.getContenido().getIDAudiovisual(),true);
 			cSetNew.getContenido().setIDAudiovisual(dAudiovisual.get().getID());
 		}
 		
 		//Si el libro no es nulo
 		if (cSetNew.getLibro() != null) {
 			dLibro = insertLibro(cSetNew);
-			dLibroDAO.deleteLibroByIDIfIsNotPointed(cSetOld.getContenido().getIDLibro(),true);
 			cSetNew.getContenido().setIDLibro(dLibro.get().getID());
 		}
 		
@@ -115,6 +113,8 @@ public class ContenidoServiceImpl implements ContenidoService{
 		//Si el contenido antiguo no es igual al nuevo, lo actualizo
 		if(!(cSetOld.getContenido().equals(cSetNew.getContenido()))) {
 			c = contenidoRepository.updateContenidoByID(ID, cSetNew.getContenido());
+			if (cSetNew.getLibro() != null) dLibroDAO.deleteLibroByIDIfIsNotPointed(cSetOld.getContenido().getIDLibro(),false);
+			if(cSetNew.getAudiovisual() != null) dAudiovisualDAO.deleteAudiovisualByIDIfIsNotPointed(cSetOld.getContenido().getIDAudiovisual(),false);
 		}
 		else {
 			c = cSetNew.getContenido();
