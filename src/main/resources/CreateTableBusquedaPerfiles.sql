@@ -1,0 +1,1 @@
+CREATE VIRTUAL TABLE BusquedaPerfiles USING fts5(ID,Nombre,CorreoElectronico);
