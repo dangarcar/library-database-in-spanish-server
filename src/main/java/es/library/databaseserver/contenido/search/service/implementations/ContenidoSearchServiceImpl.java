@@ -1,6 +1,6 @@
 package es.library.databaseserver.contenido.search.service.implementations;
 
-import static es.library.databaseserver.utils.Utils.*;
+import static es.library.databaseserver.shared.Utils.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;

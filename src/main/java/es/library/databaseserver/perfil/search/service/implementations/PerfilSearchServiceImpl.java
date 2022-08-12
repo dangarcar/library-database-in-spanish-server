@@ -1,6 +1,6 @@
 package es.library.databaseserver.perfil.search.service.implementations;
 
-import static es.library.databaseserver.utils.Utils.*;
+import static es.library.databaseserver.shared.Utils.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

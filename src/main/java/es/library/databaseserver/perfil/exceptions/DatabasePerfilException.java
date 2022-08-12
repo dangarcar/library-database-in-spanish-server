@@ -1,14 +1,10 @@
 package es.library.databaseserver.perfil.exceptions;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 /**
  * Una excepcion para cuando no se ha podido modificar dicho perfil en la base de datos
  * @author Daniel Garcia
  *
  */
-@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 public class DatabasePerfilException extends RuntimeException{
 
 	public DatabasePerfilException(String message, Throwable cause) {

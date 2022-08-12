@@ -1,6 +1,6 @@
 package es.library.databaseserver.prestamos.search.service.implementations;
 
-import static es.library.databaseserver.utils.Utils.*;
+import static es.library.databaseserver.shared.Utils.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package es.library.databaseserver.utils;
+package es.library.databaseserver.shared;
 
 import java.util.Collection;
 import java.util.Collections;

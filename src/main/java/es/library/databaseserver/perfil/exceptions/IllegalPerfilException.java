@@ -1,14 +1,10 @@
 package es.library.databaseserver.perfil.exceptions;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 /**
  * Excepcion para cuando un perfil tiene algun parametro no permitido
  * @author Daniel Garcia
  *
  */
-@ResponseStatus(HttpStatus.BAD_REQUEST)
 public class IllegalPerfilException extends RuntimeException{
 
 	public IllegalPerfilException(String message, Throwable cause) {
