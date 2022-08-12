@@ -42,4 +42,14 @@ public class PrestamoExceptionHandler {
 				ZonedDateTime.now(), 
 				e.getMessage());
 	}
+	
+	@ExceptionHandler(PrestamoNotAllowedException.class)
+	@ResponseStatus(value = HttpStatus.CONFLICT)
+	public ApiError prestamoNotAllowedExceptionHandler(PrestamoNotAllowedException e, WebRequest r) {
+		e.printStackTrace();
+		return new ApiError(
+				HttpStatus.CONFLICT.value(), 
+				ZonedDateTime.now(), 
+				e.getMessage());
+	}
 }

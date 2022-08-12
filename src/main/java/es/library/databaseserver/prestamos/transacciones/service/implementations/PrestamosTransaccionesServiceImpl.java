@@ -12,7 +12,8 @@ import es.library.databaseserver.perfil.Perfil;
 import es.library.databaseserver.perfil.crud.service.PerfilService;
 import es.library.databaseserver.prestamos.Prestamo;
 import es.library.databaseserver.prestamos.crud.service.PrestamoService;
-import es.library.databaseserver.prestamos.exceptions.IllegalPrestamoException;
+import es.library.databaseserver.prestamos.exceptions.PrestamoNotAllowedException;
+import es.library.databaseserver.prestamos.exceptions.PrestamoNotFoundException;
 import es.library.databaseserver.prestamos.search.service.PrestamoSearchService;
 import es.library.databaseserver.prestamos.transacciones.service.PrestamosTransaccionesService;
 
@@ -37,10 +38,10 @@ public class PrestamosTransaccionesServiceImpl implements PrestamosTransacciones
 		Contenido contenido = contenidoService.getContenidoByID(contenidoId);
 
 		if (!contenido.getPrestable())
-			throw new IllegalPrestamoException("El contenido " + contenidoId + " no es prestable");
+			throw new PrestamoNotAllowedException("El contenido " + contenidoId + " no es prestable");
 		
 		if (!contenido.getDisponible()) {
-			throw new IllegalPrestamoException(
+			throw new PrestamoNotAllowedException(
 					"El contenido " + contenidoId + " ya está prestado." + (contenido.getFechaDisponibilidad() == null
 							? ""
 							: "Creemos que estara disponible el "+contenido.getFechaDisponibilidad().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))));
@@ -66,12 +67,12 @@ public class PrestamosTransaccionesServiceImpl implements PrestamosTransacciones
 		Contenido contenido = contenidoService.getContenidoByID(contenidoId);
 		
 		if (!contenido.getPrestable())
-			throw new IllegalPrestamoException("El contenido " + contenidoId + " no es prestable");
+			throw new PrestamoNotAllowedException("El contenido " + contenidoId + " no es prestable");
 		
-		if (contenido.getDisponible()) throw new IllegalPrestamoException("El contenido " + contenidoId + " parece haber sido ya devuelto");
+		if (contenido.getDisponible()) throw new PrestamoNotAllowedException("El contenido " + contenidoId + " parece haber sido ya devuelto");
 		
 		var prestamos = prestamoSearchService.getPrestamoByMultipleParams(contenidoId, perfilId, contenido.getDiasDePrestamo(), null, null, null, null, false);
-		if(prestamos.isEmpty()) throw new IllegalPrestamoException("Parece no haber ningun prestamo con el perfil "+perfilId+" y contenido"+contenidoId);
+		if(prestamos.isEmpty()) throw new PrestamoNotFoundException("Parece no haber ningun prestamo con el perfil "+perfilId+" y contenido"+contenidoId);
 		var p = prestamos.get(0);
 		
 		p.setDevuelto(true);
