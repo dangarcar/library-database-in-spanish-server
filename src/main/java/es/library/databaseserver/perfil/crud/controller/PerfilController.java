@@ -37,4 +37,14 @@ public class PerfilController {
 		return perfilService.updatePerfilByID(ID, perfil);
 	}
 	
+	@PutMapping(path = "/admin/{id}")
+	public void makePerfilAdmin(@PathVariable(name = "id") Long id) {
+		perfilService.makePerfilAdmin(id);
+	}
+	
+	@PutMapping(path = "/perfil/{id}")
+	public void makeAdminPerfil(@PathVariable(name = "id") Long id) {
+		perfilService.makeAdminPerfil(id);
+	}
+	
 }

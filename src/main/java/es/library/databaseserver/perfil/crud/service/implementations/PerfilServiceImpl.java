@@ -60,5 +60,23 @@ public class PerfilServiceImpl implements PerfilService{
 				.map(id -> getPerfilByID(id))
 				.collect(Collectors.toList());
 	}
+
+	@Override
+	public void makePerfilAdmin(Long id) throws PerfilNotFoundException{
+		Perfil perfil = getPerfilByID(id);
+		
+		perfil.setAdmin(true);
+		
+		updatePerfilByID(id, perfil);
+	}
+
+	@Override
+	public void makeAdminPerfil(Long id) throws PerfilNotFoundException{
+		Perfil perfil = getPerfilByID(id);
+		
+		perfil.setAdmin(false);
+		
+		updatePerfilByID(id, perfil);
+	}
 	
 }

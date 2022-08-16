@@ -38,6 +38,8 @@ public class PerfilSearchServiceImpl implements PerfilSearchService{
 
 	@Override
 	public List<Perfil> getPerfilesByNombre(String nombre) {
+		nombre = nombre.replace("-", " ");
+		
 		return crudService.idListToPerfilList(searchDAO.getPerfilesByNombre(nombre));
 	}
 
@@ -53,6 +55,8 @@ public class PerfilSearchServiceImpl implements PerfilSearchService{
 
 	@Override
 	public List<Perfil> getPerfilesByPrompt(String prompt) {
+		prompt = prompt.replace("-", " ");
+		
 		return crudService.idListToPerfilList(searchDAO.getPerfilesByPrompt(prompt));
 	}
 
@@ -61,8 +65,10 @@ public class PerfilSearchServiceImpl implements PerfilSearchService{
 		return crudService.idListToPerfilList(searchDAO.getAllAdmins());
 	}
 	
-	public List<Perfil> getPerfilesByMultipleParams(String nombre, String email, LocalDate fromNacimiento, LocalDate toNacimiento, Boolean admin) {
+	public List<Perfil> getPerfilesByMultipleParams(String query, String nombre, String email, LocalDate fromNacimiento, LocalDate toNacimiento, Boolean admin) {
 		List<Set<Perfil>> perfilSet = new ArrayList<>();
+		
+		if(query != null) perfilSet.add(new HashSet<>(getPerfilesByPrompt(query)));
 		
 		if(nombre != null) perfilSet.add(new HashSet<>(getPerfilesByNombre(nombre)));
 		

@@ -20,4 +20,8 @@ public interface PerfilService {
 
 	public List<Perfil> idListToPerfilList(List<Long> ids);
 	
+	public void makePerfilAdmin(Long id) throws PerfilNotFoundException;
+	
+	public void makeAdminPerfil(Long id) throws PerfilNotFoundException;
+	
 }

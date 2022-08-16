@@ -20,10 +20,8 @@ public class PerfilSearchController {
 	@Autowired
 	private PerfilSearchService perfilService;
 	
-	@GetMapping(path = "{prompt}")
-	public List<Perfil> getPerfilesByPrompt(@PathVariable(name = "prompt") String prompt) {
-		prompt = prompt.replace("-", " ");
-		
+	@GetMapping(path = "/query/{prompt}")
+	public List<Perfil> getPerfilesByPrompt(@PathVariable(name = "prompt") String prompt) {		
 		return perfilService.getPerfilesByPrompt(prompt);
 	}
 	
@@ -56,16 +54,18 @@ public class PerfilSearchController {
 
 	@GetMapping
 	public List<Perfil> getPerfilByParams(
+			@RequestParam(required = false, name = "q") String query,
 			@RequestParam(required = false) String nombre, 
 			@RequestParam(required = false) String email, 
 			@RequestParam(required = false) String fromNacimiento, 
 			@RequestParam(required = false) String toNacimiento, 
 			@RequestParam(required = false) Boolean admin) {
-		if(nombre==null && email==null && fromNacimiento==null && toNacimiento==null) {
+		if(nombre==null && email==null && fromNacimiento==null && toNacimiento==null && query==null) {
 			return PerfilSearchService.filterPerfilAdmin(perfilService.getAllPerfiles(), admin);
 		}
 		
 		return perfilService.getPerfilesByMultipleParams(
+				query,
 				nombre, 
 				email, 
 				fromNacimiento!=null? LocalDate.parse(fromNacimiento):null, 

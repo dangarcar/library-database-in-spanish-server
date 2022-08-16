@@ -13,7 +13,7 @@ public interface ContenidoSearchService {
 
 	public List<Contenido> getAllContenidos();
 	
-	public List<ContenidoModel> getContenidoModelsByPrompt(String prompt);
+	public List<Contenido> getContenidosByPrompt(String prompt);
 	
 	public Contenido getContenidoById(Long id) throws ContenidoNotFoundException;
 	
@@ -86,7 +86,7 @@ public interface ContenidoSearchService {
 				.toList();
 	}
 	
-	public List<? extends AbstractContenido> getContenidosByMultipleParams(String titulo, String autor, Integer ano, String idioma,
+	public List<? extends AbstractContenido> getContenidosByMultipleParams(String query, String titulo, String autor, Integer ano, String idioma,
 			Soporte soporte, Integer paginas, String editorial, String isbn, Integer edad, Double duracion,
 			Integer calidad, String type, Boolean d, Boolean unique, Boolean prestable);
 }

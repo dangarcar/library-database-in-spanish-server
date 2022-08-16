@@ -13,7 +13,6 @@ import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.Soporte;
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 import es.library.databaseserver.contenido.search.AbstractContenido;
-import es.library.databaseserver.contenido.search.ContenidoModel;
 import es.library.databaseserver.contenido.search.service.ContenidoSearchService;
 
 @RequestMapping("/contenidos/search")
@@ -25,11 +24,12 @@ public class ContenidoSearchController {
 
 	@GetMapping
 	public List<? extends AbstractContenido> getContenidosByParams(
+			@RequestParam(required = false, name = "q") String query,
 			@RequestParam(required = false) String titulo,
 			@RequestParam(required = false) String autor,
 			@RequestParam(required = false) Integer ano,
 			@RequestParam(required = false) String idioma,
-			@RequestParam(required = false,name = "soporte") String soporteS,
+			@RequestParam(required = false, name = "soporte") String soporteS,
 			@RequestParam(required = false) Integer paginas,
 			@RequestParam(required = false) String editorial,
 			@RequestParam(required = false) String isbn,
@@ -41,7 +41,7 @@ public class ContenidoSearchController {
 			@RequestParam(required = false) Boolean p,
 			@RequestParam(defaultValue = "false") Boolean unique
 			){
-		if (titulo == null && autor == null && ano == null && idioma == null && soporteS == null
+		if (query == null && titulo == null && autor == null && ano == null && idioma == null && soporteS == null
 				&& paginas == null && editorial == null && isbn == null && edad == null && duracion == null
 				&& calidad == null && type == null) {
 			if (unique!=null) {
@@ -51,6 +51,7 @@ public class ContenidoSearchController {
 		}
 		
 		return searchService.getContenidosByMultipleParams(
+				query,
 				titulo, 
 				autor, 
 				ano, 
@@ -74,9 +75,9 @@ public class ContenidoSearchController {
 		return searchService.getContenidosMasPrestados(nContenidos);
 	}
 	
-	@GetMapping(path = "{word}")
-	public List<ContenidoModel> getContenidoModelsByPrompt(@PathVariable(name = "word") String prompt){
-		return searchService.getContenidoModelsByPrompt(prompt);
+	@GetMapping(path = "/query/{word}")
+	public List<Contenido> getContenidosByPrompt(@PathVariable(name = "word") String prompt){
+		return searchService.getContenidosByPrompt(prompt);
 	}
 	
 	@GetMapping(path = "/id/{id}")

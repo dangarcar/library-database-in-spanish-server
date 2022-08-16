@@ -21,7 +21,6 @@ import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 import es.library.databaseserver.contenido.exceptions.NotValidTypeContenidoException;
 import es.library.databaseserver.contenido.search.AbstractContenido;
-import es.library.databaseserver.contenido.search.ContenidoModel;
 import es.library.databaseserver.contenido.search.dao.ContenidoSearchDAO;
 import es.library.databaseserver.contenido.search.service.ContenidoSearchService;
 import es.library.databaseserver.prestamos.search.dao.PrestamoSearchDAO;
@@ -44,8 +43,8 @@ public class ContenidoSearchServiceImpl implements ContenidoSearchService {
 	}
 
 	@Override
-	public List<ContenidoModel> getContenidoModelsByPrompt(String prompt) {
-		return ContenidoSearchService.getUniqueContenidos(contenidoCRUDService.idListToContenidoList(contenidoSearchDAO.getContenidosIDByPrompt(prompt)));
+	public List<Contenido> getContenidosByPrompt(String prompt) {
+		return contenidoCRUDService.idListToContenidoList(contenidoSearchDAO.getContenidosIDByPrompt(prompt));
 	}
 	
 	@Override
@@ -124,12 +123,12 @@ public class ContenidoSearchServiceImpl implements ContenidoSearchService {
 	}
 
 	@Override
-	public List<? extends AbstractContenido> getContenidosByMultipleParams(String titulo, String autor, Integer ano, String idioma,
-			Soporte soporte, Integer paginas, String editorial, String isbn, Integer edad, Double duracion,
-			Integer calidad, String type, Boolean d, Boolean unique, Boolean prestable) {
+	public List<? extends AbstractContenido> getContenidosByMultipleParams(String query, String titulo, String autor,
+			Integer ano, String idioma, Soporte soporte, Integer paginas, String editorial, String isbn, Integer edad,
+			Double duracion, Integer calidad, String type, Boolean d, Boolean unique, Boolean prestable) {
 		List<Set<Contenido>> contenidoSets = new ArrayList<>();
 		
-		
+		if(query != null)     contenidoSets.add(new HashSet<>(getContenidosByPrompt(query)));
 		
 		if(titulo != null)    contenidoSets.add(new HashSet<>(getContenidosByTitulo(titulo))); 
 		
@@ -153,9 +152,7 @@ public class ContenidoSearchServiceImpl implements ContenidoSearchService {
 		 
 		if(calidad != null)   contenidoSets.add(new HashSet<>(getContenidosByCalidad(calidad)));
 		
-		if(type != null)      contenidoSets.add(new HashSet<>(getContenidosByType(type)));
-		
-		
+		if(type != null)      contenidoSets.add(new HashSet<>(getContenidosByType(type)));		
 		
 		var contenidoList = intersection(contenidoSets).stream().toList();
 		

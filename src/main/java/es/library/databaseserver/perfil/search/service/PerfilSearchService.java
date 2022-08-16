@@ -22,7 +22,7 @@ public interface PerfilSearchService {
 
 	public List<Perfil> getAllAdmins();
 	
-	public List<Perfil> getPerfilesByMultipleParams(String nombre, String email, LocalDate fromNacimiento, LocalDate toNacimiento, Boolean admin);
+	public List<Perfil> getPerfilesByMultipleParams(String query, String nombre, String email, LocalDate fromNacimiento, LocalDate toNacimiento, Boolean admin);
 
 	public static List<Perfil> filterPerfilAdmin(List<Perfil> perfs, Boolean admin) {
 		if(admin == null) return perfs;
