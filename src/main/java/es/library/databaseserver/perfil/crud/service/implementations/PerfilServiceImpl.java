@@ -10,8 +10,10 @@ import es.library.databaseserver.perfil.Perfil;
 import es.library.databaseserver.perfil.crud.dao.PerfilDAO;
 import es.library.databaseserver.perfil.crud.model.PerfilValidator;
 import es.library.databaseserver.perfil.crud.service.PerfilService;
+import es.library.databaseserver.perfil.exceptions.EmailAlreadyExistPerfilException;
 import es.library.databaseserver.perfil.exceptions.IllegalPerfilException;
 import es.library.databaseserver.perfil.exceptions.PerfilNotFoundException;
+import es.library.databaseserver.perfil.search.dao.PerfilSearchDAO;
 
 @Service
 public class PerfilServiceImpl implements PerfilService{
@@ -21,6 +23,9 @@ public class PerfilServiceImpl implements PerfilService{
 	
 	@Autowired
 	private PerfilValidator validator;
+	
+	@Autowired
+	private PerfilSearchDAO perfilSearch;
 	
 	@Override
 	public List<Perfil> getAllPerfiles() {
@@ -34,10 +39,11 @@ public class PerfilServiceImpl implements PerfilService{
 	}
 
 	@Override
-	public Perfil insertPerfil(Perfil perfil) throws IllegalPerfilException {
+	public Perfil insertPerfil(Perfil perfil) throws IllegalPerfilException, EmailAlreadyExistPerfilException {
 		//Compruebo si el perfil es correcto
 		validator.validatePerfilCorrect(perfil);
-
+		this.validateEmailExistInDB(perfil);
+		
 		return perfilDAO.insertPerfil(perfil);
 	}
 
@@ -47,9 +53,10 @@ public class PerfilServiceImpl implements PerfilService{
 	}
 
 	@Override
-	public Perfil updatePerfilByID(Long id, Perfil perfil) throws IllegalPerfilException, PerfilNotFoundException {
+	public Perfil updatePerfilByID(Long id, Perfil perfil) throws IllegalPerfilException, PerfilNotFoundException, EmailAlreadyExistPerfilException {
 		//Compruebo si el perfil es correcto
-		validator.validatePerfilCorrect(perfil);
+		validator.validatePerfilCorrectUpdating(perfil);
+		if(perfil.getCorreoElectronico()!=null) this.validateEmailExistInDB(perfil);
 		
 		return perfilDAO.updatePerfilByID(id, perfil);
 	}
@@ -77,6 +84,15 @@ public class PerfilServiceImpl implements PerfilService{
 		perfil.setAdmin(false);
 		
 		updatePerfilByID(id, perfil);
+	}
+	
+	private void validateEmailExistInDB(Perfil perfil) throws EmailAlreadyExistPerfilException {
+		var perfiles = perfilSearch.getPerfilesByEmail(perfil.getCorreoElectronico());
+		if(!perfiles.isEmpty()) {
+			if(!perfiles.contains(perfil.getID()))
+				throw new EmailAlreadyExistPerfilException(
+						"El correo electrónico " + perfil.getCorreoElectronico() + " ya existe en el sistema");
+		}	
 	}
 	
 }

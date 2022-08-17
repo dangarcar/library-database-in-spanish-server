@@ -42,4 +42,14 @@ public class PerfilExceptionHandler {
 				ZonedDateTime.now(), 
 				e.getMessage());
 	}
+	
+	@ExceptionHandler(EmailAlreadyExistPerfilException.class)
+	@ResponseStatus(value = HttpStatus.CONFLICT)
+	public ApiError emailAlreadyExistPerfilExceptionHandler(EmailAlreadyExistPerfilException e, WebRequest r) {
+		e.printStackTrace();
+		return new ApiError(
+				HttpStatus.CONFLICT.value(), 
+				ZonedDateTime.now(), 
+				e.getMessage());
+	}
 }

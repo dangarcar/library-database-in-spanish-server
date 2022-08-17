@@ -90,28 +90,25 @@ public class PerfilSQLiteRepo implements PerfilDAO{
 	@Override
 	public Perfil updatePerfilByID(Long ID, Perfil perfil) throws PerfilNotFoundException{
 		final String sqlString = "UPDATE Perfiles SET "
-				+ " Nombre = :nombre,"
-				+ " FechaDeNacimiento = :fechaDeNacimiento,"
-				+ " CorreoElectronico = :correoElectronico,"
-				+ " Password = :password,"
+				+ (perfil.getNombre()!=null? " Nombre = :nombre,":"")
+				+ (perfil.getFechaNacimiento()!=null?" FechaDeNacimiento = :fechaDeNacimiento,":"")
+				+ (perfil.getCorreoElectronico()!=null?" CorreoElectronico = :correoElectronico,":"")
+				+ (perfil.getContrasena()!=null? " Password = :password,":"")
 				+ " Admin = :admin"
 				+ " WHERE ID = :id";
 		
 		var a = this.getPerfilByID(ID);
 		
-		if(a.isPresent()) {
-			jdbcTemplate.update(sqlString, new MapSqlParameterSource()
-					.addValue("nombre", perfil.getNombre())
-					.addValue("fechaDeNacimiento", perfil.getFechaNacimiento())
-					.addValue("correoElectronico", perfil.getCorreoElectronico())
-					.addValue("password", perfil.getContrasena())
-					.addValue("admin", perfil.isAdmin())
-					.addValue("id", ID)
-				);
-		}
-		else {
-			throw new PerfilNotFoundException("No existe tal contenido para ser actualizado");
-		}
+		MapSqlParameterSource mSource = new MapSqlParameterSource().addValue("admin", perfil.isAdmin()).addValue("id", ID);
+		
+		if(perfil.getNombre()!=null) mSource = mSource.addValue("nombre", perfil.getNombre());
+		if(perfil.getFechaNacimiento()!=null) mSource = mSource.addValue("fechaDeNacimiento", perfil.getFechaNacimiento());
+		if(perfil.getCorreoElectronico()!=null) mSource = mSource.addValue("correoElectronico", perfil.getCorreoElectronico());
+		if(perfil.getContrasena()!=null) mSource = mSource.addValue("password", perfil.getContrasena());
+		
+		if(a.isPresent()) jdbcTemplate.update(sqlString, mSource);
+		
+		else throw new PerfilNotFoundException("No existe tal contenido para ser actualizado");
 		
 		return this.getPerfilByID(ID).orElse(null);
 	}

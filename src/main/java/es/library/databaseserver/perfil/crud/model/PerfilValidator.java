@@ -27,7 +27,7 @@ public class PerfilValidator {
 		return edad >= EDAD_MINIMA;
 	}
 	
-	public boolean validateFechaNacimiento(LocalDate fecha) {
+	public boolean validateFechaNacimiento(LocalDate fecha) {		
 		boolean afterYearZero = fecha.isAfter(LocalDate.of(1, 1, 1));
 		boolean beforeNow = fecha.isBefore(LocalDate.now().minusYears(EDAD_MINIMA).plusDays(1));
 		
@@ -50,6 +50,30 @@ public class PerfilValidator {
 			errorBuilder.append(" no es valida");
 		}
 		if(!validatePassword(perfil.getContrasena())) {
+			errorBuilder.append(System.lineSeparator());
+			errorBuilder.append("La contraseña no es valida");
+		}
+
+		//Si el StringBuilder no esta vacio, lanzo una excepcion de perfil ilegal
+		if(!errorBuilder.isEmpty()) throw new IllegalPerfilException(errorBuilder.toString());
+	}
+	
+	public void validatePerfilCorrectUpdating(Perfil perfil) throws IllegalPerfilException{
+		StringBuilder errorBuilder = new StringBuilder();
+
+		if(perfil.getCorreoElectronico()!=null) if(!validateEmail(perfil.getCorreoElectronico())) {
+			errorBuilder.append(System.lineSeparator());
+			errorBuilder.append("El email ");
+			errorBuilder.append(perfil.getCorreoElectronico());
+			errorBuilder.append(" no es valido");
+		}
+		if(perfil.getFechaNacimiento()!=null) if(!validateFechaNacimiento(perfil.getFechaNacimiento())) {
+			errorBuilder.append(System.lineSeparator());
+			errorBuilder.append("La fecha ");
+			errorBuilder.append(perfil.getFechaNacimiento().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+			errorBuilder.append(" no es valida");
+		}
+		if(perfil.getContrasena()!=null) if(!validatePassword(perfil.getContrasena())) {
 			errorBuilder.append(System.lineSeparator());
 			errorBuilder.append("La contraseña no es valida");
 		}
