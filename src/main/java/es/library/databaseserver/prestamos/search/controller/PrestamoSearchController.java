@@ -68,20 +68,22 @@ public class PrestamoSearchController {
 	public List<Prestamo> getPrestamosByParams(
 			@RequestParam(required = false,name = "contenido") Long idContenido,
 			@RequestParam(required = false,name = "perfil") Long idPerfil,
-			@RequestParam(required = false) Integer dias,
+			@RequestParam(required = false) Integer minDias,
+			@RequestParam(required = false) Integer maxDias,
 			@RequestParam(required = false) String fromPrestamo,
 			@RequestParam(required = false) String toPrestamo,
 			@RequestParam(required = false) String fromDevolucion,
 			@RequestParam(required = false) String toDevolucion,
 			@RequestParam(required = false) Boolean d){
-		if(idContenido==null && idPerfil==null && dias==null && fromPrestamo==null && toPrestamo==null && fromDevolucion==null && toDevolucion==null) {
+		if(idContenido==null && idPerfil==null && minDias==null && maxDias==null && fromPrestamo==null && toPrestamo==null && fromDevolucion==null && toDevolucion==null) {
 			return PrestamoSearchService.filterDevueltosPrestamos(searchService.getAllPrestamos(), d);
 		}
 		
 		return searchService.getPrestamoByMultipleParams(
 				idContenido, 
-				idPerfil, 
-				dias, 
+				idPerfil,
+				minDias,
+				maxDias, 
 				fromPrestamo!=null? LocalDateTime.parse(fromPrestamo):null, 
 				toPrestamo!= null? LocalDateTime.parse(toPrestamo):null, 
 				fromDevolucion!=null? LocalDateTime.parse(fromDevolucion):null, 

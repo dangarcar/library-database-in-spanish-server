@@ -10,6 +10,7 @@ public interface PrestamoSearchDAO {
 	public List<Long> getPrestamosIdPerfil(Long id);
 	
 	public List<Long> getPrestamosByDiasDePrestamo(int dias);
+	public List<Long> getPrestamosByDiasDePrestamo(int min, int max);
 	
 	public List<Long> getPrestamosByFechaPrestamo(String prestamo);
 	

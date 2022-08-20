@@ -2,7 +2,7 @@ package es.library.databaseserver.contenido;
 
 /**
  * Enum que define los soportes en los que pueden estar los contenidos de la biblioteca
- * @author Daniel Garc�a
+ * @author Daniel García
  *
  */
 public enum Soporte {

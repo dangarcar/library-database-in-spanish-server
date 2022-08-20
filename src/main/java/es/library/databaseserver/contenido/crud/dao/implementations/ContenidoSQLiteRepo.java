@@ -93,10 +93,7 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 	}
 	
 	@Override
-	public Contenido updateContenidoByID(Long ID, Contenido contenido) throws ContenidoNotFoundException{
-		//Miro si el contenido es correcto para guardarlo en la base de datos
-		contenido.checkIsCorrect();
-		
+	public Contenido updateContenidoByID(Long ID, Contenido contenido) throws ContenidoNotFoundException{		
 		final String sqlString = "UPDATE Contenidos SET "
 				+ "Titulo = :titulo"
 				+ ",Autor = :autor"

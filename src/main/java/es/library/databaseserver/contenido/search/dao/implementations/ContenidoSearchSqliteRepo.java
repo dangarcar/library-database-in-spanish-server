@@ -45,6 +45,12 @@ public class ContenidoSearchSqliteRepo implements ContenidoSearchDAO{
 		
 		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("ano", ano), new IdRowMapper());
 	}
+	@Override
+	public List<Long> getContenidosIDByAno(Integer min, Integer max) {
+		final String sqlString = "SELECT ID FROM Contenidos WHERE Año BETWEEN :min AND :max";
+		
+		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("min", min).addValue("max", max), new IdRowMapper());
+	}
 
 	@Override
 	public List<Long> getContenidosIDByIdioma(String idioma) {
@@ -67,7 +73,13 @@ public class ContenidoSearchSqliteRepo implements ContenidoSearchDAO{
 		
 		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("paginas", paginas), new IdRowMapper());
 	}
-
+	@Override
+	public List<Long> getContenidosIDByPaginas(Integer min, Integer max) {
+		final String sqlString = "SELECT C.ID AS ID FROM Contenidos AS C INNER JOIN Detalles_Libros as DL on C.IDLibro = DL.ID WHERE DL.Paginas BETWEEN :min AND :max";
+		
+		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("min", min).addValue("max", max), new IdRowMapper());
+	}
+	
 	@Override
 	public List<Long> getContenidosIDByEditorial(String editorial) {
 		final String sqlString = "SELECT C.ID AS ID FROM Contenidos AS C INNER JOIN Detalles_Libros as DL on C.IDLibro = DL.ID WHERE DL.Editorial LIKE :editorial";
@@ -89,18 +101,36 @@ public class ContenidoSearchSqliteRepo implements ContenidoSearchDAO{
 		
 		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("edad", edad), new IdRowMapper());
 	}
-
+	@Override
+	public List<Long> getContenidosIDByEdadRecomendada(Integer min, Integer max) {
+		final String sqlString = "SELECT C.ID AS ID FROM Contenidos AS C INNER JOIN Detalles_Audiovisual as DA on C.IDAudiovisual = DA.ID WHERE DA.EdadRecomendada BETWEEN :min AND :max";
+		
+		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("min", min).addValue("max", max), new IdRowMapper());
+	}
+	
 	@Override
 	public List<Long> getContenidosIDByDuracion(Double duracion) {
 		final String sqlString = "SELECT C.ID AS ID FROM Contenidos AS C INNER JOIN Detalles_Audiovisual as DA on C.IDAudiovisual = DA.ID WHERE DA.Duracion = :duracion";
 		
 		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("duracion", duracion), new IdRowMapper());
 	}
-
+	@Override
+	public List<Long> getContenidosIDByDuracion(Double min, Double max) {
+		final String sqlString = "SELECT C.ID AS ID FROM Contenidos AS C INNER JOIN Detalles_Audiovisual as DA on C.IDAudiovisual = DA.ID WHERE DA.Duracion BETWEEN :min AND :max";
+		
+		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("min", min).addValue("max", max), new IdRowMapper());
+	}
+	
 	@Override
 	public List<Long> getContenidosIDByCalidad(Integer calidad) {
 		final String sqlString = "SELECT C.ID AS ID FROM Contenidos AS C INNER JOIN Detalles_Audiovisual as DA on C.IDAudiovisual = DA.ID WHERE DA.Calidad = :calidad";
 		
 		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("calidad", calidad), new IdRowMapper());
+	}
+	@Override
+	public List<Long> getContenidosIDByCalidad(Integer min, Integer max) {
+		final String sqlString = "SELECT C.ID AS ID FROM Contenidos AS C INNER JOIN Detalles_Audiovisual as DA on C.IDAudiovisual = DA.ID WHERE DA.Calidad BETWEEN :min AND :max";
+		
+		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("min", min).addValue("max", max), new IdRowMapper());
 	}
 }

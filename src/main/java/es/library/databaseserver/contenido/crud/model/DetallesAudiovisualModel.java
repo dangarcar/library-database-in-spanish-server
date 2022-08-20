@@ -5,12 +5,12 @@ import java.util.Objects;
 public class DetallesAudiovisualModel {
 
 	private Long ID;
-	private double duracion;
+	private Double duracion;
 	private boolean isVideo;
 	private Integer edadRecomendada;
 	private Integer calidad;
 	
-	public DetallesAudiovisualModel(Long iD, double duracion, boolean isVideo, Integer edadRecomendada,
+	public DetallesAudiovisualModel(Long iD, Double duracion, boolean isVideo, Integer edadRecomendada,
 			Integer calidad) {
 		super();
 		ID = iD;
@@ -23,8 +23,8 @@ public class DetallesAudiovisualModel {
 	public Long getID() {return ID;}
 	public void setID(Long iD) {ID = iD;}
 	
-	public double getDuracion() {return duracion;}
-	public void setDuracion(double duracion) {this.duracion = duracion;}
+	public Double getDuracion() {return duracion;}
+	public void setDuracion(Double duracion) {this.duracion = duracion;}
 	
 	public boolean getIsVideo() {return isVideo;}
 	public void setIsVideo(boolean isVideo) {this.isVideo = isVideo;}

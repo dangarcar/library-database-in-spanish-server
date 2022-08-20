@@ -1,4 +1,4 @@
-package es.library.databaseserver.contenido.search;
+package es.library.databaseserver.contenido.types;
 
 import java.util.List;
 import java.util.Objects;

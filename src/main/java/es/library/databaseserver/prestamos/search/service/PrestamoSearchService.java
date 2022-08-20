@@ -20,6 +20,7 @@ public interface PrestamoSearchService {
 	public List<Prestamo> getPrestamosIdPerfil(Long id) throws PerfilNotFoundException;
 	
 	public List<Prestamo> getPrestamosByDiasDePrestamo(int dias);
+	public List<Prestamo> getPrestamosByDiasDePrestamo(Integer min, Integer max);
 	
 	public List<Prestamo> getPrestamosByFechaPrestamo(String fecha);
 	
@@ -29,8 +30,8 @@ public interface PrestamoSearchService {
 	
 	public List<Prestamo> getPrestamosBetweenTwoDevolucionDates(LocalDateTime from, LocalDateTime to);
 	
-	public List<Prestamo> getPrestamoByMultipleParams(Long idContenido,Long idPerfil,Integer dias,LocalDateTime fromPrestamo,LocalDateTime toPrestamo,
-			LocalDateTime fromDevolucion,LocalDateTime toDevolucion,Boolean d);
+	public List<Prestamo> getPrestamoByMultipleParams(Long idContenido, Long idPerfil, Integer minDias, Integer maxDias, LocalDateTime fromPrestamo, LocalDateTime toPrestamo,
+			LocalDateTime fromDevolucion, LocalDateTime toDevolucion, Boolean d);
 	
 	public List<Contenido> getContenidosByPerfilID(Long idPerfil, Boolean d);
 	

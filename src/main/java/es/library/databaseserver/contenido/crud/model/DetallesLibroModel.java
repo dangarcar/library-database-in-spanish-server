@@ -6,10 +6,10 @@ public class DetallesLibroModel {
 
 	private Long ID;
 	private String ISBN;
-	private int paginas;
+	private Integer paginas;
 	private String editorial;
 	
-	public DetallesLibroModel(Long iD, String iSBN, int paginas, String editorial) {
+	public DetallesLibroModel(Long iD, String iSBN, Integer paginas, String editorial) {
 		super();
 		ID = iD;
 		ISBN = iSBN;
@@ -23,8 +23,8 @@ public class DetallesLibroModel {
 	public String getISBN() {return ISBN;}
 	public void setISBN(String iSBN) {ISBN = iSBN;}
 	
-	public int getPaginas() {return paginas;}
-	public void setPaginas(int paginas) {this.paginas = paginas;}
+	public Integer getPaginas() {return paginas;}
+	public void setPaginas(Integer paginas) {this.paginas = paginas;}
 	
 	public String getEditorial() {return editorial;}
 	public void setEditorial(String editorial) {this.editorial = editorial;}

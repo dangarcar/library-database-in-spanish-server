@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 
 import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.crud.service.ContenidoService;
+import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
 import es.library.databaseserver.perfil.Perfil;
 import es.library.databaseserver.perfil.crud.service.PerfilService;
+import es.library.databaseserver.perfil.exceptions.PerfilNotFoundException;
 import es.library.databaseserver.prestamos.Prestamo;
 import es.library.databaseserver.prestamos.crud.service.PrestamoService;
 import es.library.databaseserver.prestamos.exceptions.PrestamoNotAllowedException;
@@ -19,7 +21,7 @@ import es.library.databaseserver.prestamos.transacciones.service.PrestamosTransa
 
 @Service
 public class PrestamosTransaccionesServiceImpl implements PrestamosTransaccionesService{
-
+	
 	@Autowired
 	private PrestamoService prestamoService;
 	
@@ -34,9 +36,21 @@ public class PrestamosTransaccionesServiceImpl implements PrestamosTransacciones
 
 	@Override
 	public Prestamo prestar(Long contenidoId, Long perfilId) {
-		Perfil perfil = perfilService.getPerfilByID(perfilId);
-		Contenido contenido = contenidoService.getContenidoByID(contenidoId);
-
+		Perfil perfil;
+		Contenido contenido;
+		
+		try {
+			perfil = perfilService.getPerfilByID(perfilId);
+		} catch (PerfilNotFoundException e) {
+			throw new PerfilNotFoundException(PERFIL_PREFIX+e.getMessage());
+		}
+		
+		try {
+			contenido = contenidoService.getContenidoByID(contenidoId);
+		} catch (ContenidoNotFoundException e) {
+			throw new ContenidoNotFoundException(CONTENIDO_PREFIX+e.getMessage());
+		}
+		
 		if (!contenido.getPrestable())
 			throw new PrestamoNotAllowedException("El contenido " + contenidoId + " no es prestable");
 		
@@ -63,15 +77,27 @@ public class PrestamosTransaccionesServiceImpl implements PrestamosTransacciones
 	@Override
 	public Prestamo devolver(Long contenidoId, Long perfilId) {
 		@SuppressWarnings("unused")
-		Perfil perfil = perfilService.getPerfilByID(perfilId);
-		Contenido contenido = contenidoService.getContenidoByID(contenidoId);
+		Perfil perfil;
+		Contenido contenido;
+		
+		try {
+			perfil = perfilService.getPerfilByID(perfilId);
+		} catch (PerfilNotFoundException e) {
+			throw new PerfilNotFoundException(PERFIL_PREFIX+e.getMessage());
+		}
+		
+		try {
+			contenido = contenidoService.getContenidoByID(contenidoId);
+		} catch (ContenidoNotFoundException e) {
+			throw new ContenidoNotFoundException(CONTENIDO_PREFIX+e.getMessage());
+		}
 		
 		if (!contenido.getPrestable())
 			throw new PrestamoNotAllowedException("El contenido " + contenidoId + " no es prestable");
 		
 		if (contenido.getDisponible()) throw new PrestamoNotAllowedException("El contenido " + contenidoId + " parece haber sido ya devuelto");
 		
-		var prestamos = prestamoSearchService.getPrestamoByMultipleParams(contenidoId, perfilId, contenido.getDiasDePrestamo(), null, null, null, null, false);
+		var prestamos = prestamoSearchService.getPrestamoByMultipleParams(contenidoId, perfilId, contenido.getDiasDePrestamo(), contenido.getDiasDePrestamo(), null, null, null, null, false);
 		if(prestamos.isEmpty()) throw new PrestamoNotFoundException("Parece no haber ningun prestamo con el perfil "+perfilId+" y contenido"+contenidoId);
 		var p = prestamos.get(0);
 		

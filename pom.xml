@@ -15,6 +15,7 @@
 	<description>Library database server with Spring Boot</description>
 
 	<properties>
+		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
 		<java.version>17</java.version>
 	</properties>
 

@@ -13,16 +13,16 @@ import org.springframework.stereotype.Service;
 
 import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.Soporte;
-import es.library.databaseserver.contenido.crud.Audio;
-import es.library.databaseserver.contenido.crud.Libros;
-import es.library.databaseserver.contenido.crud.Videos;
 import es.library.databaseserver.contenido.crud.service.ContenidoService;
 import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 import es.library.databaseserver.contenido.exceptions.NotValidTypeContenidoException;
-import es.library.databaseserver.contenido.search.AbstractContenido;
 import es.library.databaseserver.contenido.search.dao.ContenidoSearchDAO;
 import es.library.databaseserver.contenido.search.service.ContenidoSearchService;
+import es.library.databaseserver.contenido.types.AbstractContenido;
+import es.library.databaseserver.contenido.types.Audio;
+import es.library.databaseserver.contenido.types.Libro;
+import es.library.databaseserver.contenido.types.Video;
 import es.library.databaseserver.prestamos.search.dao.PrestamoSearchDAO;
 
 @Service
@@ -65,6 +65,13 @@ public class ContenidoSearchServiceImpl implements ContenidoSearchService {
 	@Override
 	public List<Contenido> getContenidosByAno(Integer ano) {
 		return contenidoCRUDService.idListToContenidoList(contenidoSearchDAO.getContenidosIDByAno(ano));
+	}	
+	@Override
+	public List<Contenido> getContenidosByAno(Integer min, Integer max) {
+		if(min == null) min = 0;
+		if(max == null) max = Integer.MAX_VALUE;
+		
+		return contenidoCRUDService.idListToContenidoList(contenidoSearchDAO.getContenidosIDByAno(min,max));
 	}
 
 	@Override
@@ -81,7 +88,14 @@ public class ContenidoSearchServiceImpl implements ContenidoSearchService {
 	public List<Contenido> getContenidosByPaginas(Integer paginas) {
 		return contenidoCRUDService.idListToContenidoList(contenidoSearchDAO.getContenidosIDByPaginas(paginas));
 	}
-
+	@Override
+	public List<Contenido> getContenidosByPaginas(Integer min, Integer max) {
+		if(min == null) min = 0;
+		if(max == null) max = Integer.MAX_VALUE;
+		
+		return contenidoCRUDService.idListToContenidoList(contenidoSearchDAO.getContenidosIDByPaginas(min,max));
+	}
+	
 	@Override
 	public List<Contenido> getContenidosByEditorial(String editorial) {
 		return contenidoCRUDService.idListToContenidoList(contenidoSearchDAO.getContenidosIDByEditorial(editorial));
@@ -96,17 +110,38 @@ public class ContenidoSearchServiceImpl implements ContenidoSearchService {
 	public List<Contenido> getContenidosByEdadRecomendada(Integer edad) {
 		return contenidoCRUDService.idListToContenidoList(contenidoSearchDAO.getContenidosIDByEdadRecomendada(edad));
 	}
-
+	@Override
+	public List<Contenido> getContenidosByEdadRecomendada(Integer min, Integer max) {
+		if(min == null) min = 0;
+		if(max == null) max = Integer.MAX_VALUE;
+		
+		return contenidoCRUDService.idListToContenidoList(contenidoSearchDAO.getContenidosIDByEdadRecomendada(min,max));
+	}
+	
 	@Override
 	public List<Contenido> getContenidosByDuracion(Double duracion) {
 		return contenidoCRUDService.idListToContenidoList(contenidoSearchDAO.getContenidosIDByDuracion(duracion));
 	}
-
+	@Override
+	public List<Contenido> getContenidosByDuracion(Double min, Double max) {
+		if(min == null) min = 0.0;
+		if(max == null) max = Double.MAX_VALUE;
+		
+		return contenidoCRUDService.idListToContenidoList(contenidoSearchDAO.getContenidosIDByDuracion(min,max));
+	}
+	
 	@Override
 	public List<Contenido> getContenidosByCalidad(Integer calidad) {
 		return contenidoCRUDService.idListToContenidoList(contenidoSearchDAO.getContenidosIDByCalidad(calidad));
 	}
-
+	@Override
+	public List<Contenido> getContenidosByCalidad(Integer min, Integer max) {
+		if(min == null) min = 0;
+		if(max == null) max = Integer.MAX_VALUE;
+		
+		return contenidoCRUDService.idListToContenidoList(contenidoSearchDAO.getContenidosIDByCalidad(min,max));
+	}
+	
 	public List<Contenido> getContenidosMasPrestados(int nContenidos) {
 		return contenidoCRUDService.idListToContenidoList(prestamoSearchDAO.getContenidosMasPrestados(nContenidos));
 	}
@@ -114,45 +149,50 @@ public class ContenidoSearchServiceImpl implements ContenidoSearchService {
 	@Override
 	public List<Contenido> getContenidosByType(String typeName) {
 		Map<String, Class<?>> map = Map.of("audio",Audio.class,
-				"libro",Libros.class,
-				"video",Videos.class);
+				"libro",Libro.class,
+				"video",Video.class);
 		
 		return contenidoCRUDService.getAllContenidos().stream()
 				.filter(c -> c.getClass().equals(map.get(typeName)))
 				.toList();
 	}
 
+
 	@Override
 	public List<? extends AbstractContenido> getContenidosByMultipleParams(String query, String titulo, String autor,
-			Integer ano, String idioma, Soporte soporte, Integer paginas, String editorial, String isbn, Integer edad,
-			Double duracion, Integer calidad, String type, Boolean d, Boolean unique, Boolean prestable) {
+			Integer minAno, Integer maxAno, String idioma, Soporte soporte, Integer minPaginas, Integer maxPaginas,
+			String editorial, String isbn, Integer minEdad, Integer maxEdad, Double minDuracion, Double maxDuracion,
+			Integer minCalidad, Integer maxCalidad, String type, Boolean d, Boolean unique, Boolean prestable) {
+		
 		List<Set<Contenido>> contenidoSets = new ArrayList<>();
 		
-		if(query != null)     contenidoSets.add(new HashSet<>(getContenidosByPrompt(query)));
 		
-		if(titulo != null)    contenidoSets.add(new HashSet<>(getContenidosByTitulo(titulo))); 
+		if(query != null)     							contenidoSets.add(new HashSet<>(getContenidosByPrompt(query)));
 		
-		if(autor != null)     contenidoSets.add(new HashSet<>(getContenidosByAutor(autor)));
+		if(titulo != null)    							contenidoSets.add(new HashSet<>(getContenidosByTitulo(titulo))); 
 		
-		if(ano != null)       contenidoSets.add(new HashSet<>(getContenidosByAno(ano)));
+		if(autor != null)     							contenidoSets.add(new HashSet<>(getContenidosByAutor(autor)));
 		
-		if(idioma != null)    contenidoSets.add(new HashSet<>(getContenidosByIdioma(idioma))); 
+		if(minAno != null || maxAno != null)  			contenidoSets.add(new HashSet<>(getContenidosByAno(minAno, maxAno)));
 		
-		if(soporte != null)   contenidoSets.add(new HashSet<>(getContenidosBySoporte(soporte)));
+		if(idioma != null)    							contenidoSets.add(new HashSet<>(getContenidosByIdioma(idioma))); 
 		
-		if(paginas != null)   contenidoSets.add(new HashSet<>(getContenidosByPaginas(paginas)));
+		if(soporte != null)  							contenidoSets.add(new HashSet<>(getContenidosBySoporte(soporte)));
 		
-		if(editorial != null) contenidoSets.add(new HashSet<>(getContenidosByEditorial(editorial)));
+		if(minPaginas != null || maxPaginas != null)    contenidoSets.add(new HashSet<>(getContenidosByPaginas(minPaginas, maxPaginas)));
 		
-		if(isbn != null)      contenidoSets.add(new HashSet<>(getContenidosByISBN(isbn)));
+		if(editorial != null) 							contenidoSets.add(new HashSet<>(getContenidosByEditorial(editorial)));
 		
-		if(edad != null)      contenidoSets.add(new HashSet<>(getContenidosByEdadRecomendada(edad)));
+		if(isbn != null)      							contenidoSets.add(new HashSet<>(getContenidosByISBN(isbn)));
 		
-		if(duracion != null)  contenidoSets.add(new HashSet<>(getContenidosByDuracion(duracion)));
+		if(minEdad != null || maxEdad != null)          contenidoSets.add(new HashSet<>(getContenidosByEdadRecomendada(minEdad, maxEdad)));
+		
+		if(minDuracion != null || maxDuracion != null)  contenidoSets.add(new HashSet<>(getContenidosByDuracion(minDuracion, maxDuracion)));
 		 
-		if(calidad != null)   contenidoSets.add(new HashSet<>(getContenidosByCalidad(calidad)));
+		if(minCalidad != null || maxCalidad != null)    contenidoSets.add(new HashSet<>(getContenidosByCalidad(minCalidad, maxCalidad)));
 		
-		if(type != null)      contenidoSets.add(new HashSet<>(getContenidosByType(type)));		
+		if(type != null)      							contenidoSets.add(new HashSet<>(getContenidosByType(type)));		
+		
 		
 		var contenidoList = intersection(contenidoSets).stream().toList();
 		
@@ -161,6 +201,5 @@ public class ContenidoSearchServiceImpl implements ContenidoSearchService {
 		}
 		return ContenidoSearchService.filterContenidosByDisponibilidadAndPrestable(contenidoList, d,prestable);
 	}
-
 
 }

@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.Soporte;
 import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
-import es.library.databaseserver.contenido.search.AbstractContenido;
-import es.library.databaseserver.contenido.search.ContenidoModel;
+import es.library.databaseserver.contenido.types.AbstractContenido;
+import es.library.databaseserver.contenido.types.ContenidoModel;
 
 public interface ContenidoSearchService {
 
@@ -22,6 +22,7 @@ public interface ContenidoSearchService {
 	public List<Contenido> getContenidosByAutor(String autor);
 	
 	public List<Contenido> getContenidosByAno(Integer ano);
+	public List<Contenido> getContenidosByAno(Integer min, Integer max);
 	
 	public List<Contenido> getContenidosByIdioma(String idioma);
 	
@@ -32,6 +33,7 @@ public interface ContenidoSearchService {
 	//Detalles Libro
 	
 	public List<Contenido> getContenidosByPaginas(Integer paginas);
+	public List<Contenido> getContenidosByPaginas(Integer min, Integer max);
 	
 	public List<Contenido> getContenidosByEditorial(String editorial);
 	
@@ -41,10 +43,13 @@ public interface ContenidoSearchService {
 	//Detalles audiovisual
 	
 	public List<Contenido> getContenidosByEdadRecomendada(Integer edad);
+	public List<Contenido> getContenidosByEdadRecomendada(Integer min, Integer max);
 	
 	public List<Contenido> getContenidosByDuracion(Double duracion);
+	public List<Contenido> getContenidosByDuracion(Double min, Double max);
 	
 	public List<Contenido> getContenidosByCalidad(Integer calidad);
+	public List<Contenido> getContenidosByCalidad(Integer min, Integer max);
 	
 	
 	//Util methods
@@ -86,7 +91,8 @@ public interface ContenidoSearchService {
 				.toList();
 	}
 	
-	public List<? extends AbstractContenido> getContenidosByMultipleParams(String query, String titulo, String autor, Integer ano, String idioma,
-			Soporte soporte, Integer paginas, String editorial, String isbn, Integer edad, Double duracion,
-			Integer calidad, String type, Boolean d, Boolean unique, Boolean prestable);
+	public List<? extends AbstractContenido> getContenidosByMultipleParams(String query, String titulo, String autor,
+			Integer minAno, Integer maxAno, String idioma, Soporte soporte, Integer minPaginas, Integer maxPaginas,
+			String editorial, String isbn, Integer minEdad, Integer maxEdad, Double minDuracion, Double maxDuracion,
+			Integer minCalidad, Integer maxCalidad, String type, Boolean d, Boolean unique, Boolean prestable);
 }

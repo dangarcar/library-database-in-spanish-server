@@ -1,11 +1,11 @@
 package es.library.databaseserver.contenido.crud.model;
 
 import es.library.databaseserver.contenido.Contenido;
-import es.library.databaseserver.contenido.crud.Audio;
-import es.library.databaseserver.contenido.crud.Libros;
-import es.library.databaseserver.contenido.crud.Videos;
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 import es.library.databaseserver.contenido.exceptions.NotValidTypeContenidoException;
+import es.library.databaseserver.contenido.types.Audio;
+import es.library.databaseserver.contenido.types.Libro;
+import es.library.databaseserver.contenido.types.Video;
 
 public class ContenidoModelSetDTOMapper {	
 	
@@ -19,7 +19,7 @@ public class ContenidoModelSetDTOMapper {
 			
 			switch(cSet.getType()) {
 			case ContenidoModelSet.LIBRO:
-				dto = new Libros(
+				dto = new Libro(
 						c.getID(), 
 						c.getTitulo(), 
 						c.getAutor(), 
@@ -34,7 +34,6 @@ public class ContenidoModelSetDTOMapper {
 						l.getISBN(), 
 						l.getPaginas(), 
 						l.getEditorial()
-//						,l.getID()
 					);
 				dto.setIDLibro(l.getID());
 				break;
@@ -52,13 +51,11 @@ public class ContenidoModelSetDTOMapper {
 						c.getDisponible(), 
 						c.getFechaDisponibilidad(),
 						a.getDuracion()
-//						,a.getID()
-						
 					);
 				dto.setIDAudiovisual(a.getID());
 				break;
 			case ContenidoModelSet.VIDEO:
-				dto = new Videos(
+				dto = new Video(
 						c.getID(), 
 						c.getTitulo(), 
 						c.getAutor(), 
@@ -71,7 +68,6 @@ public class ContenidoModelSetDTOMapper {
 						c.getDisponible(), 
 						c.getFechaDisponibilidad(),
 						a.getDuracion(),
-//						a.getID(),
 						a.getEdadRecomendada(),
 						a.getCalidad()
 					);
@@ -83,7 +79,6 @@ public class ContenidoModelSetDTOMapper {
 		return dto;
 	}
 	
-	//TODO
 	public static ContenidoModelSet ContenidoToContenidoModelSet(Contenido dto) throws NotValidTypeContenidoException, NotValidSoporteException {		
 		DetallesAudiovisualModel audiovisual = null;
 		DetallesLibroModel libro = null;
@@ -105,18 +100,18 @@ public class ContenidoModelSetDTOMapper {
 			
 			c.setIDAudiovisual(a.getIDAudiovisual());
 			
-			audiovisual = new DetallesAudiovisualModel(a.getIDAudiovisual(), a.getDuracion(), false, 0, 0);
+			audiovisual = new DetallesAudiovisualModel(a.getIDAudiovisual(), a.getDuracion(), false, null, null);
 			
-			if(dto instanceof Videos) {
-				var v = (Videos) dto;
+			if(dto instanceof Video) {
+				var v = (Video) dto;
 				
 				audiovisual.setIsVideo(true);
 				audiovisual.setCalidad(v.getCalidad());
 				audiovisual.setEdadRecomendada(v.getEdadRecomendada());
 			}
 		} 
-		else if(dto instanceof Libros) {
-			var l = (Libros) dto;
+		else if(dto instanceof Libro) {
+			var l = (Libro) dto;
 			
 			c.setIDLibro(l.getIDLibro());
 			

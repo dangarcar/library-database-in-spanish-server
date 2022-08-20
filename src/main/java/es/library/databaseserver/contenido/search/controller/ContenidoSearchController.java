@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.Soporte;
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
-import es.library.databaseserver.contenido.search.AbstractContenido;
 import es.library.databaseserver.contenido.search.service.ContenidoSearchService;
+import es.library.databaseserver.contenido.types.ContenidoModel;
 
 @RequestMapping("/contenidos/search")
 @RestController
@@ -22,50 +22,112 @@ public class ContenidoSearchController {
 	@Autowired
 	private ContenidoSearchService searchService;
 
-	@GetMapping
-	public List<? extends AbstractContenido> getContenidosByParams(
-			@RequestParam(required = false, name = "q") String query,
-			@RequestParam(required = false) String titulo,
+	@SuppressWarnings("unchecked")
+	@GetMapping(path = "/unique")
+	public List<ContenidoModel> getContenidosByParams(
+			@RequestParam(required = false, name = "q") String query, 
+			@RequestParam(required = false) String titulo, 
 			@RequestParam(required = false) String autor,
-			@RequestParam(required = false) Integer ano,
-			@RequestParam(required = false) String idioma,
-			@RequestParam(required = false, name = "soporte") String soporteS,
-			@RequestParam(required = false) Integer paginas,
-			@RequestParam(required = false) String editorial,
-			@RequestParam(required = false) String isbn,
-			@RequestParam(required = false) Integer edad,
-			@RequestParam(required = false) Double duracion,
-			@RequestParam(required = false) Integer calidad,
-			@RequestParam(required = false) String type,
-			@RequestParam(required = false) Boolean d,
-			@RequestParam(required = false) Boolean p,
-			@RequestParam(defaultValue = "false") Boolean unique
-			){
-		if (query == null && titulo == null && autor == null && ano == null && idioma == null && soporteS == null
-				&& paginas == null && editorial == null && isbn == null && edad == null && duracion == null
-				&& calidad == null && type == null) {
-			if (unique!=null) {
-				if(unique.booleanValue()) return ContenidoSearchService.getUniqueContenidos(searchService.getAllContenidos());
-			}
-			return ContenidoSearchService.filterContenidosByDisponibilidadAndPrestable(searchService.getAllContenidos(), d, p);
+			@RequestParam(required = false) Integer minAno, 
+			@RequestParam(required = false) Integer maxAno, 
+			@RequestParam(required = false) String idioma, 
+			@RequestParam(required = false) String soporte, 
+			@RequestParam(required = false) Integer minPaginas, 
+			@RequestParam(required = false) Integer maxPaginas,
+			@RequestParam(required = false) String editorial, 
+			@RequestParam(required = false) String isbn, 
+			@RequestParam(required = false) Integer minEdad, 
+			@RequestParam(required = false) Integer maxEdad, 
+			@RequestParam(required = false) Double minDuracion, 
+			@RequestParam(required = false) Double maxDuracion,
+			@RequestParam(required = false) Integer minCalidad, 
+			@RequestParam(required = false) Integer maxCalidad, 
+			@RequestParam(required = false) String type){
+		if (query == null && titulo == null && autor == null && minAno == null && maxAno == null && idioma == null
+				&& soporte == null && minPaginas == null && maxPaginas == null && editorial == null && isbn == null
+				&& minEdad == null && maxEdad == null && minDuracion == null && maxDuracion == null
+				&& minCalidad == null && maxCalidad == null && type == null) {
+			return ContenidoSearchService.getUniqueContenidos(searchService.getAllContenidos());
 		}
-		
-		return searchService.getContenidosByMultipleParams(
-				query,
+
+		return (List<ContenidoModel>) searchService.getContenidosByMultipleParams(
+				query, 
 				titulo, 
-				autor, 
-				ano, 
+				autor,
+				minAno, 
+				maxAno, 
 				idioma, 
-				soporteS!=null? Soporte.valueOf(soporteS):null, 
-				paginas, 
+				soporte!=null? Soporte.valueOf(soporte):null, 
+				minPaginas, 
+				maxPaginas,
 				editorial, 
 				isbn, 
-				edad, 
-				duracion, 
-				calidad, 
+				minEdad, 
+				maxEdad, 
+				minDuracion, 
+				maxDuracion,
+				minCalidad, 
+				maxCalidad, 
+				type, 
+				null, 
+				true,
+				null
+			);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@GetMapping
+	public List<Contenido> getContenidosByParams(
+			@RequestParam(required = false, name = "q") String query, 
+			@RequestParam(required = false) String titulo, 
+			@RequestParam(required = false) String autor,
+			@RequestParam(required = false) Integer minAno, 
+			@RequestParam(required = false) Integer maxAno, 
+			@RequestParam(required = false) String idioma, 
+			@RequestParam(required = false) String soporte, 
+			@RequestParam(required = false) Integer minPaginas, 
+			@RequestParam(required = false) Integer maxPaginas,
+			@RequestParam(required = false) String editorial, 
+			@RequestParam(required = false) String isbn, 
+			@RequestParam(required = false) Integer minEdad, 
+			@RequestParam(required = false) Integer maxEdad, 
+			@RequestParam(required = false) Double minDuracion, 
+			@RequestParam(required = false) Double maxDuracion,
+			@RequestParam(required = false) Integer minCalidad, 
+			@RequestParam(required = false) Integer maxCalidad, 
+			@RequestParam(required = false) String type, 
+			@RequestParam(required = false) Boolean d, 
+			@RequestParam(required = false) Boolean p,
+			@RequestParam(defaultValue = "false") Boolean unique){
+		if (query == null && titulo == null && autor == null && minAno == null && maxAno == null && idioma == null
+				&& soporte == null && minPaginas == null && maxPaginas == null && editorial == null && isbn == null
+				&& minEdad == null && maxEdad == null && minDuracion == null && maxDuracion == null
+				&& minCalidad == null && maxCalidad == null && type == null) {
+			return ContenidoSearchService.filterContenidosByDisponibilidadAndPrestable(searchService.getAllContenidos(),
+					d, p);
+		}
+
+		return (List<Contenido>) searchService.getContenidosByMultipleParams(
+				query, 
+				titulo, 
+				autor,
+				minAno, 
+				maxAno, 
+				idioma, 
+				soporte!=null? Soporte.valueOf(soporte):null, 
+				minPaginas, 
+				maxPaginas,
+				editorial, 
+				isbn, 
+				minEdad, 
+				maxEdad, 
+				minDuracion, 
+				maxDuracion,
+				minCalidad, 
+				maxCalidad, 
 				type, 
 				d, 
-				unique,
+				false,
 				p
 			);
 	}
@@ -112,7 +174,7 @@ public class ContenidoSearchController {
 	
 	@GetMapping(path = "/ano/{ano}")
 	public List<Contenido> getContenidosByAno(@PathVariable(name = "ano") Integer ano, @RequestParam(required = false) Boolean d) {
-		var conts = searchService.getContenidosByAno(ano);
+		var conts = searchService.getContenidosByAno(ano,ano);
 		
 		return ContenidoSearchService.filterContenidosByDisponibilidad(conts, d);
 	}

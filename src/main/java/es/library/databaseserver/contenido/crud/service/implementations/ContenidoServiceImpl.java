@@ -10,12 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import es.library.databaseserver.contenido.Contenido;
-import es.library.databaseserver.contenido.crud.Audio;
-import es.library.databaseserver.contenido.crud.Libros;
 import es.library.databaseserver.contenido.crud.dao.ContenidoDAO;
 import es.library.databaseserver.contenido.crud.dao.ContenidoDetallesAudiovisualDAO;
 import es.library.databaseserver.contenido.crud.dao.ContenidoDetallesLibroDAO;
 import es.library.databaseserver.contenido.crud.model.ContenidoModelSet;
+import es.library.databaseserver.contenido.crud.model.ContenidoValidator;
 import es.library.databaseserver.contenido.crud.model.DetallesAudiovisualModel;
 import es.library.databaseserver.contenido.crud.model.DetallesLibroModel;
 import es.library.databaseserver.contenido.crud.service.ContenidoService;
@@ -25,6 +24,8 @@ import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException
 import es.library.databaseserver.contenido.exceptions.IllegalContenidoException;
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 import es.library.databaseserver.contenido.exceptions.NotValidTypeContenidoException;
+import es.library.databaseserver.contenido.types.Audio;
+import es.library.databaseserver.contenido.types.Libro;
 
 @Service
 public class ContenidoServiceImpl implements ContenidoService{
@@ -38,6 +39,9 @@ public class ContenidoServiceImpl implements ContenidoService{
 	@Autowired
 	private ContenidoDetallesLibroDAO dLibroDAO;
 	
+	@Autowired
+	private ContenidoValidator validator;
+	
 	public List<Contenido> getAllContenidos(){	
 		return idListToContenidoList(contenidoRepository.getAllContenidosID());
 	}
@@ -50,7 +54,7 @@ public class ContenidoServiceImpl implements ContenidoService{
 	
 	public Contenido insertContenido(Contenido contenido) throws DatabaseContenidoException, NotValidTypeContenidoException, NotValidSoporteException, ContenidoAlreadyExistsException{
 		//Compruebo si el contenido tiene algun error
-		contenido.checkIsCorrect();
+		validator.validateContenidoCorrect(contenido);
 		
 		var cSet = ContenidoToContenidoModelSet(contenido);
 		Optional<DetallesAudiovisualModel> audiovisualModel = Optional.empty();
@@ -60,7 +64,7 @@ public class ContenidoServiceImpl implements ContenidoService{
 			audiovisualModel = this.insertAudio(cSet);
 			cSet.getContenido().setIDAudiovisual(audiovisualModel.get().getID());
 		}
-		else if(contenido instanceof Libros) {
+		else if(contenido instanceof Libro) {
 			libroModel = this.insertLibro(cSet);
 			cSet.getContenido().setIDLibro(libroModel.get().getID());
 		}
@@ -78,12 +82,12 @@ public class ContenidoServiceImpl implements ContenidoService{
 	public void deleteContenidoByID(long ID) throws ContenidoNotFoundException, NotValidTypeContenidoException, NotValidSoporteException {
 		var a = getContenidoByID(ID);
 		if(a instanceof Audio)dAudiovisualDAO.deleteAudiovisualByIDIfIsNotPointed(a.getIDAudiovisual(),true);
-		if(a instanceof Libros)dLibroDAO.deleteLibroByIDIfIsNotPointed(a.getIDLibro(),true);
+		if(a instanceof Libro)dLibroDAO.deleteLibroByIDIfIsNotPointed(a.getIDLibro(),true);
 		contenidoRepository.deleteContenidoByID(ID);
 	}
 	
 	public Contenido updateContenidoByID(long ID, Contenido contenido) throws ContenidoNotFoundException, NotValidTypeContenidoException, NotValidSoporteException, DatabaseContenidoException, ContenidoAlreadyExistsException,IllegalContenidoException {
-		contenido.checkIsCorrect();
+		validator.validateContenidoCorrectUpdating(contenido);
 		
 		ContenidoModelSet cSetNew = ContenidoToContenidoModelSet(contenido);
 		ContenidoModelSet cSetOld = getContenidoModelSetByID(ID);

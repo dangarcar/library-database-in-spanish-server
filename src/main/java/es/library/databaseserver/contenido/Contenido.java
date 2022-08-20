@@ -7,11 +7,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-import es.library.databaseserver.contenido.crud.Audio;
-import es.library.databaseserver.contenido.crud.Libros;
-import es.library.databaseserver.contenido.crud.Videos;
-import es.library.databaseserver.contenido.exceptions.IllegalContenidoException;
-import es.library.databaseserver.contenido.search.AbstractContenido;
+import es.library.databaseserver.contenido.types.AbstractContenido;
+import es.library.databaseserver.contenido.types.Audio;
+import es.library.databaseserver.contenido.types.Libro;
+import es.library.databaseserver.contenido.types.Video;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -20,8 +19,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Audio.class, name = "audio"),
-        @JsonSubTypes.Type(value = Videos.class, name = "video"),
-        @JsonSubTypes.Type(value = Libros.class, name = "libro")
+        @JsonSubTypes.Type(value = Video.class, name = "video"),
+        @JsonSubTypes.Type(value = Libro.class, name = "libro")
 })
 public class Contenido implements AbstractContenido{
 	
@@ -29,7 +28,7 @@ public class Contenido implements AbstractContenido{
 	private String titulo;
 	private String autor;
 	private String descripcion;
-	private int ano;
+	private Integer ano;
 	private String idioma;
 	private Soporte soporte;
 	private boolean prestable;
@@ -39,7 +38,7 @@ public class Contenido implements AbstractContenido{
 	private Long IDLibro;
 	private Long IDAudiovisual;
 	
-	public Contenido(Long iD, String titulo, String autor, String descripcion, int ano, String idioma,
+	public Contenido(Long iD, String titulo, String autor, String descripcion, Integer ano, String idioma,
 			Soporte soporte, boolean prestable, Integer diasDePrestamo, boolean disponible,
 			LocalDate fechaDisponibilidad) {
 		ID = iD;
@@ -80,8 +79,8 @@ public class Contenido implements AbstractContenido{
 	public boolean getPrestable() {return prestable;}
 	public void setPrestable(boolean prestable) {this.prestable = prestable;}
 	
-	public int getDiasDePrestamo() {return diasDePrestamo;}
-	public void setDiasDePrestamo(int diasDePrestamo) {this.diasDePrestamo = diasDePrestamo;}
+	public Integer getDiasDePrestamo() {return diasDePrestamo;}
+	public void setDiasDePrestamo(Integer diasDePrestamo) {this.diasDePrestamo = diasDePrestamo;}
 	
 	public boolean getDisponible() {return disponible;}
 	public void setDisponible(boolean disponible) {this.disponible = disponible;}
@@ -127,15 +126,5 @@ public class Contenido implements AbstractContenido{
 		return "Contenido [ID=" + ID + ", titulo=" + titulo + ", autor=" + autor + ", ano=" + ano + ", idioma=" + idioma
 				+ ", soporte=" + soporte + ", prestable=" + prestable + ", diasDePrestamo=" + diasDePrestamo
 				+ ", disponible=" + disponible + ", fechaDisponibilidad=" + fechaDisponibilidad + "]";
-	}
-	
-	public void checkIsCorrect() throws IllegalContenidoException {
-		if(getAno() <= 0) throw new IllegalContenidoException("El año de creación del contenido debe ser mayor que cero");
-
-		if(getDiasDePrestamo() <= 0) throw new IllegalContenidoException("El numero de dias que un contenido puede ser prestado debe ser mayor que cero");
-
-		if(getFechaDisponibilidad() != null)
-			if(getFechaDisponibilidad().isBefore(LocalDate.now()))
-				throw new IllegalContenidoException("La fecha de devolucion del contenido debe ser después de la fecha de hoy");
 	}
 }

@@ -38,6 +38,12 @@ public class PrestamoSearchSQLiteRepo implements PrestamoSearchDAO{
 		
 		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("dias", dias), new IdRowMapper());
 	}
+	@Override
+	public List<Long> getPrestamosByDiasDePrestamo(int min, int max) {
+		final String sqlString = "SELECT ID FROM Prestamos WHERE DiasDePrestamo BETWEEN :min AND :max";
+		
+		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("min", min).addValue("max", max), new IdRowMapper());
+	}
 
 	@Override
 	public List<Long> getPrestamosByFechaPrestamo(String prestamo) {

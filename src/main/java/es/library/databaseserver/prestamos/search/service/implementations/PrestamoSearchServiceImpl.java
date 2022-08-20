@@ -21,6 +21,7 @@ import es.library.databaseserver.prestamos.crud.service.PrestamoService;
 import es.library.databaseserver.prestamos.exceptions.PrestamoNotFoundException;
 import es.library.databaseserver.prestamos.search.dao.PrestamoSearchDAO;
 import es.library.databaseserver.prestamos.search.service.PrestamoSearchService;
+import es.library.databaseserver.prestamos.transacciones.service.PrestamosTransaccionesService;
 
 @Service
 public class PrestamoSearchServiceImpl implements PrestamoSearchService{
@@ -50,7 +51,11 @@ public class PrestamoSearchServiceImpl implements PrestamoSearchService{
 	@Override
 	public List<Prestamo> getPrestamosByIdContenido(Long id) throws ContenidoNotFoundException {
 		//Compruebo que el contenido existe, sino lanzo una excepcion
-		contenidoService.getContenidoByID(id);
+		try {
+			contenidoService.getContenidoByID(id);
+		} catch (ContenidoNotFoundException e) {
+			throw new ContenidoNotFoundException(PrestamosTransaccionesService.CONTENIDO_PREFIX+e.getMessage());
+		}
 		
 		return crudService.idListToPrestamoList(searchDAO.getPrestamosByIdContenido(id));
 	}
@@ -58,7 +63,11 @@ public class PrestamoSearchServiceImpl implements PrestamoSearchService{
 	@Override
 	public List<Prestamo> getPrestamosIdPerfil(Long id) throws PerfilNotFoundException {
 		//Compruebo que el perfil existe, sino lanzo una excepcion
-		perfilService.getPerfilByID(id);
+		try{
+			perfilService.getPerfilByID(id);
+		} catch (PerfilNotFoundException e) {
+			throw new PerfilNotFoundException(PrestamosTransaccionesService.PERFIL_PREFIX+e.getMessage());
+		}
 		
 		return crudService.idListToPrestamoList(searchDAO.getPrestamosIdPerfil(id));
 	}
@@ -66,6 +75,13 @@ public class PrestamoSearchServiceImpl implements PrestamoSearchService{
 	@Override
 	public List<Prestamo> getPrestamosByDiasDePrestamo(int dias) {
 		return crudService.idListToPrestamoList(searchDAO.getPrestamosByDiasDePrestamo(dias));
+	}
+	@Override
+	public List<Prestamo> getPrestamosByDiasDePrestamo(Integer min, Integer max) {
+		if(min == null) min = 0;
+		if(max == null) max = Integer.MAX_VALUE;
+		
+		return crudService.idListToPrestamoList(searchDAO.getPrestamosByDiasDePrestamo(min, max));
 	}
 
 	@Override
@@ -87,18 +103,16 @@ public class PrestamoSearchServiceImpl implements PrestamoSearchService{
 	}
 	
 	@Override
-	public List<Prestamo> getPrestamoByMultipleParams(Long idContenido, Long idPerfil, Integer dias,
+	public List<Prestamo> getPrestamoByMultipleParams(Long idContenido, Long idPerfil, Integer minDias, Integer maxDias,
 			LocalDateTime fromPrestamo, LocalDateTime toPrestamo, LocalDateTime fromDevolucion,
 			LocalDateTime toDevolucion, Boolean d) {
 		List<Set<Prestamo>> prestamoSet = new ArrayList<>();
 		
-		if(idContenido != null) prestamoSet.add(new HashSet<>(getPrestamosByIdContenido(idContenido)));
-		
-		if(idPerfil != null) prestamoSet.add(new HashSet<>(getPrestamosIdPerfil(idPerfil)));
-		
-		if(fromPrestamo != null || toPrestamo != null) prestamoSet.add(new HashSet<>(getPrestamosBetweenTwoPrestamoDates(fromPrestamo, toPrestamo)));
-		
-		if(fromDevolucion != null || toDevolucion != null) prestamoSet.add(new HashSet<>(getPrestamosBetweenTwoDevolucionDates(fromDevolucion, toDevolucion)));
+		if(idContenido != null) 							prestamoSet.add(new HashSet<>(getPrestamosByIdContenido(idContenido)));
+		if(idPerfil != null) 								prestamoSet.add(new HashSet<>(getPrestamosIdPerfil(idPerfil)));
+		if(minDias != null || maxDias != null)				prestamoSet.add(new HashSet<>(getPrestamosByDiasDePrestamo(minDias, maxDias)));
+		if(fromPrestamo != null || toPrestamo != null) 		prestamoSet.add(new HashSet<>(getPrestamosBetweenTwoPrestamoDates(fromPrestamo, toPrestamo)));
+		if(fromDevolucion != null || toDevolucion != null) 	prestamoSet.add(new HashSet<>(getPrestamosBetweenTwoDevolucionDates(fromDevolucion, toDevolucion)));
 		
 		return PrestamoSearchService.filterDevueltosPrestamos(intersection(prestamoSet).stream().toList(), d);
 	}
