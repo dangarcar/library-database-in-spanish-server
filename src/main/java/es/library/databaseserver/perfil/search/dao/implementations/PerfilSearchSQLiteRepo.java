@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import es.library.databaseserver.contenido.crud.dao.rowmappers.IdRowMapper;
+import es.library.databaseserver.perfil.Roles;
 import es.library.databaseserver.perfil.search.dao.PerfilSearchDAO;
 
 @Repository
@@ -46,19 +47,19 @@ public class PerfilSearchSQLiteRepo implements PerfilSearchDAO{
 		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("word", prompt), new IdRowMapper());
 	}
 
-	@Override
-	public List<Long> getAllAdmins() {
-		final String sqlString = "SELECT ID FROM Perfiles WHERE Admin = 1";
-		
-		return jdbcTemplate.query(sqlString, new IdRowMapper());
-	}
-
 	public List<Long> getPerfilesBetweenTwoBirthDates(LocalDate from, LocalDate to) {
 		final String sqlString = "SELECT ID FROM Perfiles WHERE FechaDeNacimiento BETWEEN :from AND :to";
 		
 		return jdbcTemplate.query(sqlString, new MapSqlParameterSource()
 				.addValue("from", from.format(DateTimeFormatter.ISO_LOCAL_DATE))
 				.addValue("to", to.format(DateTimeFormatter.ISO_LOCAL_DATE)), new IdRowMapper());
+	}
+
+	@Override
+	public List<Long> getPerfilesByRole(Roles roles) {
+		final String sqlString = "SELECT ID FROM Perfiles WHERE Roles = :roles";
+		
+		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("roles", roles), new IdRowMapper());
 	}
 	
 }

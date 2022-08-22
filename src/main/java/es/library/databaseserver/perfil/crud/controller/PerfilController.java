@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.library.databaseserver.perfil.Perfil;
+import es.library.databaseserver.perfil.Roles;
 import es.library.databaseserver.perfil.crud.service.PerfilService;
 
 @RequestMapping("/perfiles")
@@ -37,14 +38,9 @@ public class PerfilController {
 		return perfilService.updatePerfilByID(ID, perfil);
 	}
 	
-	@PutMapping(path = "/admin/{id}")
-	public void makePerfilAdmin(@PathVariable(name = "id") Long id) {
-		perfilService.makePerfilAdmin(id);
-	}
-	
-	@PutMapping(path = "/perfil/{id}")
-	public void makeAdminPerfil(@PathVariable(name = "id") Long id) {
-		perfilService.makeAdminPerfil(id);
+	@PutMapping(path = "/roles/{id}")
+	public void setRole(long id, @RequestBody Roles roles) {
+		perfilService.setRole(id, roles);
 	}
 	
 }

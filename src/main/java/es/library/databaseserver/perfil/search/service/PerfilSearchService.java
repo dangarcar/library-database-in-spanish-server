@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import es.library.databaseserver.perfil.Perfil;
+import es.library.databaseserver.perfil.Roles;
 import es.library.databaseserver.perfil.exceptions.PerfilNotFoundException;
 
 public interface PerfilSearchService {
@@ -19,17 +20,9 @@ public interface PerfilSearchService {
 	public List<Perfil> getPerfilesByNacimiento(String nacimiento);
 	
 	public List<Perfil> getPerfilesByPrompt(String prompt);
-
-	public List<Perfil> getAllAdmins();
 	
-	public List<Perfil> getPerfilesByMultipleParams(String query, String nombre, String email, LocalDate fromNacimiento, LocalDate toNacimiento, Boolean admin);
+	public List<Perfil> getPerfilesByMultipleParams(String query, String nombre, String email, LocalDate fromNacimiento, LocalDate toNacimiento, Roles roles);
 
-	public static List<Perfil> filterPerfilAdmin(List<Perfil> perfs, Boolean admin) {
-		if(admin == null) return perfs;
-		
-		return perfs.stream()
-				.filter(p -> p.isAdmin() == admin)
-				.toList();
-	}
+	public List<Perfil> getPerfilesByRole(Roles roles);
 	
 }

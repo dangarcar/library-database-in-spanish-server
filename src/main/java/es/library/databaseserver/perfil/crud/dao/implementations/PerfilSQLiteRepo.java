@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import es.library.databaseserver.perfil.Perfil;
+import es.library.databaseserver.perfil.Roles;
 import es.library.databaseserver.perfil.crud.dao.PerfilDAO;
 import es.library.databaseserver.perfil.exceptions.DatabasePerfilException;
 import es.library.databaseserver.perfil.exceptions.PerfilNotFoundException;
@@ -33,7 +34,7 @@ public class PerfilSQLiteRepo implements PerfilDAO{
 
 	@Override
 	public Optional<Perfil> getPerfilByID(Long ID) {
-		final String sqlString = "SELECT ID,Nombre,FechaDeNacimiento,CorreoElectronico,Password,Admin FROM Perfiles WHERE ID = :id";
+		final String sqlString = "SELECT ID,Nombre,FechaDeNacimiento,CorreoElectronico,Password,Roles FROM Perfiles WHERE ID = :id";
 		
 		var perfiles = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("id", ID), new PerfilRowMapper());
 		
@@ -54,15 +55,15 @@ public class PerfilSQLiteRepo implements PerfilDAO{
 	
 	@Override
 	public Perfil insertPerfil(Perfil perfil) {
-		final String sqlString = "INSERT INTO Perfiles(Nombre,FechaDeNacimiento,CorreoElectronico,Password,Admin) "+
-				"VALUES(:nombre,:fechaDeNacimiento,:correoElectronico,:password,:admin)";
+		final String sqlString = "INSERT INTO Perfiles(Nombre,FechaDeNacimiento,CorreoElectronico,Password,Roles) "+
+				"VALUES(:nombre,:fechaDeNacimiento,:correoElectronico,:password,:roles)";
 
 		final int i = jdbcTemplate.update(sqlString, new MapSqlParameterSource()
 				.addValue("nombre", perfil.getNombre())
 				.addValue("fechaDeNacimiento", perfil.getFechaNacimiento())
 				.addValue("correoElectronico", perfil.getCorreoElectronico())
 				.addValue("password", perfil.getContrasena())
-				.addValue("admin", perfil.isAdmin())
+				.addValue("roles", perfil.getRole())
 			);
 
 		if(i == 0) throw new DatabasePerfilException("El perfil no ha sido insertado en la base de datos por alguna razon");
@@ -88,26 +89,27 @@ public class PerfilSQLiteRepo implements PerfilDAO{
 	}
 
 	@Override
-	public Perfil updatePerfilByID(Long ID, Perfil perfil) throws PerfilNotFoundException{
+	public Perfil updatePerfilByID(Long ID, Perfil perfil) throws PerfilNotFoundException {
 		final String sqlString = "UPDATE Perfiles SET "
-				+ (perfil.getNombre()!=null? " Nombre = :nombre,":"")
-				+ (perfil.getFechaNacimiento()!=null?" FechaDeNacimiento = :fechaDeNacimiento,":"")
-				+ (perfil.getCorreoElectronico()!=null?" CorreoElectronico = :correoElectronico,":"")
-				+ (perfil.getContrasena()!=null? " Password = :password,":"")
-				+ " Admin = :admin"
+				+ " Nombre = :nombre,"
+				+ " FechaDeNacimiento = :fechaDeNacimiento,"
+				+ " CorreoElectronico = :correoElectronico,"
+				+ " Password = :password,"
+				+ " Roles = :roles"
 				+ " WHERE ID = :id";
 		
 		var a = this.getPerfilByID(ID);
 		
-		MapSqlParameterSource mSource = new MapSqlParameterSource().addValue("admin", perfil.isAdmin()).addValue("id", ID);
-		
-		if(perfil.getNombre()!=null) mSource = mSource.addValue("nombre", perfil.getNombre());
-		if(perfil.getFechaNacimiento()!=null) mSource = mSource.addValue("fechaDeNacimiento", perfil.getFechaNacimiento());
-		if(perfil.getCorreoElectronico()!=null) mSource = mSource.addValue("correoElectronico", perfil.getCorreoElectronico());
-		if(perfil.getContrasena()!=null) mSource = mSource.addValue("password", perfil.getContrasena());
-		
-		if(a.isPresent()) jdbcTemplate.update(sqlString, mSource);
-		
+		if(a.isPresent()) {			
+			jdbcTemplate.update(sqlString, new MapSqlParameterSource()
+					.addValue("nombre", perfil.getNombre())
+					.addValue("fechaDeNacimiento", perfil.getFechaNacimiento())
+					.addValue("correoElectronico", perfil.getCorreoElectronico())
+					.addValue("password", perfil.getContrasena())
+					.addValue("roles", perfil.getRole())
+					.addValue("id", ID));
+		}
+
 		else throw new PerfilNotFoundException("No existe tal contenido para ser actualizado");
 		
 		return this.getPerfilByID(ID).orElse(null);
@@ -123,7 +125,7 @@ public class PerfilSQLiteRepo implements PerfilDAO{
 					rs.getString("FechaDeNacimiento")!= null? LocalDate.parse(rs.getString("FechaDeNacimiento"), DateTimeFormatter.ofPattern("yyyy-MM-dd")):null,
 					rs.getString("CorreoElectronico"),
 					rs.getString("Password"),
-					rs.getBoolean("Admin")
+					rs.getString("Roles")!=null? Roles.valueOf(rs.getString("Roles")):null
 				);
 			return p;
 		}

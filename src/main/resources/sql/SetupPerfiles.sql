@@ -6,7 +6,7 @@ CREATE TABLE "Perfiles" (
 	"FechaDeNacimiento"	TEXT NOT NULL,
 	"Password"	TEXT NOT NULL,
 	"CorreoElectronico"	TEXT NOT NULL UNIQUE,
-	"Admin"	INTEGER NOT NULL DEFAULT 0,
+	"Roles"	TEXT NOT NULL,
 	"ID"	INTEGER,
 	PRIMARY KEY("ID" AUTOINCREMENT)
 );
