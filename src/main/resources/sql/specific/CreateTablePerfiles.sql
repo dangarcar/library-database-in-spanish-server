@@ -1,4 +1,4 @@
-CREATE TABLE "Perfiles" (
+CREATE TABLE IF NOT EXISTS "Perfiles" (
 	"Nombre"	TEXT NOT NULL,
 	"FechaDeNacimiento"	TEXT NOT NULL,
 	"Password"	TEXT NOT NULL,

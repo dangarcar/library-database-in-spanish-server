@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,12 @@ public class PerfilServiceImpl implements PerfilService{
 				.orElseThrow(() -> new PerfilNotFoundException("El perfil con id "+id+" no existe en la base de datos"));
 	}
 
+	@Override
+	public Perfil getPerfilByUsername(String username) throws PerfilNotFoundException {
+		return perfilDAO.getPerfilByUsername(username)
+				.orElseThrow(() -> new PerfilNotFoundException("No existe perfil con usuario "+username+" en la base de datos", new UsernameNotFoundException("Username "+username+" no encontrado")));
+	}
+	
 	@Override
 	public Perfil insertPerfil(Perfil perfil) throws IllegalPerfilException, EmailAlreadyExistPerfilException {
 		//Compruebo si el perfil es correcto

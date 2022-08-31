@@ -1,13 +1,12 @@
 package es.library.databaseserver.prestamos.crud.dao.implementations;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -17,25 +16,27 @@ import es.library.databaseserver.prestamos.Prestamo;
 import es.library.databaseserver.prestamos.crud.dao.PrestamoDAO;
 import es.library.databaseserver.prestamos.exceptions.DatabasePrestamoException;
 import es.library.databaseserver.prestamos.exceptions.PrestamoNotFoundException;
+import es.library.databaseserver.shared.Utils;
 
 @Repository
 public class PrestamoSQLiteRepo implements PrestamoDAO {
 
 	@Autowired
+	@Qualifier("baseJDBC")
 	private NamedParameterJdbcTemplate jdbcTemplate;
 	
 	@Override
 	public List<Long> getAllPrestamosID() {
 		final String sqlString = "SELECT ID FROM Prestamos";
 		
-		return jdbcTemplate.query(sqlString, new IdRowMapper());
+		return jdbcTemplate.query(sqlString, Utils.idRowMapper);
 	}
 
 	@Override
 	public Optional<Prestamo> getPrestamoByID(Long ID) {
 		final String sqlString = "SELECT ID,IDContenido,IDPerfil,FechaHoraPrestamo,FechaHoraDevolucion,DiasDePrestamo,Devuelto FROM Prestamos WHERE ID = :id";
 		
-		var prestamos = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("id", ID), new PrestamoRowMapper());
+		var prestamos = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("id", ID), prestamoRowMapper);
 		
 		if(prestamos.isEmpty()) return Optional.empty();
 		
@@ -45,7 +46,7 @@ public class PrestamoSQLiteRepo implements PrestamoDAO {
 	private long getIdLastInserted() {
 		final String sqlString = "SELECT seq AS ID FROM sqlite_sequence WHERE name = 'Prestamos';";
 		
-		var id = jdbcTemplate.query(sqlString, new IdRowMapper());
+		var id = jdbcTemplate.query(sqlString, Utils.idRowMapper);
 		
 		if(id.isEmpty()) return -1L;
 		
@@ -120,31 +121,15 @@ public class PrestamoSQLiteRepo implements PrestamoDAO {
 		return this.getPrestamoByID(ID).orElse(null);
 	}
 
-	private class PrestamoRowMapper implements RowMapper<Prestamo>{
-
-		@Override
-		public Prestamo mapRow(ResultSet rs, int rowNum) throws SQLException {
-			var p = new Prestamo(
-					rs.getLong("ID"),
-					rs.getLong("IDContenido"),
-					rs.getLong("IDPerfil"),
-					rs.getString("FechaHoraPrestamo") != null? LocalDateTime.parse(rs.getString("FechaHoraPrestamo"),DateTimeFormatter.ISO_LOCAL_DATE_TIME):null,
-					rs.getString("FechaHoraDevolucion")!= null? LocalDateTime.parse(rs.getString("FechaHoraDevolucion"),DateTimeFormatter.ISO_LOCAL_DATE_TIME):null,
-					rs.getInt("DiasDePrestamo"),
-					rs.getBoolean("Devuelto")
-				);
-			return p;
-		}
-		
-	}
-	
-	private class IdRowMapper implements RowMapper<Long> {
-
-		@Override
-		public Long mapRow(ResultSet rs, int rowNum) throws SQLException {
-			return rs.getLong("ID");
-		}
-		
-	}
+	private RowMapper<Prestamo> prestamoRowMapper = (rs, rowNum) -> {
+		var p = new Prestamo(rs.getLong("ID"), rs.getLong("IDContenido"), rs.getLong("IDPerfil"),
+				rs.getString("FechaHoraPrestamo") != null
+						? LocalDateTime.parse(rs.getString("FechaHoraPrestamo"), DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+						: null,
+				rs.getString("FechaHoraDevolucion") != null ? LocalDateTime.parse(rs.getString("FechaHoraDevolucion"),
+						DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null,
+				rs.getInt("DiasDePrestamo"), rs.getBoolean("Devuelto"));
+		return p;
+	};
 	
 }

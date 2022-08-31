@@ -1,7 +1,7 @@
 /*
 Empiezo creando las tablas de detalles, necesarias para las foreign keys de los Contenidos
 */
-CREATE TABLE "Detalles_Audiovisual" (
+CREATE TABLE IF NOT EXISTS "Detalles_Audiovisual" (
 	"ID"	INTEGER,
 	"Duracion"	REAL,
 	"IsVideo"	INTEGER NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE "Detalles_Audiovisual" (
 );
 
 
-CREATE TABLE "Detalles_Libros" (
+CREATE TABLE IF NOT EXISTS "Detalles_Libros" (
 	"ID"	INTEGER NOT NULL,
 	"Paginas"	INTEGER,
 	"Editorial"	TEXT,
@@ -22,7 +22,7 @@ CREATE TABLE "Detalles_Libros" (
 /*
 Creo la tabla principal de los Contenidos
 */
-CREATE TABLE "Contenidos" (
+CREATE TABLE IF NOT EXISTS "Contenidos" (
 	"ID"	INTEGER,
 	"Titulo"	REAL NOT NULL,
 	"Autor"	TEXT,
@@ -44,7 +44,7 @@ CREATE TABLE "Contenidos" (
 /*
 Creo la tabla para la busqueda de contenidos
 */
-CREATE VIRTUAL TABLE "BusquedaContenidos" USING fts5(
+CREATE VIRTUAL TABLE IF NOT EXISTS "BusquedaContenidos" USING fts5(
     "ID",
     "Titulo",
     "Autor",
@@ -54,7 +54,7 @@ CREATE VIRTUAL TABLE "BusquedaContenidos" USING fts5(
 /*
 Creo los triggers para que cuando haga UPDATE, DELETE o INSERT en Contenidos se actualice la tabla de BusquedaContenidos
 */
-CREATE TRIGGER TContenidosDelete
+CREATE TRIGGER IF NOT EXISTS TContenidosDelete
 	AFTER DELETE
 	ON Contenidos
 BEGIN 
@@ -62,7 +62,7 @@ BEGIN
 END;
 
 
-CREATE TRIGGER TContenidosInsert
+CREATE TRIGGER IF NOT EXISTS TContenidosInsert
 	AFTER INSERT ON Contenidos
 BEGIN 
 	INSERT INTO BusquedaContenidos
@@ -72,7 +72,7 @@ BEGIN
 END;
 
 
-CREATE TRIGGER TContenidosUpdate
+CREATE TRIGGER IF NOT EXISTS TContenidosUpdate
 	AFTER UPDATE ON Contenidos
 BEGIN 
 	DELETE FROM BusquedaContenidos WHERE ID = NEW.ID;

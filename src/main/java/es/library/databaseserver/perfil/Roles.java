@@ -2,6 +2,10 @@ package es.library.databaseserver.perfil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public enum Roles {
 	
@@ -20,5 +24,11 @@ public enum Roles {
 	
 	public List<Roles> getRolesInvolved() {
 		return rolesInvolved;
+	}
+	
+	public List<GrantedAuthority> getGrantedAuthorities() {
+		return rolesInvolved.stream()
+				.map(r -> new SimpleGrantedAuthority(r.toString()))
+				.collect(Collectors.toList());
 	}
 }

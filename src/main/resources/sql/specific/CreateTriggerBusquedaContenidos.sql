@@ -1,11 +1,11 @@
-CREATE TRIGGER TContenidosDelete
+CREATE TRIGGER IF NOT EXISTS TContenidosDelete
 	AFTER DELETE
 	ON Contenidos
 BEGIN 
 	DELETE FROM BusquedaContenidos WHERE old.ID = ID;
 END
 
-CREATE TRIGGER TContenidosInsert
+CREATE TRIGGER IF NOT EXISTS TContenidosInsert
 	AFTER INSERT ON Contenidos
 BEGIN 
 	INSERT INTO BusquedaContenidos
@@ -14,7 +14,7 @@ BEGIN
 	WHERE Contenidos.ID = NEW.ID;
 END
 
-CREATE TRIGGER TContenidosUpdate
+CREATE TRIGGER IF NOT EXISTS TContenidosUpdate
 	AFTER UPDATE ON Contenidos
 BEGIN 
 	DELETE FROM BusquedaContenidos WHERE ID = NEW.ID;

@@ -14,6 +14,8 @@ public interface PerfilService {
 	
 	public Perfil getPerfilByID(Long id) throws PerfilNotFoundException;
 	
+	public Perfil getPerfilByUsername(String username) throws PerfilNotFoundException;
+	
 	public Perfil insertPerfil(Perfil perfil) throws IllegalPerfilException, EmailAlreadyExistPerfilException;
 	
 	public void deletePerfilByID(Long id) throws PerfilNotFoundException;

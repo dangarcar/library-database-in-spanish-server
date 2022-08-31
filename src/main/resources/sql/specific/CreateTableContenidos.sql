@@ -1,4 +1,4 @@
-CREATE TABLE "Contenidos" (
+CREATE TABLE IF NOT EXISTS "Contenidos" (
 	"ID"	INTEGER,
 	"Titulo"	REAL NOT NULL,
 	"Autor"	TEXT,

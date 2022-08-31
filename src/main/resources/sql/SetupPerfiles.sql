@@ -1,7 +1,7 @@
 /*
 Creo la tabla principal de los perfiles
 */
-CREATE TABLE "Perfiles" (
+CREATE TABLE IF NOT EXISTS "Perfiles" (
 	"Nombre"	TEXT NOT NULL,
 	"FechaDeNacimiento"	TEXT NOT NULL,
 	"Password"	TEXT NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE "Perfiles" (
 /*
 Creo la tabla de busqueda
 */
-CREATE VIRTUAL TABLE BusquedaPerfiles USING fts5(
+CREATE VIRTUAL TABLE IF NOT EXISTS BusquedaPerfiles USING fts5(
     "ID",
     "Nombre",
     "CorreoElectronico"
@@ -23,14 +23,14 @@ CREATE VIRTUAL TABLE BusquedaPerfiles USING fts5(
 /*
 Creo los triggers para que al hacer INSERT, UPDATE o DELETE en Perfiles se actualice BusquedaPerfiles también
 */
-CREATE TRIGGER TPerfilesDelete
+CREATE TRIGGER IF NOT EXISTS TPerfilesDelete
 	AFTER DELETE
 	ON Perfiles
 BEGIN 
 	DELETE FROM BusquedaPerfiles WHERE old.ID = ID;
 END;
 
-CREATE TRIGGER TPerfilesInsert
+CREATE TRIGGER IF NOT EXISTS TPerfilesInsert
 	AFTER INSERT
 	ON Perfiles
 BEGIN 
@@ -40,7 +40,7 @@ BEGIN
 	WHERE Perfiles.ID = NEW.ID;
 END;
 
-CREATE TRIGGER TPerfilesUpdate
+CREATE TRIGGER IF NOT EXISTS TPerfilesUpdate
 	AFTER UPDATE ON Perfiles
 BEGIN 
 	DELETE FROM BusquedaPerfiles WHERE ID = NEW.ID;

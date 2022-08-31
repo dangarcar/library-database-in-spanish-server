@@ -1,40 +1,45 @@
 package es.library.databaseserver.contenido.crud.dao.implementations;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import es.library.databaseserver.contenido.Contenido;
+import es.library.databaseserver.contenido.Soporte;
 import es.library.databaseserver.contenido.crud.dao.ContenidoDAO;
-import es.library.databaseserver.contenido.crud.dao.rowmappers.ContenidoRowMapper;
-import es.library.databaseserver.contenido.crud.dao.rowmappers.IdRowMapper;
 import es.library.databaseserver.contenido.exceptions.ContenidoAlreadyExistsException;
 import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
 import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException;
 import es.library.databaseserver.contenido.exceptions.IllegalContenidoException;
+import es.library.databaseserver.shared.Utils;
 
 @Repository
 public class ContenidoSQLiteRepo implements ContenidoDAO {
 	
 	@Autowired
+	@Qualifier("baseJDBC")
 	private NamedParameterJdbcTemplate jdbcTemplate;
 	
 	@Override
 	public List<Long> getAllContenidosID(){
 		final String sqlString = "SELECT ID FROM Contenidos";
 		
-		return jdbcTemplate.query(sqlString, new IdRowMapper());
+		return jdbcTemplate.query(sqlString, Utils.idRowMapper);
 	}
 	
 	@Override
 	public Optional<Contenido> getContenidoByID(Long ID) {
 		final String sqlString = "SELECT ID,Titulo,Autor,Descripcion,Año,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,FechaDisponibilidad,IDLibro,IDAudiovisual FROM Contenidos WHERE ID = :id";
 		
-		var contenidos = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("id", ID), new ContenidoRowMapper());
+		var contenidos = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("id", ID), contenidoRowMapper);
 		
 		if(contenidos.isEmpty()) return Optional.empty();
 		
@@ -44,7 +49,7 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 	private long getIdLastInserted() {
 		final String sqlString = "SELECT seq AS ID FROM sqlite_sequence WHERE name = 'Contenidos';";
 		
-		var id = jdbcTemplate.query(sqlString, new IdRowMapper());
+		var id = jdbcTemplate.query(sqlString, Utils.idRowMapper);
 		
 		if(id.isEmpty()) return -1L;
 		
@@ -134,5 +139,16 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 		
 		return this.getContenidoByID(ID).orElse(null);
 	}
+	
+	private RowMapper<Contenido> contenidoRowMapper = (rs, rowNum) -> {
+		var c = new Contenido(rs.getLong("ID"), rs.getString("Titulo"), rs.getString("Autor"),
+				rs.getString("Descripcion"), rs.getInt("Año"), rs.getString("Idioma"),
+				Soporte.valueOf(rs.getString("Soporte")), rs.getBoolean("Prestable"), rs.getInt("DiasDePrestamo"),
+				rs.getBoolean("Disponible"), ((rs.getString("FechaDisponibilidad") != null) ? LocalDate
+						.parse(rs.getString("FechaDisponibilidad"), DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null));
+		c.setIDLibro(rs.getLong("IDLibro") == 0L ? null : rs.getLong("IDLibro"));
+		c.setIDAudiovisual(rs.getLong("IDAudiovisual") == 0L ? null : rs.getLong("IDAudiovisual"));
+		return c;
+	};
 	
 }

@@ -1,4 +1,4 @@
-CREATE TABLE "Prestamos" (
+CREATE TABLE IF NOT EXISTS "Prestamos" (
 	"ID"	INTEGER,
 	"IDContenido"	INTEGER NOT NULL,
 	"IDPerfil"	INTEGER NOT NULL,

@@ -1,4 +1,4 @@
-CREATE TABLE "Detalles_Libros" (
+CREATE TABLE IF NOT EXISTS "Detalles_Libros" (
 	"ID"	INTEGER NOT NULL,
 	"Paginas"	INTEGER,
 	"Editorial"	TEXT,

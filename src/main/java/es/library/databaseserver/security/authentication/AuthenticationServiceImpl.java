@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import es.library.databaseserver.perfil.Perfil;
 import es.library.databaseserver.perfil.crud.service.PerfilService;
-import es.library.databaseserver.perfil.search.service.PerfilSearchService;
 import es.library.databaseserver.security.JWTUtils;
 import es.library.databaseserver.security.exceptions.ExpiredRefreshTokenException;
 import es.library.databaseserver.security.exceptions.NotValidPasswordException;
@@ -47,9 +46,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	
 	@Autowired
 	private PerfilService perfilService;
-	
-	@Autowired
-	private PerfilSearchService perfilSearchService;
 	
 	private Logger logger = LogManager.getLogger(AuthenticationController.class);
 	
@@ -137,7 +133,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	
 	@Override
 	public void deleteProfile(String username) {
-		Perfil perfil = perfilSearchService.getPerfilByUsername(username);
+		Perfil perfil = perfilService.getPerfilByUsername(username);
 		
 		if(!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(username) && 
 				!SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().contains("ROLE_ADMIN")) {

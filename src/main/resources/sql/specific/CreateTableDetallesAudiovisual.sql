@@ -1,4 +1,4 @@
-CREATE TABLE "Detalles_Audiovisual" (
+CREATE TABLE IF NOT EXISTS "Detalles_Audiovisual" (
 	"ID"	INTEGER,
 	"Duracion"	REAL,
 	"IsVideo"	INTEGER NOT NULL,

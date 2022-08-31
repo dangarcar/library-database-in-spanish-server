@@ -20,7 +20,7 @@ import es.library.databaseserver.shared.exceptions.ApiError;
 @RestControllerAdvice
 public class SecurityExceptionHandler {
 
-	Logger logger = LogManager.getLogger(SecurityExceptionHandler.class);
+	private Logger logger = LogManager.getLogger(SecurityExceptionHandler.class);
 	
 	@ExceptionHandler({
 		ExpiredRefreshTokenException.class, 

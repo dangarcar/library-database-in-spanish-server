@@ -13,6 +13,8 @@ public interface PerfilDAO{
 	
 	public Optional<Perfil> getPerfilByID(Long ID);
 	
+	public Optional<Perfil> getPerfilByUsername(String username);
+	
 	public Perfil insertPerfil(Perfil perfil) throws IllegalPerfilException;
 	
 	public void deletePerfilByID(Long ID) throws PerfilNotFoundException;
