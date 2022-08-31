@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import es.library.databaseserver.contenido.Contenido;
-import es.library.databaseserver.contenido.Soporte;
+import es.library.databaseserver.contenido.Contenido.Soporte;
 import es.library.databaseserver.contenido.crud.service.ContenidoService;
 import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;

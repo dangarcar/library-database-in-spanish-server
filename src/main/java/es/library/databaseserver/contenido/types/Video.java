@@ -2,8 +2,6 @@ package es.library.databaseserver.contenido.types;
 
 import java.time.LocalDate;
 
-import es.library.databaseserver.contenido.Soporte;
-
 public class Video extends Audio{
 	
 	private Integer edadRecomendada;

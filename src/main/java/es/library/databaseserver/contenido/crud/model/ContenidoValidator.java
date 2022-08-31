@@ -3,7 +3,7 @@ package es.library.databaseserver.contenido.crud.model;
 import org.springframework.stereotype.Component;
 
 import es.library.databaseserver.contenido.Contenido;
-import es.library.databaseserver.contenido.Soporte;
+import es.library.databaseserver.contenido.Contenido.Soporte;
 import es.library.databaseserver.contenido.exceptions.IllegalContenidoException;
 import es.library.databaseserver.contenido.types.Audio;
 import es.library.databaseserver.contenido.types.Libro;

@@ -60,8 +60,8 @@ public class DetallesAudiovisualSQLiteRepo implements ContenidoDetallesAudiovisu
 			jdbcTemplate.update(sqlString, new MapSqlParameterSource()
 					.addValue("duracion", audiovisual.getDuracion())
 					.addValue("isVideo", audiovisual.getIsVideo())
-					.addValue("edadRecomendada", audiovisual.getEdadRecomendada()==0? null:audiovisual.getEdadRecomendada())
-					.addValue("calidad", audiovisual.getCalidad()==0? null:audiovisual.getCalidad())
+					.addValue("edadRecomendada", audiovisual.getEdadRecomendada())
+					.addValue("calidad", audiovisual.getCalidad())
 				);
 		}
 
