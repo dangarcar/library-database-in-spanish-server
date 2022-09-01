@@ -56,21 +56,17 @@ public class PerfilAuthorizationFilter extends OncePerRequestFilter{
 				} 
 				catch (JWTVerificationException e) {
 					logger.error("El token no se ha podido validar", e);
-					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "El token no es válido");
 				}
 				catch (UsernameNotFoundException e) {
 					logger.error("El token era válido, pero no existía en la base de datos", e);
-					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "El usuario no existe en la base de datos");
 				}
 				catch (Exception e) {
 					logger.error("Ha ocurrido un error mientras se validaba el acceso", e);
-					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Ha habido un error mientras se verificaba el acceso");
 				}
 			}
 			
 			else {
 				logger.error("El token detrás del prefijo no era válido");
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "El token no es válido");
 			}
 			
 		}

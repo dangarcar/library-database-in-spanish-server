@@ -5,7 +5,6 @@ import java.time.ZonedDateTime;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,6 +12,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 
 import es.library.databaseserver.shared.exceptions.ApiError;
@@ -36,7 +37,9 @@ public class SecurityExceptionHandler {
 	
 	@ExceptionHandler({
 		NotValidPasswordException.class, 
-		AuthenticationException.class})
+		AuthenticationException.class,
+		JWTDecodeException.class,
+		JWTVerificationException.class})
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	public ApiError badRequestExceptionHandler(Exception e, WebRequest r) {
 		logger.error("",e);
@@ -64,16 +67,6 @@ public class SecurityExceptionHandler {
 		logger.error("",e);
 		return new ApiError(
 				HttpStatus.INTERNAL_SERVER_ERROR.value(), 
-				ZonedDateTime.now(), 
-				e.getMessage());
-	}
-	
-	@ExceptionHandler(AccessDeniedException.class)
-	@ResponseStatus(value = HttpStatus.UNAUTHORIZED)
-	public ApiError unathorizedExceptionHandler(Exception e, WebRequest r) {
-		logger.error("",e);
-		return new ApiError(
-				HttpStatus.UNAUTHORIZED.value(), 
 				ZonedDateTime.now(), 
 				e.getMessage());
 	}

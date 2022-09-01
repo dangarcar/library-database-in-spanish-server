@@ -2,9 +2,12 @@ package es.library.databaseserver.security;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,6 +24,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
+	private Logger logger = LogManager.getLogger(SecurityConfiguration.class);
+	
 	@Autowired
 	private PerfilUserDetailsService perfilUserDetailsService;
 	
@@ -49,40 +54,47 @@ public class SecurityConfiguration {
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {		
-		http.cors().and().csrf().disable();
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		
-		//TODO: Endpoints públicos
-		http.authorizeRequests().antMatchers(
-				"/auth/login/**",
-				"/auth/signup/**",
-				"/auth/token/refresh/**")
-			.permitAll();
-		
-		//TODO: Endpoints de usuario
-		http.authorizeRequests().antMatchers(
-				"/auth/logout/**",
-				"/auth/delete/**")
-			.hasRole("USER");
-		
-		//TODO: Endpoints de trabajadores
-		http.authorizeRequests().antMatchers(
-				)
-			.hasRole("STAFF");
-		
-		//TODO: Endpoints de administradores
-		http.authorizeRequests().antMatchers(
-				)
-			.hasRole("ADMIN");
-		
-		http.authorizeRequests().anyRequest().authenticated();
-		
-		http.exceptionHandling().authenticationEntryPoint((request, response, e) -> {
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No está autorizado para hacer esto");
-		});
-		
-		http.addFilterBefore(new PerfilAuthorizationFilter(jwtUtils,perfilUserDetailsService), UsernamePasswordAuthenticationFilter.class);
-		
-		return http.build();
+		return http.cors().and().csrf().disable()
+				
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
+			
+			.authorizeRequests()
+			.antMatchers(
+					"/auth/login/**",
+					"/auth/signup/**",
+					"/auth/token/refresh/**",
+					"/contenidos/search/**")
+				.permitAll()
+				.antMatchers(HttpMethod.PUT, "/perfiles/roles/**").hasRole("ADMIN")
+			.antMatchers(
+					"/auth/logout/**",
+					"/auth/delete/**",
+					"/prestar/**",
+					"/devolver/**")
+				.hasRole("USER")
+			.antMatchers(
+					"/prestamos/search/**",
+					"/perfiles/search/**",
+					"/contenidos/**",
+					"/perfiles/**")
+			.hasRole("STAFF")
+			
+			//El admin puede acceder a cualquier método
+			.anyRequest()
+				.hasRole("ADMIN")
+			.and()
+	
+			.exceptionHandling().authenticationEntryPoint((request, response, e) -> {
+				logger.error("Usuario no está autorizado para hacer {}", request.getPathInfo());
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				response.setContentType("APPLICATION/JSON");
+				response.getWriter().write("{ \"error\": \"No está autorizado para hacer esto\"}");
+			})
+			.and()
+	
+			.addFilterBefore(new PerfilAuthorizationFilter(jwtUtils,perfilUserDetailsService), UsernamePasswordAuthenticationFilter.class)
+			
+			.build();
 	}
 }

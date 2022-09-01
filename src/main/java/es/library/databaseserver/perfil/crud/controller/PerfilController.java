@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import es.library.databaseserver.perfil.Perfil;
 import es.library.databaseserver.perfil.Roles;
 import es.library.databaseserver.perfil.crud.service.PerfilService;
+import es.library.databaseserver.perfil.exceptions.IllegalPerfilException;
 
 @RequestMapping("/perfiles")
 @RestController
@@ -39,8 +40,16 @@ public class PerfilController {
 	}
 	
 	@PutMapping(path = "/roles/{id}")
-	public void setRole(long id, @RequestBody Roles roles) {
-		perfilService.setRole(id, roles);
+	public void setRole(@PathVariable(name = "id") long id, @RequestBody String roles) {
+		Roles roles2;
+		
+		try {
+			 roles2 = Roles.valueOf(roles);
+		} catch (Exception e) {
+			throw new IllegalPerfilException(e.getMessage(), e);
+		}
+		
+		perfilService.setRole(id, roles2);
 	}
 	
 }
