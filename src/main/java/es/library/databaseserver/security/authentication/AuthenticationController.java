@@ -1,6 +1,9 @@
 package es.library.databaseserver.security.authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +34,10 @@ public class AuthenticationController {
 	}
 	
 	@PostMapping(path = "/logout/{username}")
-	public void logout(@PathVariable(name = "username") String username) {
+	public void logout(@PathVariable(name = "username") String username, Authentication authentication) {
+		if(!authentication.getPrincipal().equals(username) && !authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().contains("ROLE_ADMIN")) {
+			throw new BadCredentialsException("El usuario "+authentication.getPrincipal()+" ha intentado borrar al perfil "+username+" pero no es admin");
+		}
 		authenticationService.logout(username);
 	}
 	
@@ -41,7 +47,10 @@ public class AuthenticationController {
 	}
 	
 	@DeleteMapping(path = "/delete/{username}")
-	public void deletePerfil(@PathVariable(name = "username") String username) {
+	public void deletePerfil(@PathVariable(name = "username") String username, Authentication authentication) {
+		if(!authentication.getPrincipal().equals(username) && !authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().contains("ROLE_ADMIN")) {
+			throw new BadCredentialsException("El usuario "+authentication.getPrincipal()+" ha intentado borrar al perfil "+username+" pero no es admin");
+		}
 		authenticationService.deleteProfile(username);
 	}
 }

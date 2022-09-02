@@ -11,6 +11,8 @@ public interface PerfilSearchService {
 
 	public Perfil getPerfilByID(Long id) throws PerfilNotFoundException;
 	
+	public Perfil getPerfilByUsername(String username) throws PerfilNotFoundException;
+	
 	public List<Perfil> getAllPerfiles();
 	
 	public List<Perfil> getPerfilesByNombre(String nombre);

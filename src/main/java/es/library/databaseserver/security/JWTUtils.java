@@ -5,7 +5,7 @@ import java.time.Instant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.auth0.jwt.JWT;
@@ -27,7 +27,7 @@ public class JWTUtils {
 		this.algorithm = Algorithm.HMAC256(secret);
 	}
 	
-	public String generateTokenFromUser(User user) {
+	public String generateTokenFromUser(UserDetails user) {
 		return JWT.create()
 				.withSubject(user.getUsername())
 				.withIssuer(issuer)

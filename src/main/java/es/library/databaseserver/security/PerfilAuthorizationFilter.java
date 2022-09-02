@@ -7,21 +7,17 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
+
+import es.library.databaseserver.security.exceptions.AuthorizationException;
 
 public class PerfilAuthorizationFilter extends OncePerRequestFilter{
-
-	private Logger logger = LogManager.getLogger(PerfilAuthorizationFilter.class);
 	
 	private static final String PREFIX = "Bearer ";
 	
@@ -47,26 +43,20 @@ public class PerfilAuthorizationFilter extends OncePerRequestFilter{
 				try {					
 					String username = jwtUtils.validateTokenAndGetUsername(token);
 					
-					User user = (User) perfilUserDetailsService.loadUserByUsername(username);
+					UserDetails user = perfilUserDetailsService.loadUserByUsername(username);
 					
 					UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = 
 							UsernamePasswordAuthenticationToken.authenticated(username, user.getPassword(), user.getAuthorities());
 					
 					SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 				} 
-				catch (JWTVerificationException e) {
-					logger.error("El token no se ha podido validar", e);
-				}
-				catch (UsernameNotFoundException e) {
-					logger.error("El token era válido, pero no existía en la base de datos", e);
-				}
 				catch (Exception e) {
-					logger.error("Ha ocurrido un error mientras se validaba el acceso", e);
+					throw new AuthorizationException(e.getMessage(),e);
 				}
 			}
 			
 			else {
-				logger.error("El token detrás del prefijo no era válido");
+				throw new AuthorizationException("El token detrás del prefijo no era válido");
 			}
 			
 		}

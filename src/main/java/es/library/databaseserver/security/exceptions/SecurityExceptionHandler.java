@@ -70,4 +70,14 @@ public class SecurityExceptionHandler {
 				ZonedDateTime.now(), 
 				e.getMessage());
 	}
+	
+	@ExceptionHandler(AuthorizationException.class)
+	@ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+	public ApiError authorizationExceptionHandler(AuthorizationException e, WebRequest r) {
+		logger.error("",e);
+		return new ApiError(
+				HttpStatus.UNAUTHORIZED.value(), 
+				ZonedDateTime.now(), 
+				e.getMessage());
+	}
 }

@@ -31,6 +31,11 @@ public class PerfilSearchController {
 		return perfilService.getPerfilByID(ID);
 	}
 	
+	@GetMapping(path = "/username/{username}")
+	public Perfil getPerfilByUsername(String username){
+		return perfilService.getPerfilByUsername(username);
+	}
+	
 	@GetMapping(path = "/nombre/{nombre}")
 	public List<Perfil> getPerfilesByNombre(@PathVariable(name = "nombre") String nombre){
 		nombre = nombre.replace("-", " ");

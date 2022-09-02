@@ -4,12 +4,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -74,7 +72,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		JWTTokenPair pair = null;
 		
 		try {
-			User user = (User) userDetailsService.loadUserByUsername(credentials.getUsername());
+			UserDetails user = userDetailsService.loadUserByUsername(credentials.getUsername());
 			
 			if (!passwordEncoder.matches(credentials.getPassword(),user.getPassword()))
 				throw new NotValidPasswordException("La contraseña "+credentials.getPassword()+" no se corresponde a la contraseña de la base de datos");
@@ -122,23 +120,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 	
 	@Override
-	public void logout(String username) {
-		if(!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(username) && 
-				!SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().contains("ROLE_ADMIN")) {
-			throw new BadCredentialsException("El usuario "+SecurityContextHolder.getContext().getAuthentication().getPrincipal()+" ha intentado borrar al perfil "+username+" pero no es admin");
-		}
-		
+	public void logout(String username) {		
 		refreshTokenService.deleteRefreshTokenByUsername(username);
 	}
 	
 	@Override
 	public void deleteProfile(String username) {
 		Perfil perfil = perfilService.getPerfilByUsername(username);
-		
-		if(!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(username) && 
-				!SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().contains("ROLE_ADMIN")) {
-			throw new BadCredentialsException("El usuario "+SecurityContextHolder.getContext().getAuthentication().getPrincipal()+" ha intentado borrar al perfil "+username+" pero no es admin");
-		}
 		
 		perfilService.deletePerfilByID(perfil.getID());
 		

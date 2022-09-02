@@ -25,7 +25,7 @@ public class PerfilController {
 	
 	@PostMapping
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public Perfil insertPerfil(@RequestBody Perfil perfil) {
+	public Perfil insertPerfil(@RequestBody Perfil perfil) {		
 		return perfilService.insertPerfil(perfil);
 	}
 	

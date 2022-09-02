@@ -33,6 +33,11 @@ public class PerfilSearchServiceImpl implements PerfilSearchService{
 	}
 
 	@Override
+	public Perfil getPerfilByUsername(String username) throws PerfilNotFoundException {
+		return crudService.getPerfilByUsername(username);
+	}
+	
+	@Override
 	public List<Perfil> getAllPerfiles() {
 		return crudService.getAllPerfiles();
 	}

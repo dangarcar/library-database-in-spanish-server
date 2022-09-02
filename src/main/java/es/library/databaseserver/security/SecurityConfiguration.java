@@ -66,7 +66,6 @@ public class SecurityConfiguration {
 					"/auth/token/refresh/**",
 					"/contenidos/search/**")
 				.permitAll()
-				.antMatchers(HttpMethod.PUT, "/perfiles/roles/**").hasRole("ADMIN")
 			.antMatchers(
 					"/auth/logout/**",
 					"/auth/delete/**",
@@ -76,8 +75,7 @@ public class SecurityConfiguration {
 			.antMatchers(
 					"/prestamos/search/**",
 					"/perfiles/search/**",
-					"/contenidos/**",
-					"/perfiles/**")
+					"/contenidos/**")
 			.hasRole("STAFF")
 			
 			//El admin puede acceder a cualquier método
