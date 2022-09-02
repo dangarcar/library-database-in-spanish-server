@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -63,6 +62,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			throw e;
 		}
 		
+		logger.info("El perfil {} se registró correctamente {}", perfil.getCorreoElectronico());
+		
 		//Retorno los tokens
 		return response;
 	}
@@ -76,9 +77,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			
 			if (!passwordEncoder.matches(credentials.getPassword(),user.getPassword()))
 				throw new NotValidPasswordException("La contraseña "+credentials.getPassword()+" no se corresponde a la contraseña de la base de datos");
-			else logger.info(user.getPassword());
 			
-			logger.info("Usuario {} se logó",user);
+			logger.info("Usuario {} se logó",user.getUsername());
 			
 			UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.authenticated(
 					credentials.getUsername(), 
@@ -96,12 +96,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 				refreshToken = refreshTokenService.getRefreshTokenByUsername(credentials.getUsername()).getToken();
 			}
 			catch (ExpiredRefreshTokenException e) {
-				logger.info("El refresh token expiró, se procederá a crear uno nuevo");
+				logger.debug("El refresh token expiró, se procederá a crear uno nuevo");
 				refreshTokenService.deleteRefreshTokenByUsername(credentials.getUsername());
 				refreshToken = refreshTokenService.createNewTokenFromUsername(credentials.getUsername()).getToken();
 			}
 			catch (RefreshTokenNotFoundException e) {
-				logger.info("El refresh token no existe "+e.getClass()+" "+e.getMessage());
+				logger.debug("El refresh token no existe "+e.getClass()+" "+e.getMessage());
 				refreshToken = refreshTokenService.createNewTokenFromUsername(credentials.getUsername()).getToken();
 			}
 			
@@ -135,7 +135,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		} 
 		catch (RefreshTokenNotFoundException e) {
 			//No hay que hacer nada
-			logger.debug("El refresh token no ha sio boorrado porque no existía en usuario {}",username);
+			logger.debug("El refresh token no ha sido borrado porque no existía en usuario {}",username);
 		}
 		catch (Exception e) {
 			refreshTokenService.createNewTokenFromUsername(username);
@@ -151,7 +151,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		RefreshToken refreshTokenOld = refreshTokenService.getRefreshTokenByID(token);
 		
 		//Si el token es correcto
-		User user = (User) userDetailsService.loadUserByUsername(refreshTokenOld.getUsername());
+		UserDetails user = userDetailsService.loadUserByUsername(refreshTokenOld.getUsername());
 		
 		String accessToken = jwtUtils.generateTokenFromUser(user);
 		

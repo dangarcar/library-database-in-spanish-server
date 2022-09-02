@@ -7,7 +7,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -84,7 +83,7 @@ public class SecurityConfiguration {
 			.and()
 	
 			.exceptionHandling().authenticationEntryPoint((request, response, e) -> {
-				logger.error("Usuario no está autorizado para hacer {}", request.getPathInfo());
+				logger.info("Usuario no está autorizado para hacer {}", request.getPathInfo());
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				response.setContentType("APPLICATION/JSON");
 				response.getWriter().write("{ \"error\": \"No está autorizado para hacer esto\"}");

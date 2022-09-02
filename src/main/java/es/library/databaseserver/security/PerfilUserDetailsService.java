@@ -25,7 +25,7 @@ public class PerfilUserDetailsService implements UserDetailsService{
 		Perfil perfil = perfilDAO.getPerfilByUsername(username).orElseThrow(() -> 
 			new UsernameNotFoundException ("El usuario " + username + " no existe en la base de datos"));
 		
-		logger.info("Usuario {} encontrado en la base de datos", username);
+		logger.debug("Usuario {} encontrado en la base de datos", username);
 		
 		return new User(
 				username, 

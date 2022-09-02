@@ -2,7 +2,6 @@ package es.library.databaseserver.contenido.search.controller;
 
 import java.util.List;
 
-import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +14,6 @@ import es.library.databaseserver.contenido.Contenido.Soporte;
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 import es.library.databaseserver.contenido.search.service.ContenidoSearchService;
 import es.library.databaseserver.contenido.types.ContenidoModel;
-import es.library.databaseserver.shared.Utils;
 
 @RequestMapping("/contenidos/search")
 @RestController
@@ -136,8 +134,6 @@ public class ContenidoSearchController {
 	
 	@GetMapping(path = "/topprestamos")
 	public List<Contenido> getContenidosMasPrestados(@RequestParam(defaultValue = "10", name = "limit") int nContenidos) {
-		Utils.logActionByUser(getClass(), "buscó los contenidos más prestados", Level.INFO);
-		
 		return searchService.getContenidosMasPrestados(nContenidos);
 	}
 	
