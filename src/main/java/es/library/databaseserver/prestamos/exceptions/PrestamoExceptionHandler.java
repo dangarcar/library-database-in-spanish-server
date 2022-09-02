@@ -20,7 +20,7 @@ public class PrestamoExceptionHandler {
 	@ExceptionHandler(PrestamoNotFoundException.class)
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	public ApiError prestamoNotFoundExceptionHandler(PrestamoNotFoundException e, WebRequest r) {
-		logger.error("",e);
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.NOT_FOUND.value(), 
 				ZonedDateTime.now(), 
@@ -30,7 +30,7 @@ public class PrestamoExceptionHandler {
 	@ExceptionHandler(IllegalPrestamoException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	public ApiError illegalPrestamoExceptionHandler(IllegalPrestamoException e, WebRequest r) {
-		logger.error("",e);
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.BAD_REQUEST.value(), 
 				ZonedDateTime.now(), 
@@ -40,7 +40,7 @@ public class PrestamoExceptionHandler {
 	@ExceptionHandler(DatabasePrestamoException.class)
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 	public ApiError databasePrestamoExceptionHandler(DatabasePrestamoException e, WebRequest r) {
-		logger.error("",e);
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.INTERNAL_SERVER_ERROR.value(), 
 				ZonedDateTime.now(), 
@@ -50,7 +50,7 @@ public class PrestamoExceptionHandler {
 	@ExceptionHandler(PrestamoNotAllowedException.class)
 	@ResponseStatus(value = HttpStatus.CONFLICT)
 	public ApiError prestamoNotAllowedExceptionHandler(PrestamoNotAllowedException e, WebRequest r) {
-		logger.error("",e);
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.CONFLICT.value(), 
 				ZonedDateTime.now(), 

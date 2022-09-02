@@ -20,7 +20,7 @@ public class ContenidoExceptionHandler {
 	@ExceptionHandler(ContenidoNotFoundException.class)
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	public ApiError contenidoNotFoundExceptionHandler(ContenidoNotFoundException e, WebRequest r) {
-		logger.error("",e);
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.NOT_FOUND.value(), 
 				ZonedDateTime.now(), 
@@ -33,7 +33,7 @@ public class ContenidoExceptionHandler {
 			NotValidTypeContenidoException.class})
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	public ApiError badContenidoExceptionHandler(Exception e, WebRequest r) {
-		logger.error("",e);
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.BAD_REQUEST.value(), 
 				ZonedDateTime.now(), 
@@ -43,7 +43,7 @@ public class ContenidoExceptionHandler {
 	@ExceptionHandler(DatabaseContenidoException.class)
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 	public ApiError databaseContenidoExceptionHandler(DatabaseContenidoException e, WebRequest r) {
-		logger.error("",e);
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.INTERNAL_SERVER_ERROR.value(), 
 				ZonedDateTime.now(), 
@@ -53,7 +53,7 @@ public class ContenidoExceptionHandler {
 	@ExceptionHandler(ContenidoAlreadyExistsException.class)
 	@ResponseStatus(value = HttpStatus.CONFLICT)
 	public ApiError contenidoAlreadyExistsExceptionHandler(ContenidoAlreadyExistsException e, WebRequest r) {
-		logger.error("",e);
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.CONFLICT.value(), 
 				ZonedDateTime.now(), 

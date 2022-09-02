@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import es.library.databaseserver.security.exceptions.ExpiredRefreshTokenException;
+import es.library.databaseserver.security.exceptions.ExpiredTokenException;
 import es.library.databaseserver.security.exceptions.RefreshTokenNotFoundException;
 import es.library.databaseserver.security.refresh.RefreshToken;
 import es.library.databaseserver.security.refresh.dao.RefreshTokenDAO;
@@ -37,7 +37,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
 				() -> new RefreshTokenNotFoundException("No se ha encontrado el token "+id));
 		
 		if(refreshToken.getExpDate().isBefore(Instant.now()))
-			throw new ExpiredRefreshTokenException("El refresh token caducó el "+refreshToken.getExpDate()+", hace "+Duration.between(Instant.now(), refreshToken.getExpDate()));
+			throw new ExpiredTokenException("El refresh token caducó el "+refreshToken.getExpDate()+", hace "+Duration.between(Instant.now(), refreshToken.getExpDate()));
 		
 		return refreshToken;
 	}
@@ -48,7 +48,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
 				() -> new RefreshTokenNotFoundException("No se ha encontrado el token del usuario"+username));
 		
 		if(refreshToken.getExpDate().isBefore(Instant.now()))
-			throw new ExpiredRefreshTokenException("El refresh token caducó el "+refreshToken.getExpDate()+", hace "+Duration.between(Instant.now(), refreshToken.getExpDate()));
+			throw new ExpiredTokenException("El refresh token caducó el "+refreshToken.getExpDate()+", hace "+Duration.between(Instant.now(), refreshToken.getExpDate()));
 		
 		return refreshToken;
 	}

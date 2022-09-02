@@ -14,8 +14,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 
 import es.library.databaseserver.security.exceptions.AuthorizationException;
+import es.library.databaseserver.security.exceptions.ExpiredTokenException;
 
 public class PerfilAuthorizationFilter extends OncePerRequestFilter{
 	
@@ -49,7 +51,10 @@ public class PerfilAuthorizationFilter extends OncePerRequestFilter{
 							UsernamePasswordAuthenticationToken.authenticated(username, user.getPassword(), user.getAuthorities());
 					
 					SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-				} 
+				}
+				catch (JWTVerificationException e) {
+					throw new ExpiredTokenException(e.getMessage(),e);
+				}
 				catch (Exception e) {
 					throw new AuthorizationException(e.getMessage(),e);
 				}

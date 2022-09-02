@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import es.library.databaseserver.security.exceptions.DatabaseRefreshTokenException;
-import es.library.databaseserver.security.exceptions.ExpiredRefreshTokenException;
+import es.library.databaseserver.security.exceptions.ExpiredTokenException;
 import es.library.databaseserver.security.exceptions.RefreshTokenNotFoundException;
 import es.library.databaseserver.security.refresh.RefreshToken;
 import es.library.databaseserver.security.refresh.dao.RefreshTokenDAO;
@@ -108,7 +108,7 @@ public class RefreshTokenSQLiteRepo implements RefreshTokenDAO{
 	
 	private RowMapper<RefreshToken> refreshTokenRowMapper = (rs, rowNum) -> {
 			if(rs.getLong("ExpDate") == 0) 
-				throw new ExpiredRefreshTokenException("El token esta expirado");
+				throw new ExpiredTokenException("El token esta expirado");
 			
 			return new RefreshToken(
 					rs.getString("Token"), 

@@ -24,11 +24,11 @@ public class SecurityExceptionHandler {
 	private Logger logger = LogManager.getLogger(SecurityExceptionHandler.class);
 	
 	@ExceptionHandler({
-		ExpiredRefreshTokenException.class, 
+		ExpiredTokenException.class, 
 		TokenExpiredException.class})
 	@ResponseStatus(value = HttpStatus.GONE)
 	public ApiError goneExceptionHandler(Exception e, WebRequest r) {
-		logger.error("",e);
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.GONE.value(), 
 				ZonedDateTime.now(), 
@@ -42,7 +42,7 @@ public class SecurityExceptionHandler {
 		JWTVerificationException.class})
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	public ApiError badRequestExceptionHandler(Exception e, WebRequest r) {
-		logger.error("",e);
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.BAD_REQUEST.value(), 
 				ZonedDateTime.now(), 
@@ -54,7 +54,7 @@ public class SecurityExceptionHandler {
 		UsernameNotFoundException.class})
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	public ApiError notFoundExceptionHandler(Exception e, WebRequest r) {
-		logger.error("",e);
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.NOT_FOUND.value(), 
 				ZonedDateTime.now(), 
@@ -64,7 +64,7 @@ public class SecurityExceptionHandler {
 	@ExceptionHandler(DatabaseRefreshTokenException.class)
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 	public ApiError databaseRefreshTokenExceptionHandler(DatabaseRefreshTokenException e, WebRequest r) {
-		logger.error("",e);
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.INTERNAL_SERVER_ERROR.value(), 
 				ZonedDateTime.now(), 
@@ -74,7 +74,7 @@ public class SecurityExceptionHandler {
 	@ExceptionHandler(AuthorizationException.class)
 	@ResponseStatus(value = HttpStatus.UNAUTHORIZED)
 	public ApiError authorizationExceptionHandler(AuthorizationException e, WebRequest r) {
-		logger.error("",e);
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.UNAUTHORIZED.value(), 
 				ZonedDateTime.now(), 

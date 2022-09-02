@@ -20,7 +20,7 @@ public class PerfilExceptionHandler {
 	@ExceptionHandler(PerfilNotFoundException.class)
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	public ApiError perfilNotFoundExceptionHandler(PerfilNotFoundException e, WebRequest r) {
-		logger.error("",e);
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.NOT_FOUND.value(), 
 				ZonedDateTime.now(), 
@@ -30,7 +30,7 @@ public class PerfilExceptionHandler {
 	@ExceptionHandler(IllegalPerfilException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	public ApiError illegalPerfilExceptionHandler(IllegalPerfilException e, WebRequest r) {
-		logger.error("",e);
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.BAD_REQUEST.value(), 
 				ZonedDateTime.now(), 
@@ -40,7 +40,7 @@ public class PerfilExceptionHandler {
 	@ExceptionHandler(DatabasePerfilException.class)
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 	public ApiError databasePerfilExceptionHandler(DatabasePerfilException e, WebRequest r) {
-		logger.error("",e);
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.INTERNAL_SERVER_ERROR.value(), 
 				ZonedDateTime.now(), 
@@ -50,7 +50,7 @@ public class PerfilExceptionHandler {
 	@ExceptionHandler(EmailAlreadyExistPerfilException.class)
 	@ResponseStatus(value = HttpStatus.CONFLICT)
 	public ApiError emailAlreadyExistPerfilExceptionHandler(EmailAlreadyExistPerfilException e, WebRequest r) {
-		logger.error("",e);
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.CONFLICT.value(), 
 				ZonedDateTime.now(), 
