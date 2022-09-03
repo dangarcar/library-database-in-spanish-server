@@ -1,12 +1,13 @@
 package es.library.databaseserver.security;
 
-import javax.servlet.http.HttpServletResponse;
+import java.time.ZonedDateTime;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +19,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import es.library.databaseserver.security.exceptions.ExceptionHandlerFilter;
+import es.library.databaseserver.shared.exceptions.ApiError;
 
 @Configuration
 @EnableWebSecurity
@@ -68,13 +72,14 @@ public class SecurityConfiguration {
 			.antMatchers(
 					"/auth/logout/**",
 					"/auth/delete/**",
-					"/prestar/**",
-					"/devolver/**")
+					"/user/**")
 				.hasRole("USER")
 			.antMatchers(
 					"/prestamos/search/**",
 					"/perfiles/search/**",
-					"/contenidos/**")
+					"/contenidos/**",
+					"/prestar/**",
+					"/devolver/**")
 			.hasRole("STAFF")
 			
 			//El admin puede acceder a cualquier método
@@ -83,14 +88,20 @@ public class SecurityConfiguration {
 			.and()
 	
 			.exceptionHandling().authenticationEntryPoint((request, response, e) -> {
-				logger.info("Usuario no está autorizado para hacer {}", request.getPathInfo());
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				logger.warn("Usuario no está autorizado para hacer esto {}", e.getMessage(), e);
+				ApiError error = new ApiError(
+						HttpStatus.UNAUTHORIZED.value(), 
+						ZonedDateTime.now(),
+						"No está autorizado para hacer esto: "+ e.getMessage());
+				response.setStatus(error.getStatusCode());
 				response.setContentType("APPLICATION/JSON");
-				response.getWriter().write("{ \"error\": \"No está autorizado para hacer esto\"}");
+				response.getWriter().write(error.getJsonString());
 			})
 			.and()
 	
 			.addFilterBefore(new PerfilAuthorizationFilter(jwtUtils,perfilUserDetailsService), UsernamePasswordAuthenticationFilter.class)
+			
+			.addFilterBefore(new ExceptionHandlerFilter(), PerfilAuthorizationFilter.class)
 			
 			.build();
 	}

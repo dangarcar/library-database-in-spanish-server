@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 
 import es.library.databaseserver.shared.exceptions.ApiError;
@@ -37,9 +35,7 @@ public class SecurityExceptionHandler {
 	
 	@ExceptionHandler({
 		NotValidPasswordException.class, 
-		AuthenticationException.class,
-		JWTDecodeException.class,
-		JWTVerificationException.class})
+		AuthenticationException.class})
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	public ApiError badRequestExceptionHandler(Exception e, WebRequest r) {
 		logger.warn("",e);
