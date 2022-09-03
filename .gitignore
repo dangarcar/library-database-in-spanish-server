@@ -6,6 +6,7 @@ src/test/**
 database.db
 tokens.db
 logs/**
+src/main/resources/application.properties
 
 ### STS ###
 .apt_generated

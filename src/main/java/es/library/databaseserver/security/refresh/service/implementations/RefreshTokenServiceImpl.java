@@ -1,7 +1,6 @@
 package es.library.databaseserver.security.refresh.service.implementations;
 
 import java.security.SecureRandom;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Random;
@@ -37,7 +36,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
 				() -> new RefreshTokenNotFoundException("No se ha encontrado el token "+id));
 		
 		if(refreshToken.getExpDate().isBefore(Instant.now()))
-			throw new ExpiredTokenException("El refresh token caducó el "+refreshToken.getExpDate()+", hace "+Duration.between(Instant.now(), refreshToken.getExpDate()));
+			throw new ExpiredTokenException("El refresh token caducó el "+refreshToken.getExpDate()+", lóguese de nuevo en /auth/login");
 		
 		return refreshToken;
 	}
@@ -48,7 +47,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
 				() -> new RefreshTokenNotFoundException("No se ha encontrado el token del usuario"+username));
 		
 		if(refreshToken.getExpDate().isBefore(Instant.now()))
-			throw new ExpiredTokenException("El refresh token caducó el "+refreshToken.getExpDate()+", hace "+Duration.between(Instant.now(), refreshToken.getExpDate()));
+			throw new ExpiredTokenException("El refresh token caducó el "+refreshToken.getExpDate()+", lóguese de nuevo en /auth/login");
 		
 		return refreshToken;
 	}
