@@ -1,7 +1,6 @@
 package es.library.databaseserver.perfil;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -17,18 +16,16 @@ public class Perfil {
 	private LocalDate fechaNacimiento;
 	private String correoElectronico;
 	private String contrasena;
-	private boolean admin;
-	@JsonIgnore
-	private int edad;
+	private Roles role;
 	
 	public Perfil(Long iD, String nombre, LocalDate fechaNacimiento, @JsonProperty("email") String correoElectronico, @JsonProperty("password") String contrasena,
-			boolean admin) {
+			Roles role) {
 		ID = iD;
 		this.nombre = nombre;
 		this.fechaNacimiento = fechaNacimiento;
 		this.correoElectronico = correoElectronico;
 		this.contrasena = contrasena;
-		this.admin = admin;
+		this.role = role;
 	}
 	
 	public Long getID() {return ID;}
@@ -43,20 +40,16 @@ public class Perfil {
 	public String getCorreoElectronico() { return correoElectronico;}
 	public void setCorreoElectronico(String correoElectronico) { this.correoElectronico = correoElectronico;}
 	
+	public Roles getRole() { return role; }
+	public void setRole(Roles role) { this.role = role; }
+	
 	@JsonIgnore
-	public String getContrasena() { return contrasena;}
-	@JsonIgnore
+	public String getContrasena() { return contrasena; }
 	public void setContrasena(String contrasena) { this.contrasena = contrasena;}
-	
-	public boolean isAdmin() { return admin;}
-	public void setAdmin(boolean admin) { this.admin = admin;}
-	
-	@JsonIgnore
-	public int getEdad() { return edad = Period.between(fechaNacimiento, LocalDate.now()).getYears(); }
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(ID, admin, contrasena, correoElectronico, fechaNacimiento, nombre);
+		return Objects.hash(ID, contrasena, correoElectronico, fechaNacimiento, nombre);
 	}
 
 	@Override
@@ -68,7 +61,7 @@ public class Perfil {
 		if (getClass() != obj.getClass())
 			return false;
 		Perfil other = (Perfil) obj;
-		return Objects.equals(ID, other.ID) && admin == other.admin && Objects.equals(contrasena, other.contrasena)
+		return Objects.equals(ID, other.ID) && Objects.equals(contrasena, other.contrasena)
 				&& Objects.equals(correoElectronico, other.correoElectronico)
 				&& Objects.equals(fechaNacimiento, other.fechaNacimiento) && Objects.equals(nombre, other.nombre);
 	}
@@ -77,6 +70,6 @@ public class Perfil {
 	@Override
 	public String toString() {
 		return "Contenido [ID=" + ID + ", nombre=" + nombre + ", fechaNacimiento=" + fechaNacimiento
-				+ ", correoElectronico=" + correoElectronico + ", contrasena=" + contrasena + ", admin=" + admin + "]";
+				+ ", correoElectronico=" + correoElectronico + ", contrasena=" + contrasena + ", role=" + role + "]";
 	}
 }

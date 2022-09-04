@@ -4,9 +4,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import es.library.databaseserver.perfil.Perfil;
+import es.library.databaseserver.perfil.Roles;
 import es.library.databaseserver.perfil.crud.dao.PerfilDAO;
 import es.library.databaseserver.perfil.crud.model.PerfilValidator;
 import es.library.databaseserver.perfil.crud.service.PerfilService;
@@ -27,6 +30,9 @@ public class PerfilServiceImpl implements PerfilService{
 	@Autowired
 	private PerfilSearchDAO perfilSearch;
 	
+	@Autowired
+	private PasswordEncoder encoder;
+	
 	@Override
 	public List<Perfil> getAllPerfiles() {
 		return idListToPerfilList(perfilDAO.getAllPerfilesID());
@@ -39,10 +45,18 @@ public class PerfilServiceImpl implements PerfilService{
 	}
 
 	@Override
+	public Perfil getPerfilByUsername(String username) throws PerfilNotFoundException {
+		return perfilDAO.getPerfilByUsername(username)
+				.orElseThrow(() -> new PerfilNotFoundException("No existe perfil con usuario "+username+" en la base de datos", new UsernameNotFoundException("Username "+username+" no encontrado")));
+	}
+	
+	@Override
 	public Perfil insertPerfil(Perfil perfil) throws IllegalPerfilException, EmailAlreadyExistPerfilException {
 		//Compruebo si el perfil es correcto
 		validator.validatePerfilCorrect(perfil);
-		this.validateEmailExistInDB(perfil);
+		this.validateEmailExistInDB(perfil, perfil.getID());
+		
+		perfil.setContrasena(encoder.encode(perfil.getContrasena()));
 		
 		return perfilDAO.insertPerfil(perfil);
 	}
@@ -56,7 +70,12 @@ public class PerfilServiceImpl implements PerfilService{
 	public Perfil updatePerfilByID(Long id, Perfil perfil) throws IllegalPerfilException, PerfilNotFoundException, EmailAlreadyExistPerfilException {
 		//Compruebo si el perfil es correcto
 		validator.validatePerfilCorrectUpdating(perfil);
-		if(perfil.getCorreoElectronico()!=null) this.validateEmailExistInDB(perfil);
+		if(perfil.getCorreoElectronico()!=null) this.validateEmailExistInDB(perfil,id);
+		
+		String oldPassword = getPerfilByID(id).getContrasena();
+		if(!encoder.matches(perfil.getContrasena(),oldPassword)) 
+			perfil.setContrasena(encoder.encode(perfil.getContrasena()));
+		else perfil.setContrasena(oldPassword);
 		
 		return perfilDAO.updatePerfilByID(id, perfil);
 	}
@@ -69,27 +88,18 @@ public class PerfilServiceImpl implements PerfilService{
 	}
 
 	@Override
-	public void makePerfilAdmin(Long id) throws PerfilNotFoundException{
+	public void setRole(long id, Roles roles) throws PerfilNotFoundException{
 		Perfil perfil = getPerfilByID(id);
 		
-		perfil.setAdmin(true);
-		
-		updatePerfilByID(id, perfil);
-	}
-
-	@Override
-	public void makeAdminPerfil(Long id) throws PerfilNotFoundException{
-		Perfil perfil = getPerfilByID(id);
-		
-		perfil.setAdmin(false);
+		perfil.setRole(roles);
 		
 		updatePerfilByID(id, perfil);
 	}
 	
-	private void validateEmailExistInDB(Perfil perfil) throws EmailAlreadyExistPerfilException {
+	private void validateEmailExistInDB(Perfil perfil, Long id) throws EmailAlreadyExistPerfilException {
 		var perfiles = perfilSearch.getPerfilesByEmail(perfil.getCorreoElectronico());
 		if(!perfiles.isEmpty()) {
-			if(!perfiles.contains(perfil.getID()))
+			if(!perfiles.contains(id))
 				throw new EmailAlreadyExistPerfilException(
 						"El correo electrónico " + perfil.getCorreoElectronico() + " ya existe en el sistema");
 		}	

@@ -1,1 +1,0 @@
-CREATE VIRTUAL TABLE BusquedaContenidos USING fts5(ID,Titulo,Autor,Descripcion);

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import es.library.databaseserver.contenido.Contenido;
-import es.library.databaseserver.contenido.Soporte;
+import es.library.databaseserver.contenido.Contenido.Soporte;
 import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
 import es.library.databaseserver.contenido.types.AbstractContenido;
 import es.library.databaseserver.contenido.types.ContenidoModel;

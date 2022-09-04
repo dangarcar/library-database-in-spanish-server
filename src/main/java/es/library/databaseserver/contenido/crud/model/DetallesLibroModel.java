@@ -10,7 +10,6 @@ public class DetallesLibroModel {
 	private String editorial;
 	
 	public DetallesLibroModel(Long iD, String iSBN, Integer paginas, String editorial) {
-		super();
 		ID = iD;
 		ISBN = iSBN;
 		this.paginas = paginas;

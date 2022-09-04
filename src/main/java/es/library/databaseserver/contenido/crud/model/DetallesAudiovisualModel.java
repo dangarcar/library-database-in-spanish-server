@@ -12,7 +12,6 @@ public class DetallesAudiovisualModel {
 	
 	public DetallesAudiovisualModel(Long iD, Double duracion, boolean isVideo, Integer edadRecomendada,
 			Integer calidad) {
-		super();
 		ID = iD;
 		this.duracion = duracion;
 		this.isVideo = isVideo;

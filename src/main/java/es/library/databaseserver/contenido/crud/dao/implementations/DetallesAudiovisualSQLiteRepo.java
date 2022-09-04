@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -21,6 +22,7 @@ import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException
 public class DetallesAudiovisualSQLiteRepo implements ContenidoDetallesAudiovisualDAO{
 
 	@Autowired
+	@Qualifier("baseJDBC")
 	private NamedParameterJdbcTemplate jdbcTemplate;
 	
 	@Override
@@ -40,7 +42,7 @@ public class DetallesAudiovisualSQLiteRepo implements ContenidoDetallesAudiovisu
 	public Optional<DetallesAudiovisualModel> getAudiovisualByID(Long ID) {
 		final String sqlString = "SELECT ID,Duracion,IsVideo,EdadRecomendada,Calidad FROM Detalles_Audiovisual WHERE ID = :id";
 		
-		var contenidos = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("id", ID), new AudiovisualRowMapper());
+		var contenidos = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("id", ID), audiovisualRowMapper);
 		
 		if(contenidos.isEmpty()) return Optional.empty();
 		
@@ -58,8 +60,8 @@ public class DetallesAudiovisualSQLiteRepo implements ContenidoDetallesAudiovisu
 			jdbcTemplate.update(sqlString, new MapSqlParameterSource()
 					.addValue("duracion", audiovisual.getDuracion())
 					.addValue("isVideo", audiovisual.getIsVideo())
-					.addValue("edadRecomendada", audiovisual.getEdadRecomendada()==0? null:audiovisual.getEdadRecomendada())
-					.addValue("calidad", audiovisual.getCalidad()==0? null:audiovisual.getCalidad())
+					.addValue("edadRecomendada", audiovisual.getEdadRecomendada())
+					.addValue("calidad", audiovisual.getCalidad())
 				);
 		}
 
@@ -128,7 +130,7 @@ public class DetallesAudiovisualSQLiteRepo implements ContenidoDetallesAudiovisu
 				.addValue("isVideo", audiovisualIdNull.getIsVideo())
 				.addValue("edad", audiovisualIdNull.getEdadRecomendada(),Types.NULL)
 				.addValue("calidad", audiovisualIdNull.getCalidad(),Types.NULL)
-			,new AudiovisualRowMapper());
+			,audiovisualRowMapper);
 		
 		if(contenidos.isEmpty()) return Optional.empty();
 		
@@ -149,18 +151,8 @@ public class DetallesAudiovisualSQLiteRepo implements ContenidoDetallesAudiovisu
 		}
 	}
 	
-	private class AudiovisualRowMapper implements RowMapper<DetallesAudiovisualModel>{
-
-		@Override
-		public DetallesAudiovisualModel mapRow(ResultSet rs, int rowNum) throws SQLException {
-			return new DetallesAudiovisualModel(
-					rs.getLong("ID"), 
-					rs.getDouble("Duracion"),
-					rs.getBoolean("IsVideo"),
-					rs.getInt("EdadRecomendada"),
-					rs.getInt("Calidad")
-				);
-		}
-		
-	}
+	private RowMapper<DetallesAudiovisualModel> audiovisualRowMapper = (rs, rowNum) -> {
+		return new DetallesAudiovisualModel(rs.getLong("ID"), rs.getDouble("Duracion"), rs.getBoolean("IsVideo"),
+				rs.getInt("EdadRecomendada"), rs.getInt("Calidad"));
+	};
 }

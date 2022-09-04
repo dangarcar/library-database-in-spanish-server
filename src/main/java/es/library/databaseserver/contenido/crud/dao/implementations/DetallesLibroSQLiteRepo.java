@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -20,6 +21,7 @@ import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException
 public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
 
 	@Autowired
+	@Qualifier("baseJDBC")
 	private NamedParameterJdbcTemplate jdbcTemplate;
 
 	@Override
@@ -39,7 +41,7 @@ public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
 	public Optional<DetallesLibroModel> getLibroByID(Long ID) {
 		final String sqlString = "SELECT ID,ISBN,Paginas,Editorial FROM Detalles_Libros WHERE ID = :id";
 		
-		var contenidos = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("id", ID), new LibroRowMapper());
+		var contenidos = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("id", ID), libroRowMapper);
 		
 		if(contenidos.isEmpty()) return Optional.empty();
 		
@@ -118,7 +120,7 @@ public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
 					.addValue("isbn", libroIdNull.getISBN())
 					.addValue("paginas", libroIdNull.getPaginas())
 					.addValue("edit", libroIdNull.getEditorial())
-			,new LibroRowMapper());
+			,libroRowMapper);
 		
 		if(contenidos.isEmpty()) return Optional.empty();
 		
@@ -139,17 +141,8 @@ public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
 		}
 	}
 	
-	private class LibroRowMapper implements RowMapper<DetallesLibroModel>{
-
-		@Override
-		public DetallesLibroModel mapRow(ResultSet rs, int rowNum) throws SQLException {
-			return new DetallesLibroModel(
-					rs.getLong("ID"), 
-					rs.getString("ISBN"),
-					rs.getInt("Paginas"),
-					rs.getString("Editorial")
-				);
-		}
-		
-	}
+	private RowMapper<DetallesLibroModel> libroRowMapper = (rs, rowNum) -> {
+		return new DetallesLibroModel(rs.getLong("ID"), rs.getString("ISBN"), rs.getInt("Paginas"),
+				rs.getString("Editorial"));
+	};
 }

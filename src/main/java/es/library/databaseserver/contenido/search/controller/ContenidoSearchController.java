@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.library.databaseserver.contenido.Contenido;
-import es.library.databaseserver.contenido.Soporte;
+import es.library.databaseserver.contenido.Contenido.Soporte;
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 import es.library.databaseserver.contenido.search.service.ContenidoSearchService;
 import es.library.databaseserver.contenido.types.ContenidoModel;

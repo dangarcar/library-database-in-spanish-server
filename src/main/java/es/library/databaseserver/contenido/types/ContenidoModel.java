@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 import es.library.databaseserver.contenido.Contenido;
-import es.library.databaseserver.contenido.Soporte;
+import es.library.databaseserver.contenido.Contenido.Soporte;
 
 public class ContenidoModel implements AbstractContenido{
 

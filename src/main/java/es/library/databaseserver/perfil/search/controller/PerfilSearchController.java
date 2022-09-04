@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.library.databaseserver.perfil.Perfil;
+import es.library.databaseserver.perfil.Roles;
 import es.library.databaseserver.perfil.search.service.PerfilSearchService;
 
 @RequestMapping("/perfiles/search")
@@ -30,6 +31,11 @@ public class PerfilSearchController {
 		return perfilService.getPerfilByID(ID);
 	}
 	
+	@GetMapping(path = "/username/{username}")
+	public Perfil getPerfilByUsername(String username){
+		return perfilService.getPerfilByUsername(username);
+	}
+	
 	@GetMapping(path = "/nombre/{nombre}")
 	public List<Perfil> getPerfilesByNombre(@PathVariable(name = "nombre") String nombre){
 		nombre = nombre.replace("-", " ");
@@ -47,9 +53,9 @@ public class PerfilSearchController {
 		return perfilService.getPerfilesByNacimiento(nacimiento);
 	}
 	
-	@GetMapping(path = "/admin")
-	public List<Perfil> getAllAdmins() {
-		return perfilService.getAllAdmins();
+	@GetMapping(path = "/role/{role}")
+	public List<Perfil> getPerfilesByRole(@PathVariable(value = "role") String role) {
+		return perfilService.getPerfilesByRole(role!=null? Roles.valueOf(role):null);
 	}
 
 	@GetMapping
@@ -59,9 +65,9 @@ public class PerfilSearchController {
 			@RequestParam(required = false) String email, 
 			@RequestParam(required = false) String fromNacimiento, 
 			@RequestParam(required = false) String toNacimiento, 
-			@RequestParam(required = false) Boolean admin) {
-		if(nombre==null && email==null && fromNacimiento==null && toNacimiento==null && query==null) {
-			return PerfilSearchService.filterPerfilAdmin(perfilService.getAllPerfiles(), admin);
+			@RequestParam(required = false) String role) {
+		if(nombre==null && email==null && fromNacimiento==null && toNacimiento==null && query==null && role == null) {
+			return perfilService.getAllPerfiles();
 		}
 		
 		return perfilService.getPerfilesByMultipleParams(
@@ -70,7 +76,7 @@ public class PerfilSearchController {
 				email, 
 				fromNacimiento!=null? LocalDate.parse(fromNacimiento):null, 
 				toNacimiento!=null? LocalDate.parse(toNacimiento):null, 
-				admin);
+				role!=null? Roles.valueOf(role):null);
 	}
 	
 }

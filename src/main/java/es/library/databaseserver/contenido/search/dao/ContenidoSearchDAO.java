@@ -2,7 +2,7 @@ package es.library.databaseserver.contenido.search.dao;
 
 import java.util.List;
 
-import es.library.databaseserver.contenido.Soporte;
+import es.library.databaseserver.contenido.Contenido.Soporte;
 
 public interface ContenidoSearchDAO {
 

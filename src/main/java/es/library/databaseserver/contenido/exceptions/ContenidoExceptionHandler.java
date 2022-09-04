@@ -2,6 +2,8 @@ package es.library.databaseserver.contenido.exceptions;
 
 import java.time.ZonedDateTime;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -13,10 +15,12 @@ import es.library.databaseserver.shared.exceptions.ApiError;
 @RestControllerAdvice
 public class ContenidoExceptionHandler {
 
+	private Logger logger = LogManager.getLogger(ContenidoExceptionHandler.class);
+	
 	@ExceptionHandler(ContenidoNotFoundException.class)
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	public ApiError contenidoNotFoundExceptionHandler(ContenidoNotFoundException e, WebRequest r) {
-		e.printStackTrace();
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.NOT_FOUND.value(), 
 				ZonedDateTime.now(), 
@@ -29,7 +33,7 @@ public class ContenidoExceptionHandler {
 			NotValidTypeContenidoException.class})
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	public ApiError badContenidoExceptionHandler(Exception e, WebRequest r) {
-		e.printStackTrace();
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.BAD_REQUEST.value(), 
 				ZonedDateTime.now(), 
@@ -39,7 +43,7 @@ public class ContenidoExceptionHandler {
 	@ExceptionHandler(DatabaseContenidoException.class)
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 	public ApiError databaseContenidoExceptionHandler(DatabaseContenidoException e, WebRequest r) {
-		e.printStackTrace();
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.INTERNAL_SERVER_ERROR.value(), 
 				ZonedDateTime.now(), 
@@ -49,7 +53,7 @@ public class ContenidoExceptionHandler {
 	@ExceptionHandler(ContenidoAlreadyExistsException.class)
 	@ResponseStatus(value = HttpStatus.CONFLICT)
 	public ApiError contenidoAlreadyExistsExceptionHandler(ContenidoAlreadyExistsException e, WebRequest r) {
-		e.printStackTrace();
+		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.CONFLICT.value(), 
 				ZonedDateTime.now(), 

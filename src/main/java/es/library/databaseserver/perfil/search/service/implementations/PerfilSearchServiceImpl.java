@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import es.library.databaseserver.perfil.Perfil;
+import es.library.databaseserver.perfil.Roles;
 import es.library.databaseserver.perfil.crud.service.PerfilService;
 import es.library.databaseserver.perfil.exceptions.PerfilNotFoundException;
 import es.library.databaseserver.perfil.search.dao.PerfilSearchDAO;
@@ -31,6 +32,11 @@ public class PerfilSearchServiceImpl implements PerfilSearchService{
 		return crudService.getPerfilByID(id);
 	}
 
+	@Override
+	public Perfil getPerfilByUsername(String username) throws PerfilNotFoundException {
+		return crudService.getPerfilByUsername(username);
+	}
+	
 	@Override
 	public List<Perfil> getAllPerfiles() {
 		return crudService.getAllPerfiles();
@@ -59,13 +65,14 @@ public class PerfilSearchServiceImpl implements PerfilSearchService{
 		
 		return crudService.idListToPerfilList(searchDAO.getPerfilesByPrompt(prompt));
 	}
-
+	
 	@Override
-	public List<Perfil> getAllAdmins() {
-		return crudService.idListToPerfilList(searchDAO.getAllAdmins());
+	public List<Perfil> getPerfilesByRole(Roles roles){
+		return crudService.idListToPerfilList(searchDAO.getPerfilesByRole(roles));
 	}
 	
-	public List<Perfil> getPerfilesByMultipleParams(String query, String nombre, String email, LocalDate fromNacimiento, LocalDate toNacimiento, Boolean admin) {
+	@Override
+	public List<Perfil> getPerfilesByMultipleParams(String query, String nombre, String email, LocalDate fromNacimiento, LocalDate toNacimiento, Roles roles) {
 		List<Set<Perfil>> perfilSet = new ArrayList<>();
 		
 		if(query != null) perfilSet.add(new HashSet<>(getPerfilesByPrompt(query)));
@@ -76,7 +83,9 @@ public class PerfilSearchServiceImpl implements PerfilSearchService{
 		
 		if(fromNacimiento != null || toNacimiento != null) perfilSet.add(new HashSet<>(getPerfilesBetweenTwoBirthDates(fromNacimiento, toNacimiento)));
 		
-		return PerfilSearchService.filterPerfilAdmin(intersection(perfilSet).stream().toList(), admin);
+		if(roles != null) perfilSet.add(new HashSet<>(getPerfilesByRole(roles)));
+		
+		return intersection(perfilSet).stream().toList();
 	}
 	
 	public List<Perfil> getPerfilesBetweenTwoBirthDates(LocalDate from, LocalDate to) {

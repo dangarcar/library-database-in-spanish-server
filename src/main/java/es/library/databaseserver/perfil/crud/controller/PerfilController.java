@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.library.databaseserver.perfil.Perfil;
+import es.library.databaseserver.perfil.Roles;
 import es.library.databaseserver.perfil.crud.service.PerfilService;
+import es.library.databaseserver.perfil.exceptions.IllegalPerfilException;
 
 @RequestMapping("/perfiles")
 @RestController
@@ -23,7 +25,7 @@ public class PerfilController {
 	
 	@PostMapping
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public Perfil insertPerfil(@RequestBody Perfil perfil) {
+	public Perfil insertPerfil(@RequestBody Perfil perfil) {		
 		return perfilService.insertPerfil(perfil);
 	}
 	
@@ -37,14 +39,17 @@ public class PerfilController {
 		return perfilService.updatePerfilByID(ID, perfil);
 	}
 	
-	@PutMapping(path = "/admin/{id}")
-	public void makePerfilAdmin(@PathVariable(name = "id") Long id) {
-		perfilService.makePerfilAdmin(id);
-	}
-	
-	@PutMapping(path = "/perfil/{id}")
-	public void makeAdminPerfil(@PathVariable(name = "id") Long id) {
-		perfilService.makeAdminPerfil(id);
+	@PutMapping(path = "/roles/{id}")
+	public void setRole(@PathVariable(name = "id") long id, @RequestBody String roles) {
+		Roles roles2;
+		
+		try {
+			 roles2 = Roles.valueOf(roles);
+		} catch (Exception e) {
+			throw new IllegalPerfilException(e.getMessage(), e);
+		}
+		
+		perfilService.setRole(id, roles2);
 	}
 	
 }
