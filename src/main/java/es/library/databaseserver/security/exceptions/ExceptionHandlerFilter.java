@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import es.library.databaseserver.shared.exceptions.ApiError;
@@ -23,8 +23,8 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter{
 			throws ServletException, IOException {
 		try {
 			filterChain.doFilter(request, response);
-		} 
-		catch (JWTVerificationException e) {
+		}
+		catch (TokenExpiredException e) {
 			writeError(HttpStatus.GONE.value(), e, response, e.getMessage()+" Vaya a /refresh/token para conseguir un nuevo token o vuelva a /login");
 		}
 		catch (RuntimeException e) {
