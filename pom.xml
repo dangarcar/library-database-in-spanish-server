@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>es.library</groupId>
 	<artifactId>database-server</artifactId>
-	<version>1.1.0</version>
+	<version>2.0.0</version>
 	<name>database-server</name>
 	<description>Library database server with Spring Boot</description>
 

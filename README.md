@@ -10,7 +10,7 @@ Esta aplicación hecha con [Spring Boot](https://spring.io/projects/spring-boot)
 #### Cómo ejecutarlo
 1. Si es la primera vez que ejecutas la aplicación, ejecuta el archivo setupDB.cmd (Windows) o setupDB.sh (Linux) para crear el archivo de la base de datos. Asegúrate de tener sqlite3 en las variables del entorno.
 
-2. En src/main/resources/application.properties, cambia el valor de jwt.issuer a tu compañía, jwt.secret a una string de al menos 256 bits.
+2. En `src/main/resources/application.properties`, cambia el valor de `jwt.issuer` a tu compañía, `jwt.secret` a una string de al menos 256 bits.
 
 3. Abre una terminal en el directorio del proyecto.
 
@@ -25,8 +25,8 @@ Esta aplicación hecha con [Spring Boot](https://spring.io/projects/spring-boot)
 >```
 
 #### Cómo consumir la api
-- Primero lógate en /auth/login o /auth/signup si no está en la base de datos todavía.
+- Primero lógate en `/auth/login` o `/auth/signup` si no está en la base de datos todavía.
 - Guarda el access token y el refresh token.
-- Cuando hagas una petición, añade el header Authorization con "Bearer "+access token.
-- Si te caduca el access token, debes hacer refresh con el refresh token en /auth/refresh/token/"refresh_token"
-- Si te caduca el refresh token, debes logarte de nuevo en /auth/login
+- Cuando hagas una petición, añade el header Authorization con `Bearer {access token}`.
+- Si te caduca el access token, debes hacer refresh con el refresh token en `/auth/refresh/token/{refresh_token}`.
+- Si te caduca el refresh token, debes logarte de nuevo en `/auth/login`.
