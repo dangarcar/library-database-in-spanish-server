@@ -8,7 +8,7 @@ Sirve como servidor de una app que controla los préstamos, contenidos y usuario
 - Tener [Maven](https://maven.apache.org/) instalado (Como mínimo versión 3.8)
 - Tener [Sqlite](https://www.sqlite.org/) instalado (Como mínimo version 3.38)
 
-##Tecnologías usadas
+## Tecnologías usadas
 JRE 17.0
 Spring Boot 2.7
 Spring Security 5.7
