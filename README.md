@@ -1,25 +1,32 @@
 # Library Database In Spanish (SERVER)
 
-Esta aplicación hecha con [Spring Boot](https://spring.io/projects/spring-boot), Maven y SQLite es el servidor de la para el [cliente](https://github.com/dangarcar/library-database-in-spanish) de esta aplicación
+Esta aplicación hecha con Spring Boot, Maven y SQLite es el servidor de la para el [cliente](https://github.com/dangarcar/library-database-in-spanish) de esta aplicación.
+Sirve como servidor de una app que controla los préstamos, contenidos y usuarios de una biblioteca, teniendo funcionalidades para usuarios anónimos, clientes de la biblioteca, trabajadores de la biblioteca y administradores del sistema.
 
-#### Requisitos previos
+### Requisitos previos
 - Tener [Java](https://www.java.com/en/) instalado (Como mínimo la versión JRE 17)
 - Tener [Maven](https://maven.apache.org/) instalado (Como mínimo versión 3.8)
 - Tener [Sqlite](https://www.sqlite.org/) instalado (Como mínimo version 3.38)
 
-#### Cómo ejecutarlo
-1. Si es la primera vez que ejecutas la aplicación, ejecuta el archivo setupDB.cmd (Windows) o setupDB.sh (Linux) para crear el archivo de la base de datos. Asegúrate de tener sqlite3 en las variables del entorno.
+##Tecnologías usadas
+JRE 17.0
+Spring Boot 2.7
+Spring Security 5.7
+Maven 3.8
+Sqlite jdbc 3.39
+Java JWT 4.0
 
-2. En `src/main/resources/application.properties`, cambia el valor de `jwt.issuer` a tu compañía, `jwt.secret` a una string de al menos 256 bits.
+### Cómo ejecutarlo
+1. En `src/main/resources/application.properties`, cambia el valor de `jwt.issuer` a tu compañía, `jwt.secret` a una string de al menos 256 bits.
 
-3. Abre una terminal en el directorio del proyecto.
+2. Abre una terminal en el directorio del proyecto.
 
-4. Ejecuta el siguiente comando para ejecutar la aplicación:
+3. Ejecuta el siguiente comando para ejecutar la aplicación:
 >```console 
 >./mvnw spring-boot:run
 >```
 
-#### Cómo consumir la api
+### Cómo consumir la api
 - Primero lógate en `/auth/login` o `/auth/signup` si no está en la base de datos todavía.
 - Guarda el access token y el refresh token.
 - Cuando hagas una petición, añade el header Authorization con `Bearer {access token}`.
