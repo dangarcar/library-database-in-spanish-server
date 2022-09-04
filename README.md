@@ -14,14 +14,9 @@ Esta aplicación hecha con [Spring Boot](https://spring.io/projects/spring-boot)
 
 3. Abre una terminal en el directorio del proyecto.
 
-4. Ejecuta el siguiente comando para hacer la build de la aplicación:
->```console
->mvn clean package
->```
-
-5. Ejecuta el siguiente comando para ejecutar la aplicación:
+4. Ejecuta el siguiente comando para ejecutar la aplicación:
 >```console 
->java -jar target/database-server-(version).jar
+>mvn spring-boot:run
 >```
 
 #### Cómo consumir la api
