@@ -50,35 +50,3 @@ CREATE VIRTUAL TABLE IF NOT EXISTS "BusquedaContenidos" USING fts5(
     "Autor",
     "Descripcion"
 );
-
-/*
-Creo los triggers para que cuando haga UPDATE, DELETE o INSERT en Contenidos se actualice la tabla de BusquedaContenidos
-*/
-CREATE TRIGGER IF NOT EXISTS TContenidosDelete
-	AFTER DELETE
-	ON Contenidos
-BEGIN 
-	DELETE FROM BusquedaContenidos WHERE old.ID = ID;
-END;
-
-
-CREATE TRIGGER IF NOT EXISTS TContenidosInsert
-	AFTER INSERT ON Contenidos
-BEGIN 
-	INSERT INTO BusquedaContenidos
-	SELECT ID,Titulo,Autor,Descripcion
-	FROM Contenidos
-	WHERE Contenidos.ID = NEW.ID;
-END;
-
-
-CREATE TRIGGER IF NOT EXISTS TContenidosUpdate
-	AFTER UPDATE ON Contenidos
-BEGIN 
-	DELETE FROM BusquedaContenidos WHERE ID = NEW.ID;
-	
-	INSERT INTO BusquedaContenidos
-	SELECT ID,Titulo,Autor,Descripcion
-	FROM Contenidos
-	WHERE ID = NEW.ID;
-END;
