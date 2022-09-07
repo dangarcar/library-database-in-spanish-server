@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.perfil.Perfil;
+import es.library.databaseserver.perfil.crud.model.PerfilResponse;
 import es.library.databaseserver.personalspace.service.MyPerfilService;
 import es.library.databaseserver.personalspace.service.PrestamosService;
 import es.library.databaseserver.prestamos.Prestamo;
@@ -39,8 +40,8 @@ public class MiCuentaController {
 	}
 	
 	@GetMapping
-	public Perfil getMyInfo(Authentication auth) {
-		return myPerfilService.getMyInfo((String) auth.getPrincipal());
+	public PerfilResponse getMyInfo(Authentication auth) {
+		return new PerfilResponse(myPerfilService.getMyInfo((String) auth.getPrincipal()));
 	}
 	
 	@GetMapping(path = "/prestamos/historial")
@@ -59,8 +60,8 @@ public class MiCuentaController {
 	}
 	
 	@PutMapping
-	public Perfil updateMyAccount(Authentication auth, @RequestBody Perfil perfil) {
-		return myPerfilService.updateMyAccount(((String) auth.getPrincipal()), perfil);
+	public PerfilResponse updateMyAccount(Authentication auth, @RequestBody Perfil perfil) {
+		return new PerfilResponse(myPerfilService.updateMyAccount(((String) auth.getPrincipal()), perfil));
 	}
 	
 }

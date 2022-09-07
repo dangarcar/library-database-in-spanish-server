@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import es.library.databaseserver.perfil.Perfil;
+import es.library.databaseserver.perfil.Roles;
 import es.library.databaseserver.perfil.crud.service.PerfilService;
 import es.library.databaseserver.security.JWTUtils;
 import es.library.databaseserver.security.exceptions.ExpiredTokenException;
@@ -48,6 +49,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	
 	@Override
 	public JWTTokenPair signUp(Perfil perfil) {
+		perfil.setRole(Roles.ROLE_USER);
 		String rawPassword = perfil.getContrasena();
 		JWTTokenPair response;
 		//Inserto el perfil en la base de datos

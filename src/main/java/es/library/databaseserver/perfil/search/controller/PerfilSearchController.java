@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.library.databaseserver.perfil.Perfil;
 import es.library.databaseserver.perfil.Roles;
+import es.library.databaseserver.perfil.crud.model.PerfilResponse;
 import es.library.databaseserver.perfil.search.service.PerfilSearchService;
 
 @RequestMapping("/perfiles/search")
@@ -22,44 +22,44 @@ public class PerfilSearchController {
 	private PerfilSearchService perfilService;
 	
 	@GetMapping(path = "/query/{prompt}")
-	public List<Perfil> getPerfilesByPrompt(@PathVariable(name = "prompt") String prompt) {		
+	public List<PerfilResponse> getPerfilesByPrompt(@PathVariable(name = "prompt") String prompt) {		
 		return perfilService.getPerfilesByPrompt(prompt);
 	}
 	
 	@GetMapping(path = "/id/{id}")
-	public Perfil getPerfilByID(@PathVariable(name = "id") Long ID) {
+	public PerfilResponse getPerfilByID(@PathVariable(name = "id") Long ID) {
 		return perfilService.getPerfilByID(ID);
 	}
 	
 	@GetMapping(path = "/username/{username}")
-	public Perfil getPerfilByUsername(String username){
+	public PerfilResponse getPerfilByUsername(String username){
 		return perfilService.getPerfilByUsername(username);
 	}
 	
 	@GetMapping(path = "/nombre/{nombre}")
-	public List<Perfil> getPerfilesByNombre(@PathVariable(name = "nombre") String nombre){
+	public List<PerfilResponse> getPerfilesByNombre(@PathVariable(name = "nombre") String nombre){
 		nombre = nombre.replace("-", " ");
 		
 		return perfilService.getPerfilesByNombre(nombre);
 	}
 	
 	@GetMapping(path = "/email/{email}")
-	public List<Perfil> getPerfilesByEmail(@PathVariable(name = "email") String email){
+	public List<PerfilResponse> getPerfilesByEmail(@PathVariable(name = "email") String email){
 		return perfilService.getPerfilesByEmail(email);
 	}
 	
 	@GetMapping(path = "/nacimiento/{nacimiento}")
-	public List<Perfil> getPerfilesByNacimiento(@PathVariable(name = "nacimiento") String nacimiento) {
+	public List<PerfilResponse> getPerfilesByNacimiento(@PathVariable(name = "nacimiento") String nacimiento) {
 		return perfilService.getPerfilesByNacimiento(nacimiento);
 	}
 	
 	@GetMapping(path = "/role/{role}")
-	public List<Perfil> getPerfilesByRole(@PathVariable(value = "role") String role) {
+	public List<PerfilResponse> getPerfilesByRole(@PathVariable(value = "role") String role) {
 		return perfilService.getPerfilesByRole(role!=null? Roles.valueOf(role):null);
 	}
 
 	@GetMapping
-	public List<Perfil> getPerfilByParams(
+	public List<PerfilResponse> getPerfilByParams(
 			@RequestParam(required = false, name = "q") String query,
 			@RequestParam(required = false) String nombre, 
 			@RequestParam(required = false) String email, 

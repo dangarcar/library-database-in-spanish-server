@@ -1,6 +1,6 @@
 package es.library.databaseserver.perfil.search.service.implementations;
 
-import static es.library.databaseserver.shared.Utils.*;
+import static es.library.databaseserver.shared.Utils.intersection;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,8 +11,8 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import es.library.databaseserver.perfil.Perfil;
 import es.library.databaseserver.perfil.Roles;
+import es.library.databaseserver.perfil.crud.model.PerfilResponse;
 import es.library.databaseserver.perfil.crud.service.PerfilService;
 import es.library.databaseserver.perfil.exceptions.PerfilNotFoundException;
 import es.library.databaseserver.perfil.search.dao.PerfilSearchDAO;
@@ -28,52 +28,58 @@ public class PerfilSearchServiceImpl implements PerfilSearchService{
 	private PerfilSearchDAO searchDAO;
 	
 	@Override
-	public Perfil getPerfilByID(Long id) throws PerfilNotFoundException {
-		return crudService.getPerfilByID(id);
+	public PerfilResponse getPerfilByID(Long id) throws PerfilNotFoundException {
+		return new PerfilResponse(crudService.getPerfilByID(id));
 	}
 
 	@Override
-	public Perfil getPerfilByUsername(String username) throws PerfilNotFoundException {
-		return crudService.getPerfilByUsername(username);
+	public PerfilResponse getPerfilByUsername(String username) throws PerfilNotFoundException {
+		return new PerfilResponse(crudService.getPerfilByUsername(username));
 	}
 	
 	@Override
-	public List<Perfil> getAllPerfiles() {
-		return crudService.getAllPerfiles();
+	public List<PerfilResponse> getAllPerfiles() {
+		return PerfilSearchService.perfilListToPerfilResponseList(
+				crudService.getAllPerfiles());
 	}
 
 	@Override
-	public List<Perfil> getPerfilesByNombre(String nombre) {
+	public List<PerfilResponse> getPerfilesByNombre(String nombre) {
 		nombre = nombre.replace("-", " ");
 		
-		return crudService.idListToPerfilList(searchDAO.getPerfilesByNombre(nombre));
+		return PerfilSearchService.perfilListToPerfilResponseList(
+				crudService.idListToPerfilList(searchDAO.getPerfilesByNombre(nombre)));
 	}
 
 	@Override
-	public List<Perfil> getPerfilesByEmail(String email) {
-		return crudService.idListToPerfilList(searchDAO.getPerfilesByEmail(email));
+	public List<PerfilResponse> getPerfilesByEmail(String email) {
+		return PerfilSearchService.perfilListToPerfilResponseList(
+				crudService.idListToPerfilList(searchDAO.getPerfilesByEmail(email)));
 	}
 
 	@Override
-	public List<Perfil> getPerfilesByNacimiento(String nacimiento) {
-		return crudService.idListToPerfilList(searchDAO.getPerfilesByNacimiento(nacimiento));
+	public List<PerfilResponse> getPerfilesByNacimiento(String nacimiento) {
+		return PerfilSearchService.perfilListToPerfilResponseList
+				(crudService.idListToPerfilList(searchDAO.getPerfilesByNacimiento(nacimiento)));
 	}
 
 	@Override
-	public List<Perfil> getPerfilesByPrompt(String prompt) {
+	public List<PerfilResponse> getPerfilesByPrompt(String prompt) {
 		prompt = prompt.replace("-", " ");
 		
-		return crudService.idListToPerfilList(searchDAO.getPerfilesByPrompt(prompt));
+		return PerfilSearchService.perfilListToPerfilResponseList(
+				crudService.idListToPerfilList(searchDAO.getPerfilesByPrompt(prompt)));
 	}
 	
 	@Override
-	public List<Perfil> getPerfilesByRole(Roles roles){
-		return crudService.idListToPerfilList(searchDAO.getPerfilesByRole(roles));
+	public List<PerfilResponse> getPerfilesByRole(Roles roles){
+		return PerfilSearchService.perfilListToPerfilResponseList(
+				crudService.idListToPerfilList(searchDAO.getPerfilesByRole(roles)));
 	}
 	
 	@Override
-	public List<Perfil> getPerfilesByMultipleParams(String query, String nombre, String email, LocalDate fromNacimiento, LocalDate toNacimiento, Roles roles) {
-		List<Set<Perfil>> perfilSet = new ArrayList<>();
+	public List<PerfilResponse> getPerfilesByMultipleParams(String query, String nombre, String email, LocalDate fromNacimiento, LocalDate toNacimiento, Roles roles) {
+		List<Set<PerfilResponse>> perfilSet = new ArrayList<>();
 		
 		if(query != null) perfilSet.add(new HashSet<>(getPerfilesByPrompt(query)));
 		
@@ -88,11 +94,12 @@ public class PerfilSearchServiceImpl implements PerfilSearchService{
 		return intersection(perfilSet).stream().toList();
 	}
 	
-	public List<Perfil> getPerfilesBetweenTwoBirthDates(LocalDate from, LocalDate to) {
+	public List<PerfilResponse> getPerfilesBetweenTwoBirthDates(LocalDate from, LocalDate to) {
 		if(from == null) from = LocalDate.MIN;
 		if(to == null) to = LocalDate.of(9999, 12, 31);
 		
-		return crudService.idListToPerfilList(searchDAO.getPerfilesBetweenTwoBirthDates(from, to));
+		return PerfilSearchService.perfilListToPerfilResponseList(
+				crudService.idListToPerfilList(searchDAO.getPerfilesBetweenTwoBirthDates(from, to)));
 	}
 	
 }

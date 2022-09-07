@@ -1,0 +1,86 @@
+= Library Database in Spanish API Documentation
+Daniel García Carretero
+:nombre-programa: Library Database in Spanish
+:toc: left
+:toc-title: Tabla de contenidos
+:toclevels: 3
+{nombre-programa} es un programa que sirve como servidor de una app que controla los préstamos, contenidos y usuarios de una biblioteca, teniendo funcionalidades para usuarios anónimos, clientes de la biblioteca, trabajadores de la biblioteca y administradores del sistema.
+
+== Empezando a usar {nombre-programa}
+
+Registrarse
+
+[id=registrarse,caption=]
+.Response
+include::{snippets}/registrarse/http-request.adoc[]
+
+== Contenidos
+Debido a que una biblioteca tiene contenidos que prestar, {nombre-programa} tiene una sección en la que permite buscar y controlar los contenidos.
+
+
+
+=== Tipos de contenidos
+Como los contenidos de una biblioteca pueden ser muy variados, {nombre-programa} ha hecho tres tipos principales en los que pueden encajar prácticamente todos los contenidos de una biblioteca.
+
+==== Libro
+Este grupo incluye a todos los contenidos que contienen texto, ya sean libros en papel o e-books.
+
+[id=libro-response,caption=,cols="1s,1,3"]
+.Response
+include::{snippets}/insert-libro/response-fields.adoc[]
+
+[id=libro-request,caption=,cols="1s,1,3"]
+.Request
+include::{snippets}/insert-libro/request-fields.adoc[]
+
+
+==== Audio
+Este grupo incluye a todos los contenidos que se basen en sonido, como los discos de vinilo, etc.
+
+[id=audio-response,caption=,cols="1s,1,3"]
+.Response
+include::{snippets}/insert-audio/response-fields.adoc[]
+
+[id=audio-request,caption=,cols="1s,1,3"]
+.Request
+include::{snippets}/insert-audio/request-fields.adoc[]
+
+
+==== Vídeo
+Este grupo incluye a todos los contenidos audiovisuales, como las películas, los documentales, etc.
+
+[id=video-response,caption=,cols="1s,1,3"]
+.Response
+include::{snippets}/insert-video/response-fields.adoc[]
+
+[id=video-request,caption=,cols="1s,1,3"]
+.Request
+include::{snippets}/insert-video/request-fields.adoc[]
+
+
+=== Búsqueda de contenidos
+
+== Perfiles
+
+Los usuarios del 
+
+[id=perfil,caption=,cols="1s,1,3"]
+.Perfil
+include::{snippets}//response-fields.adoc[]
+
+== Préstamos
+
+
+
+
+
+
+
+
+
+
+
+[[curl_request_xdf]]
+== Curl request
+
+Acceso a <<audio-response, el audio>>
