@@ -73,7 +73,7 @@ public class PerfilServiceImpl implements PerfilService{
 		if(perfil.getCorreoElectronico()!=null) this.validateEmailExistInDB(perfil,id);
 		
 		String oldPassword = getPerfilByID(id).getContrasena();
-		if(!encoder.matches(perfil.getContrasena(),oldPassword)) 
+		if(perfil.getContrasena()!=null && !encoder.matches(perfil.getContrasena(),oldPassword)) 
 			perfil.setContrasena(encoder.encode(perfil.getContrasena()));
 		else perfil.setContrasena(oldPassword);
 		

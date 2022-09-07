@@ -3,7 +3,9 @@ package es.library.databaseserver.personalspace.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +20,7 @@ import es.library.databaseserver.perfil.crud.model.PerfilResponse;
 import es.library.databaseserver.personalspace.service.MyPerfilService;
 import es.library.databaseserver.personalspace.service.PrestamosService;
 import es.library.databaseserver.prestamos.Prestamo;
+import es.library.databaseserver.security.authentication.AuthenticationService;
 
 @RestController
 @RequestMapping("/user")
@@ -28,6 +31,9 @@ public class MiCuentaController {
 	
 	@Autowired
 	private MyPerfilService myPerfilService;
+	
+	@Autowired
+	private AuthenticationService authenticationService;
 	
 	@PostMapping(path = "/prestar/{id}")
 	public Prestamo prestar(@PathVariable(name = "id") Long contenidoId, Authentication auth) {		
@@ -62,6 +68,22 @@ public class MiCuentaController {
 	@PutMapping
 	public PerfilResponse updateMyAccount(Authentication auth, @RequestBody Perfil perfil) {
 		return new PerfilResponse(myPerfilService.updateMyAccount(((String) auth.getPrincipal()), perfil));
+	}
+	
+	@DeleteMapping
+	public void deletePerfil(@PathVariable(name = "username") String username, Authentication authentication) {
+		if(!authentication.getPrincipal().equals(username)) {
+			throw new BadCredentialsException("El usuario "+authentication.getPrincipal()+" ha intentado borrar al perfil "+username+" pero no es admin");
+		}
+		authenticationService.deleteProfile(username);
+	}
+	
+	@PostMapping(path = "/logout")
+	public void logout(@PathVariable(name = "username") String username, Authentication authentication) {
+		if(!authentication.getPrincipal().equals(username)) {
+			throw new BadCredentialsException("El usuario "+authentication.getPrincipal()+" ha intentado borrar al perfil "+username+" pero no es admin");
+		}
+		authenticationService.logout(username);
 	}
 	
 }

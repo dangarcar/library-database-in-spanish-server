@@ -70,8 +70,6 @@ public class SecurityConfiguration {
 					"/contenidos/search/**")
 				.permitAll()
 			.antMatchers(
-					"/auth/logout/**",
-					"/auth/delete/**",
 					"/user/**")
 				.hasRole("USER")
 			.antMatchers(

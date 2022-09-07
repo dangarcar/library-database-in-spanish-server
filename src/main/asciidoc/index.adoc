@@ -8,11 +8,21 @@ Daniel García Carretero
 
 == Empezando a usar {nombre-programa}
 
-Registrarse
+[red]#Registrarse# ´hola´
 
 [id=registrarse,caption=]
 .Response
 include::{snippets}/registrarse/http-request.adoc[]
+
+== Como funciona {nombre-programa}
+
+=== Parte pública
+
+=== Parte para usuarios
+
+=== Parte para trabajadores
+
+=== Parte para administradores
 
 == Contenidos
 Debido a que una biblioteca tiene contenidos que prestar, {nombre-programa} tiene una sección en la que permite buscar y controlar los contenidos.
