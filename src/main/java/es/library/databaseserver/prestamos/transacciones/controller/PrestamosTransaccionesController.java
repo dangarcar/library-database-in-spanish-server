@@ -16,15 +16,15 @@ public class PrestamosTransaccionesController {
 	
 	@PostMapping(path = "/prestar")
 	public Prestamo prestar(
-			@RequestParam(name = "cont") Long contenidoId,
-			@RequestParam(name = "perf") Long perfilId) {
+			@RequestParam(name = "contenido") Long contenidoId,
+			@RequestParam(name = "perfil") Long perfilId) {
 		return transaccionesService.prestar(contenidoId, perfilId);
 	}
 	
 	@PostMapping(path = "/devolver")
 	public Prestamo devolver(
-			@RequestParam(name = "cont") Long contenidoId,
-			@RequestParam(name = "perf") Long perfilId) {
+			@RequestParam(name = "contenido") Long contenidoId,
+			@RequestParam(name = "perfil") Long perfilId) {
 		return transaccionesService.devolver(contenidoId, perfilId);
 	}
 	

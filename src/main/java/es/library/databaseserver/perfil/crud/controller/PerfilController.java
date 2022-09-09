@@ -40,12 +40,12 @@ public class PerfilController {
 		return new PerfilResponse(perfilService.updatePerfilByID(ID, perfil));
 	}
 	
-	@PutMapping(path = "/roles/{id}")
-	public void setRole(@PathVariable(name = "id") long id, @RequestBody String roles) {
+	@PutMapping(path = "/roles/{id}/{role}")
+	public void setRole(@PathVariable(name = "id") long id, @PathVariable(name = "role") String roles) {
 		Roles roles2;
 		
 		try {
-			 roles2 = Roles.valueOf(roles);
+			 roles2 = Roles.valueOf("ROLE_"+roles.toUpperCase());
 		} catch (Exception e) {
 			throw new IllegalPerfilException(e.getMessage(), e);
 		}

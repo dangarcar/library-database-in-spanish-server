@@ -1,5 +1,6 @@
 = Library Database in Spanish API Documentation
 Daniel García Carretero
+:source-highlighter: highlight.js
 :nombre-programa: Library Database in Spanish
 :toc: left
 :toc-title: Tabla de contenidos

@@ -37,51 +37,51 @@ public class MiCuentaController {
 	
 	@PostMapping(path = "/prestar/{id}")
 	public Prestamo prestar(@PathVariable(name = "id") Long contenidoId, Authentication auth) {		
-		return prestamoService.prestar(contenidoId, (String) auth.getPrincipal());
+		return prestamoService.prestar(contenidoId, (String) auth.getName());
 	}
 	
 	@PostMapping(path = "/devolver/{id}")
 	public Prestamo devolver(@PathVariable(name = "id") Long contenidoId, Authentication auth) {		
-		return prestamoService.devolver(contenidoId, (String) auth.getPrincipal());
+		return prestamoService.devolver(contenidoId, (String) auth.getName());
 	}
 	
 	@GetMapping
 	public PerfilResponse getMyInfo(Authentication auth) {
-		return new PerfilResponse(myPerfilService.getMyInfo((String) auth.getPrincipal()));
+		return new PerfilResponse(myPerfilService.getMyInfo((String) auth.getName()));
 	}
 	
 	@GetMapping(path = "/prestamos/historial")
 	public List<Contenido> getHistorialDePrestamos(Authentication auth) {
-		return myPerfilService.getHistorialDePrestamos((String) auth.getPrincipal());
+		return myPerfilService.getHistorialDePrestamos((String) auth.getName());
 	}
 	
 	@GetMapping(path = "/prestamos/todos")
 	public List<Prestamo> getMyPrestamos(Authentication auth){
-		return myPerfilService.getMyPrestamos((String) auth.getPrincipal());
+		return myPerfilService.getMyPrestamos((String) auth.getName());
 	}
 	
 	@GetMapping(path = "/prestamos")
 	public List<Contenido> getContenidosEnPrestamo(Authentication auth) {
-		return myPerfilService.getContenidosEnPrestamo((String) auth.getPrincipal());
+		return myPerfilService.getContenidosEnPrestamo((String) auth.getName());
 	}
 	
 	@PutMapping
 	public PerfilResponse updateMyAccount(Authentication auth, @RequestBody Perfil perfil) {
-		return new PerfilResponse(myPerfilService.updateMyAccount(((String) auth.getPrincipal()), perfil));
+		return new PerfilResponse(myPerfilService.updateMyAccount(((String) auth.getName()), perfil));
 	}
 	
 	@DeleteMapping
 	public void deletePerfil(@PathVariable(name = "username") String username, Authentication authentication) {
-		if(!authentication.getPrincipal().equals(username)) {
-			throw new BadCredentialsException("El usuario "+authentication.getPrincipal()+" ha intentado borrar al perfil "+username+" pero no es admin");
+		if(!authentication.getName().equals(username)) {
+			throw new BadCredentialsException("El usuario "+authentication.getName()+" ha intentado borrar al perfil "+username+" pero no es admin");
 		}
 		authenticationService.deleteProfile(username);
 	}
 	
 	@PostMapping(path = "/logout")
 	public void logout(@PathVariable(name = "username") String username, Authentication authentication) {
-		if(!authentication.getPrincipal().equals(username)) {
-			throw new BadCredentialsException("El usuario "+authentication.getPrincipal()+" ha intentado borrar al perfil "+username+" pero no es admin");
+		if(!authentication.getName().equals(username)) {
+			throw new BadCredentialsException("El usuario "+authentication.getName()+" ha intentado borrar al perfil "+username+" pero no es admin");
 		}
 		authenticationService.logout(username);
 	}
