@@ -2,7 +2,7 @@ HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
-src/test/**
+src/test/**/service
 database.db
 tokens.db
 logs/**

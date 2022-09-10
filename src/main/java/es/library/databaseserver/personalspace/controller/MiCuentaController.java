@@ -70,7 +70,7 @@ public class MiCuentaController {
 		return new PerfilResponse(myPerfilService.updateMyAccount(((String) auth.getName()), perfil));
 	}
 	
-	@DeleteMapping
+	@DeleteMapping("/{username}")
 	public void deletePerfil(@PathVariable(name = "username") String username, Authentication authentication) {
 		if(!authentication.getName().equals(username)) {
 			throw new BadCredentialsException("El usuario "+authentication.getName()+" ha intentado borrar al perfil "+username+" pero no es admin");
@@ -78,7 +78,7 @@ public class MiCuentaController {
 		authenticationService.deleteProfile(username);
 	}
 	
-	@PostMapping(path = "/logout")
+	@PostMapping(path = "/logout/{username}")
 	public void logout(@PathVariable(name = "username") String username, Authentication authentication) {
 		if(!authentication.getName().equals(username)) {
 			throw new BadCredentialsException("El usuario "+authentication.getName()+" ha intentado borrar al perfil "+username+" pero no es admin");

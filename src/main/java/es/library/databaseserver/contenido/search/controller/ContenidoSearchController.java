@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.Contenido.Soporte;
+import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 import es.library.databaseserver.contenido.search.service.ContenidoSearchService;
 import es.library.databaseserver.contenido.types.ContenidoModel;
@@ -50,7 +51,7 @@ public class ContenidoSearchController {
 			return ContenidoSearchService.getUniqueContenidos(searchService.getAllContenidos());
 		}
 
-		return (List<ContenidoModel>) searchService.getContenidosByMultipleParams(
+		List<ContenidoModel> contenidos = (List<ContenidoModel>) searchService.getContenidosByMultipleParams(
 				query, 
 				titulo, 
 				autor,
@@ -73,6 +74,10 @@ public class ContenidoSearchController {
 				true,
 				null
 			);
+		
+		if (contenidos.isEmpty()) throw new ContenidoNotFoundException("Ningún contenido coincide con las condiciones propuestas");
+		
+		return contenidos;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -97,8 +102,7 @@ public class ContenidoSearchController {
 			@RequestParam(required = false) Integer maxCalidad, 
 			@RequestParam(required = false) String type, 
 			@RequestParam(required = false) Boolean d, 
-			@RequestParam(required = false) Boolean p,
-			@RequestParam(defaultValue = "false") Boolean unique){
+			@RequestParam(required = false) Boolean p){
 		if (query == null && titulo == null && autor == null && minAno == null && maxAno == null && idioma == null
 				&& soporte == null && minPaginas == null && maxPaginas == null && editorial == null && isbn == null
 				&& minEdad == null && maxEdad == null && minDuracion == null && maxDuracion == null
@@ -107,7 +111,7 @@ public class ContenidoSearchController {
 					d, p);
 		}
 
-		return (List<Contenido>) searchService.getContenidosByMultipleParams(
+		List<Contenido> contenidos = (List<Contenido>) searchService.getContenidosByMultipleParams(
 				query, 
 				titulo, 
 				autor,
@@ -130,6 +134,10 @@ public class ContenidoSearchController {
 				false,
 				p
 			);
+		
+		if (contenidos.isEmpty()) throw new ContenidoNotFoundException("Ningún contenido coincide con las condiciones propuestas");
+		
+		return contenidos;
 	}
 	
 	@GetMapping(path = "/topprestamos")
