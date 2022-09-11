@@ -1,6 +1,6 @@
 package es.library.databaseserver.prestamos.search.service.implementations;
 
-import static es.library.databaseserver.shared.Utils.*;
+import static es.library.databaseserver.shared.Utils.intersection;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -108,8 +108,15 @@ public class PrestamoSearchServiceImpl implements PrestamoSearchService{
 			LocalDateTime toDevolucion, Boolean d) {
 		List<Set<Prestamo>> prestamoSet = new ArrayList<>();
 		
-		if(idContenido != null) 							prestamoSet.add(new HashSet<>(getPrestamosByIdContenido(idContenido)));
-		if(idPerfil != null) 								prestamoSet.add(new HashSet<>(getPrestamosIdPerfil(idPerfil)));
+		try {
+			if(idContenido != null) 						prestamoSet.add(new HashSet<>(getPrestamosByIdContenido(idContenido)));
+		}
+		catch (ContenidoNotFoundException e) {}
+		
+		try {
+			if(idPerfil != null) 							prestamoSet.add(new HashSet<>(getPrestamosIdPerfil(idPerfil)));
+		} catch (PerfilNotFoundException e) {}
+		
 		if(minDias != null || maxDias != null)				prestamoSet.add(new HashSet<>(getPrestamosByDiasDePrestamo(minDias, maxDias)));
 		if(fromPrestamo != null || toPrestamo != null) 		prestamoSet.add(new HashSet<>(getPrestamosBetweenTwoPrestamoDates(fromPrestamo, toPrestamo)));
 		if(fromDevolucion != null || toDevolucion != null) 	prestamoSet.add(new HashSet<>(getPrestamosBetweenTwoDevolucionDates(fromDevolucion, toDevolucion)));

@@ -32,7 +32,7 @@ public class PerfilSearchController {
 	}
 	
 	@GetMapping(path = "/username/{username}")
-	public PerfilResponse getPerfilByUsername(String username){
+	public PerfilResponse getPerfilByUsername(@PathVariable(name = "username") String username){
 		return perfilService.getPerfilByUsername(username);
 	}
 	

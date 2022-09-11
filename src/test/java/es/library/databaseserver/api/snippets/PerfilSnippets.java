@@ -20,7 +20,7 @@ public interface PerfilSnippets {
 			Map.entry("id", fieldWithPath("id")
 					.description("El identificador del perfil en la base de datos")),
 			Map.entry("nombre", fieldWithPath("nombre")
-					.description("El nombre completo (nombre  apellidos del perfil)")),
+					.description("El nombre completo (nombre y apellidos del perfil)")),
 			Map.entry("fechaNacimiento", fieldWithPath("fechaNacimiento")
 					.description("La fecha de naciento del usuario, ")),
 			Map.entry("email", fieldWithPath("email")

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.Contenido.Soporte;
-import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 import es.library.databaseserver.contenido.search.service.ContenidoSearchService;
 import es.library.databaseserver.contenido.types.ContenidoModel;
@@ -51,7 +50,7 @@ public class ContenidoSearchController {
 			return ContenidoSearchService.getUniqueContenidos(searchService.getAllContenidos());
 		}
 
-		List<ContenidoModel> contenidos = (List<ContenidoModel>) searchService.getContenidosByMultipleParams(
+		return (List<ContenidoModel>) searchService.getContenidosByMultipleParams(
 				query, 
 				titulo, 
 				autor,
@@ -74,10 +73,6 @@ public class ContenidoSearchController {
 				true,
 				null
 			);
-		
-		if (contenidos.isEmpty()) throw new ContenidoNotFoundException("Ningún contenido coincide con las condiciones propuestas");
-		
-		return contenidos;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -111,7 +106,7 @@ public class ContenidoSearchController {
 					d, p);
 		}
 
-		List<Contenido> contenidos = (List<Contenido>) searchService.getContenidosByMultipleParams(
+		return (List<Contenido>) searchService.getContenidosByMultipleParams(
 				query, 
 				titulo, 
 				autor,
@@ -134,10 +129,6 @@ public class ContenidoSearchController {
 				false,
 				p
 			);
-		
-		if (contenidos.isEmpty()) throw new ContenidoNotFoundException("Ningún contenido coincide con las condiciones propuestas");
-		
-		return contenidos;
 	}
 	
 	@GetMapping(path = "/topprestamos")

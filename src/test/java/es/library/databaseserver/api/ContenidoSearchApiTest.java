@@ -1,15 +1,12 @@
 package es.library.databaseserver.api;
 
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -27,7 +24,6 @@ import es.library.databaseserver.api.snippets.ContenidoSnippets;
 
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ContenidoSearchApiTest {
 	
 	private MockMvc mockMvc;
@@ -40,43 +36,40 @@ public class ContenidoSearchApiTest {
 	      .build();
 	}
 	
-	@Order(1)
 	@Test
 	void getContenidosByParamsTest() throws Exception {
 		mockMvc.perform(get("/contenidos/search")
 				.contentType(MediaType.APPLICATION_JSON)
 				.params(ContenidoSearchSnippets.GET_CONTENIDOS_PARAMS_MAP))
-				.andExpect(status().isNotFound())
+				.andExpect(status().isOk())
 				.andDo(document("get-contenidos-by-params", 
 						ApiTestUtils.HTTP_REQUEST,
 						ContenidoSearchSnippets.GET_CONTENIDOS_PARAMS_SNIPPET));
 	}
 	
-	@Order(2)
 	@Test
 	void getUniqueContenidosByParamsTest() throws Exception {
 		mockMvc.perform(get("/contenidos/search/unique")
 				.contentType(MediaType.APPLICATION_JSON)
 				.params(ContenidoSearchSnippets.GET_UNIQUE_CONTENIDOS_PARAMS_MAP))
-				.andExpect(status().isNotFound())
+				.andExpect(status().isOk())
 				.andDo(document("get-unique-contenidos-by-params", 
 						ApiTestUtils.HTTP_REQUEST,
 						ContenidoSearchSnippets.GET_UNIQUE_CONTENIDOS_PARAMS_SNIPPET));
 	}
 	
-	@Order(3)
 	@Test
 	void getTopPrestamosContenidosTest() throws Exception {
 		mockMvc.perform(get("/contenidos/search/topprestamos")
 				.param("limit", "5")
 				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
 				.andDo(document("get-contenidos-top-prestamos", 
 						ApiTestUtils.HTTP_REQUEST,
 						ContenidoSearchSnippets.TOP_PRESTAMOS_PARAMS
 						));
 	}
 	
-	@Order(4)
 	@Test
 	void getContenidoByIdTest() throws Exception {
 		mockMvc.perform(get("/contenidos/search/id/{id}", -76239876)

@@ -37,45 +37,45 @@ public interface ContenidoSearchSnippets {
 	
 	RequestParametersSnippet GET_CONTENIDOS_PARAMS_SNIPPET = requestParameters(
 			parameterWithName("q")
-				.description("Las palabras claves con las que se buscará el contenidos, separados por espacios"),
+				.description("Las palabras claves con las que se buscarán los contenidos, separados por espacios").optional(),
 			parameterWithName("titulo")
-				.description("El título del contenido"),
+				.description("El título del contenido").optional(),
 			parameterWithName("autor")
-				.description("El autor del contenido"),
+				.description("El autor del contenido").optional(),
 			parameterWithName("minAno")
-				.description("El año en el que se creó el contenido (mínimo)"),
+				.description("El año en el que se creó el contenido (mínimo)").optional(),
 			parameterWithName("maxAno")
-				.description("El año en el que se creó el contenido (máximo)"),
+				.description("El año en el que se creó el contenido (máximo)").optional(),
 			parameterWithName("idioma")
-				.description("El idioma en el que está hecho el contenido"),
+				.description("El idioma en el que está hecho el contenido").optional(),
 			parameterWithName("soporte")
-				.description("El soporte en el que está el contenido"),
+				.description("El soporte en el que está el contenido").optional(),
 			parameterWithName("minPaginas")
-				.description("El número de páginas del libro (mínimo)"),
+				.description("El número de páginas del libro (mínimo)").optional(),
 			parameterWithName("maxPaginas")
-				.description("El número de páginas del libro (máximo)"),
+				.description("El número de páginas del libro (máximo)").optional(),
 			parameterWithName("editorial")
-				.description("La editorial del libro"),
+				.description("La editorial del libro").optional(),
 			parameterWithName("isbn")
-				.description("El ISBN del libro"),
+				.description("El ISBN del libro").optional(),
 			parameterWithName("minEdad")
-				.description("La edad mínima recomendada para ver el contenido (mínimo)"),
+				.description("La edad mínima recomendada para ver el contenido (mínimo)").optional(),
 			parameterWithName("maxEdad")
-				.description("La edad mínima recomendada para ver el contenido (máximo)"),
+				.description("La edad mínima recomendada para ver el contenido (máximo)").optional(),
 			parameterWithName("minDuracion")
-				.description("La duración del contenido audiovisual en minutos (mínimo)"),
+				.description("La duración del contenido audiovisual en minutos (mínimo)").optional(),
 			parameterWithName("maxDuracion")
-				.description("La duración del contenido audiovisual en minutos (máximo)"),
+				.description("La duración del contenido audiovisual en minutos (máximo)").optional(),
 			parameterWithName("minCalidad")
-				.description("El número de píxeles que tiene el vídeo (mínimo)"),
+				.description("El número de píxeles que tiene el vídeo (mínimo)").optional(),
 			parameterWithName("maxCalidad")
-				.description("El número de píxeles que tiene el vídeo (máximo)"),
+				.description("El número de píxeles que tiene el vídeo (máximo)").optional(),
 			parameterWithName("type")
-				.description("El tipo de contenido que puede ser: audio, video o libro"),
+				.description("El tipo de contenido que puede ser: audio, video o libro").optional(),
 			parameterWithName("d")
-				.description("Si el contenido está actualmente disponible o no"),
+				.description("Si el contenido está actualmente disponible o no").optional(),
 			parameterWithName("p")
-				.description("Indica si el contenido es prestable o no")
+				.description("Indica si el contenido es prestable o no").optional()
 		);
 
 	MultiValueMap<String, String> GET_UNIQUE_CONTENIDOS_PARAMS_MAP = new LinkedMultiValueMap<String, String>(Map.ofEntries(
@@ -101,44 +101,45 @@ public interface ContenidoSearchSnippets {
 
 	RequestParametersSnippet GET_UNIQUE_CONTENIDOS_PARAMS_SNIPPET = requestParameters(
 		parameterWithName("q")
-			.description("Las palabras claves con las que se buscará el contenidos, separados por espacios"),
+			.description("Las palabras claves con las que se buscará el contenidos, separados por espacios").optional(),
 		parameterWithName("titulo")
-			.description("El título del contenido"),
+			.description("El título del contenido").optional(),
 		parameterWithName("autor")
-			.description("El autor del contenido"),
+			.description("El autor del contenido").optional(),
 		parameterWithName("minAno")
-			.description("El año en el que se creó el contenido (mínimo)"),
+			.description("El año en el que se creó el contenido (mínimo)").optional(),
 		parameterWithName("maxAno")
-			.description("El año en el que se creó el contenido (máximo)"),
+			.description("El año en el que se creó el contenido (máximo)").optional(),
 		parameterWithName("idioma")
-			.description("El idioma en el que está hecho el contenido"),
+			.description("El idioma en el que está hecho el contenido").optional(),
 		parameterWithName("soporte")
-			.description("El soporte en el que está el contenido"),
+			.description("El soporte en el que está el contenido").optional(),
 		parameterWithName("minPaginas")
-			.description("El número de páginas del libro (mínimo)"),
+			.description("El número de páginas del libro (mínimo)").optional(),
 		parameterWithName("maxPaginas")
-			.description("El número de páginas del libro (máximo)"),
+			.description("El número de páginas del libro (máximo)").optional(),
 		parameterWithName("editorial")
-			.description("La editorial del libro"),
+			.description("La editorial del libro").optional(),
 		parameterWithName("isbn")
-			.description("El ISBN del libro"),
+			.description("El ISBN del libro").optional(),
 		parameterWithName("minEdad")
-			.description("La edad mínima recomendada para ver el contenido (mínimo)"),
+			.description("La edad mínima recomendada para ver el contenido (mínimo)").optional(),
 		parameterWithName("maxEdad")
-			.description("La edad mínima recomendada para ver el contenido (máximo)"),
+			.description("La edad mínima recomendada para ver el contenido (máximo)").optional(),
 		parameterWithName("minDuracion")
-			.description("La duración del contenido audiovisual en minutos (mínimo)"),
+			.description("La duración del contenido audiovisual en minutos (mínimo)").optional(),
 		parameterWithName("maxDuracion")
-			.description("La duración del contenido audiovisual en minutos (máximo)"),
+			.description("La duración del contenido audiovisual en minutos (máximo)").optional(),
 		parameterWithName("minCalidad")
-			.description("El número de píxeles que tiene el vídeo (mínimo)"),
+			.description("El número de píxeles que tiene el vídeo (mínimo)").optional(),
 		parameterWithName("maxCalidad")
-			.description("El número de píxeles que tiene el vídeo (máximo)"),
+			.description("El número de píxeles que tiene el vídeo (máximo)").optional(),
 		parameterWithName("type")
-			.description("El tipo de contenido que puede ser: audio, video o libro")
+			.description("El tipo de contenido que puede ser: audio, video o libro").optional()
 	);
 	
 	RequestParametersSnippet TOP_PRESTAMOS_PARAMS = requestParameters(
-			parameterWithName("limit").description("El número de contenidos que serán devueltos"));
+			parameterWithName("limit")
+				.description("El número de contenidos que serán devueltos, por defecto 10").optional());
 	
 }
