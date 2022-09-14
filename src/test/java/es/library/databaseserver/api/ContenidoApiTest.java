@@ -80,7 +80,7 @@ public class ContenidoApiTest {
 						.content(this.mapper.writeValueAsString(contenido)))
 				.andExpect(status().isCreated())
 				.andDo(document("insert-audio", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						ContenidoSnippets.AUDIO_REQUEST, 
 						ContenidoSnippets.AUDIO_RESPONSE))
 				.andReturn();
@@ -111,7 +111,7 @@ public class ContenidoApiTest {
 						.content(this.mapper.writeValueAsString(contenido)))
 				.andExpect(status().isCreated())
 				.andDo(document("insert-video", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						ContenidoSnippets.VIDEO_REQUEST, 
 						ContenidoSnippets.VIDEO_RESPONSE))
 				.andReturn();
@@ -142,7 +142,7 @@ public class ContenidoApiTest {
 				.content(this.mapper.writeValueAsString(c)))
 				.andExpect(status().isCreated())
 				.andDo(document("insert-libro", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						ContenidoSnippets.LIBRO_REQUEST, 
 						ContenidoSnippets.LIBRO_RESPONSE))
 				.andReturn();
@@ -174,7 +174,7 @@ public class ContenidoApiTest {
 				.content(this.mapper.writeValueAsString(c)))
 				.andExpect(status().isOk())
 				.andDo(document("update-contenido", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						ContenidoSnippets.ID_PATH_PARAM,
 						ContenidoSnippets.LIBRO_REQUEST,
 						ContenidoSnippets.LIBRO_RESPONSE))
@@ -189,7 +189,7 @@ public class ContenidoApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("delete-contenido", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						ContenidoSnippets.ID_PATH_PARAM));
 		
 		mockMvc.perform(delete("/contenidos/{id}", audioId)

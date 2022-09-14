@@ -16,7 +16,7 @@ import es.library.databaseserver.perfil.Perfil;
 import es.library.databaseserver.perfil.Roles;
 import es.library.databaseserver.perfil.crud.service.PerfilService;
 import es.library.databaseserver.security.JWTUtils;
-import es.library.databaseserver.security.exceptions.ExpiredTokenException;
+import es.library.databaseserver.security.exceptions.ExpiredRefreshTokenException;
 import es.library.databaseserver.security.exceptions.NotValidPasswordException;
 import es.library.databaseserver.security.exceptions.RefreshTokenNotFoundException;
 import es.library.databaseserver.security.model.JWTTokenPair;
@@ -97,7 +97,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			try {
 				refreshToken = refreshTokenService.getRefreshTokenByUsername(credentials.getUsername()).getToken();
 			}
-			catch (ExpiredTokenException e) {
+			catch (ExpiredRefreshTokenException e) {
 				logger.debug("El refresh token expiró, se procederá a crear uno nuevo");
 				refreshTokenService.deleteRefreshTokenByUsername(credentials.getUsername());
 				refreshToken = refreshTokenService.createNewTokenFromUsername(credentials.getUsername()).getToken();

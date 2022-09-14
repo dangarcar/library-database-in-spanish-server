@@ -87,7 +87,7 @@ public class PerfilSearchApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 					.andDo(document("get-perfil-by-params", 
-							ApiTestUtils.HTTP_REQUEST,
+							ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 							PerfilSearchSnippets.GET_PERFILES_PARAMS_SNIPPET));
 	}
 	
@@ -98,7 +98,7 @@ public class PerfilSearchApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("get-perfil-by-username", 
-							ApiTestUtils.HTTP_REQUEST,
+							ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 							PerfilSearchSnippets.USERNAME_PATH_PARAM,
 							PerfilSnippets.PERFIL_RESPONSE));
 	}
@@ -111,7 +111,7 @@ public class PerfilSearchApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 					.andDo(document("get-perfil-by-id", 
-							ApiTestUtils.HTTP_REQUEST,
+							ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 							PerfilSnippets.ID_PATH_PARAM,
 							PerfilSnippets.PERFIL_RESPONSE));
 	}

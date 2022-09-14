@@ -73,8 +73,8 @@ public class SecurityApiTest {
 				.content(this.mapper.writeValueAsString(perfil)))
 				.andExpect(status().isCreated())
 				.andDo(document("registrarse", 
-						ApiTestUtils.HTTP_REQUEST, 
-						PerfilSnippets.PERFIL_REQUEST, 
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE, 
+						PerfilSnippets.PERFIL_REQUEST_WITHOUT_ROLE, 
 						SecuritySnippets.JWT_PAIR_RESPONSE))
 				.andReturn();
 		
@@ -90,7 +90,7 @@ public class SecurityApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("logout", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						SecuritySnippets.USERNAME_PATH_PARAM));
 	}
 	
@@ -106,7 +106,7 @@ public class SecurityApiTest {
 				.content(this.mapper.writeValueAsString(credentials)))
 				.andExpect(status().isCreated())
 				.andDo(document("login", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						SecuritySnippets.LOGIN_CREDENTIALS_REQUEST,
 						SecuritySnippets.JWT_PAIR_RESPONSE
 						))
@@ -123,7 +123,7 @@ public class SecurityApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("refresh-token", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						SecuritySnippets.TOKEN_PATH_PARAM,
 						SecuritySnippets.JWT_PAIR_RESPONSE
 						))
@@ -140,7 +140,7 @@ public class SecurityApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("delete-perfil-logout",
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						SecuritySnippets.USERNAME_PATH_PARAM));
 	}
 	

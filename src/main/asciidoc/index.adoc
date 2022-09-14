@@ -4,94 +4,243 @@ Daniel García Carretero
 :nombre-programa: Library Database in Spanish
 :toc: left
 :toc-title: Tabla de contenidos
-:toclevels: 3
+:toclevels: 5
+
+[[vision-general]]
+== Visión general
 {nombre-programa} es un programa que sirve como servidor de una app que controla los préstamos, contenidos y usuarios de una biblioteca, teniendo funcionalidades para usuarios anónimos, clientes de la biblioteca, trabajadores de la biblioteca y administradores del sistema.
 
-== Empezando a usar {nombre-programa}
+[[ejecutar-app]]
+=== Cómo ejecutar la aplicación
+1. En `+src/main/resources/application.properties+`, cambia el valor de `+jwt.issuer+` a tu compañía, `+jwt.secret+` a una string de al menos 256 bits.
 
-[red]#Registrarse# ´hola´
+2. Abre una terminal en el directorio del proyecto.
 
-[id=registrarse,caption=]
-.Response
-include::{snippets}/registrarse/http-request.adoc[]
+3. Ejecuta el siguiente comando para ejecutar la aplicación:
+[source,bash]
+./mvnw spring-boot:run
 
-== Como funciona {nombre-programa}
+=== Consumir la API
+La API de {nombre-programa} es una https://es.wikipedia.org/wiki/Transferencia_de_Estado_Representacional[API REST], por lo que intenta seguir los estándares de HTTP y REST.
 
-=== Parte pública
+[[verbos-http]]
+==== Verbos HTTP
 
-=== Parte para usuarios
+[caption=,cols="1s,2"]
+include::verboshttp.adoc[]
 
-=== Parte para trabajadores
+[[status-code]]
+==== Códigos de respuesta HTTP
 
-=== Parte para administradores
+[caption=,cols="1s,2"]
+include::statuscode.adoc[]
 
-== Contenidos
+[NOTE] 
+====
+Con los códigos 4xx y 5xx se adjuntará cuerpo de respuesta específico con la siguiente estructura:
+
+include::{snippets}/error/response-fields.adoc[]
+
+Si son 2xx, la respuesta será la de la solicitud.
+====
+
+[[funcionamiento]]
+=== Cómo funciona {nombre-programa}
+
+[[perfiles]]
+==== Perfiles
+Debido a que los usuarios de la biblioteca necesitan ser registrados, {nombre-programa} tiene una sección dedicada a los perfiles.
+
+[id=perfil-response,caption=,cols="1s,1,3"]
+.Respuesta Perfil
+include::{snippets}/insert-perfil/response-fields.adoc[]
+
+[id=perfil-request,caption=,cols="1s,1,3"]
+.Solicitud Perfil
+include::{snippets}/insert-perfil/request-fields.adoc[]
+
+[[roles]]
+===== Roles
+Como los perfiles de una bibloteca pueden desempeñar diferentes papeles, hay tres tipos de usuarios:
+
+[caption=,cols="1s,2"]
+include::roles.adoc[]
+
+[[contenidos]]
+==== Contenidos
 Debido a que una biblioteca tiene contenidos que prestar, {nombre-programa} tiene una sección en la que permite buscar y controlar los contenidos.
 
-
-
-=== Tipos de contenidos
+[[tipos-contenidos]]
+===== Tipos de contenidos
 Como los contenidos de una biblioteca pueden ser muy variados, {nombre-programa} ha hecho tres tipos principales en los que pueden encajar prácticamente todos los contenidos de una biblioteca.
 
-==== Libro
+[[libro]]
+====== Libro
 Este grupo incluye a todos los contenidos que contienen texto, ya sean libros en papel o e-books.
 
 [id=libro-response,caption=,cols="1s,1,3"]
-.Response
+.Respuesta Libro
 include::{snippets}/insert-libro/response-fields.adoc[]
 
 [id=libro-request,caption=,cols="1s,1,3"]
-.Request
+.Solicitud Libro
 include::{snippets}/insert-libro/request-fields.adoc[]
 
-
-==== Audio
+[[audio]]
+====== Audio
 Este grupo incluye a todos los contenidos que se basen en sonido, como los discos de vinilo, etc.
 
 [id=audio-response,caption=,cols="1s,1,3"]
-.Response
+.Respuesta Audio
 include::{snippets}/insert-audio/response-fields.adoc[]
 
 [id=audio-request,caption=,cols="1s,1,3"]
-.Request
+.Solicitud Audio
 include::{snippets}/insert-audio/request-fields.adoc[]
 
-
-==== Vídeo
+[[video]]
+====== Vídeo
 Este grupo incluye a todos los contenidos audiovisuales, como las películas, los documentales, etc.
 
 [id=video-response,caption=,cols="1s,1,3"]
-.Response
+.Respuesta Vídeo
 include::{snippets}/insert-video/response-fields.adoc[]
 
 [id=video-request,caption=,cols="1s,1,3"]
-.Request
+.Solicitud Vídeo
 include::{snippets}/insert-video/request-fields.adoc[]
 
+[[soporte]]
+===== Soporte
+Los soportes en los que los contenidos pueden estar:
 
-=== Búsqueda de contenidos
+[caption=,cols="1s,3,1"]
+include::soporte.adoc[]
 
-== Perfiles
+[[prestamos]]
+==== Préstamos
+Debido a que {nombre-programa} es una biblioteca hecha para prestar libros, hay una sección dedicada a los préstamos.
 
-Los usuarios del 
+[id=prestamo-response,caption=,cols="1s,1,3"]
+.Respuesta Préstamo
+include::{snippets}/insert-prestamo/response-fields.adoc[]
 
-[id=perfil,caption=,cols="1s,1,3"]
-.Perfil
-include::{snippets}//response-fields.adoc[]
+[id=prestamo-request,caption=,cols="1s,1,3"]
+.Solicitud Préstamo
+include::{snippets}/insert-prestamo/request-fields.adoc[]
 
-== Préstamos
+[[seguridad]]
+=== Autorización y autenticación
+{nombre-programa} utiliza tokens para la autorización de solicitudes.
+Aun así, hay partes de la API que sí <<public,son accesibles sin autorización>>
+
+[[access-refresh]]
+==== Pares access/refresh token
+La autorización de la API se hace a través de pares de <<access-token,access>> y <<refresh-token,refresh>> tokens
+
+Son algo así:
+[[token-pair]]
+.Respuesta de ejemplo
+include::{snippets}/registrarse/http-response.adoc[]
 
 
+[[access-token]]
+===== Access token
+Los access token son https://jwt.io/[JWT] que contienen información sobre el usuario y sirven para autorizar las solicitudes.
+
+En cada petición hay que añadir un header Authorization con la siguiente estructura:
+[source,http,options="nowrap"]
+----
+Authorization: Bearer {access-token}
+----
+
+Solo tienen validez por cinco minutos, por lo que deben ser <<refresh-token,refrescados>> y no necesitan ser guardados con gran seguridad
+
+[[refresh-token]]
+===== Refresh token
+Los refresh token son tokens guardados en base de datos que sirven para conseguir un nuevo access token, por lo que su validez es mayor (una semana) y debe ser guardado con seguridad por ello.
+
+Para aprender a usarlos mire <<new-token,Cómo conseguir un nuevo token una vez ha caducado>>
 
 
+[[signup]]
+==== Cómo registrarse
+Para registrarse en el sistema, envíe una petición *POST* a `+/auth/signup+` incluyendo cuerpo de solicitud con la siguiente estructura:
+[caption=,cols="1s,1,3"]
+include::{snippets}/registrarse/request-fields.adoc[]
+
+Se creará un perfil a partir de tu cuerpo de solicitud con <<roles,rol usuario>>, si es trabajador o administrador de la biblioteca póngase en contacto con un administrador para tener el rol que le pertenece.
+
+Se devolverá un <<access-refresh,par access/refresh token>> para tener autorización a los servicios de la API.
+
+[[login]]
+==== Cómo abrir sesión una vez que ya se está registrado
+Para abrir sesión y conseguir los tokens una vez que ya se había registrado en el sistema con anterioridad y su refresh token ha caducado, envíe una petición *POST* a `+/auth/login+` incluyendo cuerpo de solicitud con la siguiente estructura:
+[caption=,cols="1s,1,3"]
+include::{snippets}/login/request-fields.adoc[]
+
+Se devolverá un <<access-refresh,par access/refresh token>> para tener autorización a los servicios de la API.
+
+[[new-token]]
+==== Cómo conseguir un nuevo token una vez ha caducado
+Cuando el access token ha caducado, hay que enviar una petición *GET* a `+/auth/token/refresh/{token}+` donde {token} es el refresh token entregado al registrarse.
+
+Esta petición devuelve un <<access-refresh,par access/refresh token>> para tener autorización a los servicios de la API. Habrá que cambiar los actuales access y refresh tokens a los devueltos por esta petición, ya que los antiguos se eliminan.
+
+Si el refresh token ha caducado también haga lo indicado en el siguiente <<login,apartado>>.
 
 
+[[public]]
+== Parte pública
+Para hacer peticiones a esta sección no necesitas autorización de ningún tipo.
 
+=== GET `/contenidos/search`
+Este método sirve para buscar contenidos en la base de datos según los siguientes parámetros:
+include::{snippets}/get-contenidos-by-params/request-parameters.adoc[]
 
+Devuelve una lista de contenidos, ya sean <<libro-response,libros>>, <<audio-response,audios>> o <<video-response,vídeos>>.
 
+=== GET `/contenidos/search/unique`
+Este método sirve para buscar diferentes modelos de contenidos según los siguientes parámetros:
+include::{snippets}/get-unique-contenidos-by-params/request-parameters.adoc[]
 
+Devuelve una lista de modelos de contenidos como la siguiente:
+include::{snippets}/get-unique-contenidos-by-params/response-fields.adoc[]
 
-[[curl_request_xdf]]
-== Curl request
+=== GET `/contenidos/search/topprestamos`
+Este método sirve para buscar los contenidos más prestados de la biblioteca.
+
+.Parámetro (por defecto 10, no obligatorio)
+include::{snippets}/get-contenidos-top-prestamos/request-parameters.adoc[]
+
+Devuelve una lista de contenidos, ya sean <<libro-response,libros>>, <<audio-response,audios>> o <<video-response,vídeos>>.
+
+=== GET `/contenidos/search/id/{id}`
+Busca un contenido con la id del parámetro id:
+include::{snippets}/get-contenido-by-id/path-parameters.adoc[]
+
+Devuelve un <<tipos-contenidos,contenido>> o un error 404 si no ha sido encontrado.
+
+[[user]]
+== Parte para usuarios
+Para hacer peticiones a esta sección se necesita una <<seguridad,autorización>> hecha con un perfil que tenga <<roles,rol de usuario (ROLE_USER)>> 
+
+=== GET `/user`
+Este método devuelve la información completa del perfil al cual pertenece el token de autorización, con la siguiente estructura:
+include::{snippets}/get-my-info/response-fields.adoc[]
+
+=== PUT `/user`
+Este método sirve para actualizar la información de tu perfil basado en el token de autorización.
+Se debe incluir un cuerpo de solicitud como el siguiente:
+[caption=,cols="1s,1,3"]
+include::{snippets}/update-my-perfil/request-fields.adoc[]
+
+Devolverá un <<perfil-response,perfil>>
+
+[[staff]]
+== Parte para trabajadores
+
+[[admin]]
+== Parte para administradores
 
 Acceso a <<audio-response, el audio>>

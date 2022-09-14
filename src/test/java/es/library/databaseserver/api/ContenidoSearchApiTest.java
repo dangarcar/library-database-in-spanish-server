@@ -43,7 +43,7 @@ public class ContenidoSearchApiTest {
 				.params(ContenidoSearchSnippets.GET_CONTENIDOS_PARAMS_MAP))
 				.andExpect(status().isOk())
 				.andDo(document("get-contenidos-by-params", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						ContenidoSearchSnippets.GET_CONTENIDOS_PARAMS_SNIPPET));
 	}
 	
@@ -54,8 +54,10 @@ public class ContenidoSearchApiTest {
 				.params(ContenidoSearchSnippets.GET_UNIQUE_CONTENIDOS_PARAMS_MAP))
 				.andExpect(status().isOk())
 				.andDo(document("get-unique-contenidos-by-params", 
-						ApiTestUtils.HTTP_REQUEST,
-						ContenidoSearchSnippets.GET_UNIQUE_CONTENIDOS_PARAMS_SNIPPET));
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
+						ContenidoSearchSnippets.GET_UNIQUE_CONTENIDOS_PARAMS_SNIPPET,
+						ContenidoSearchSnippets.UNIQUE_CONTENIDOS_RESPONSE
+						));
 	}
 	
 	@Test
@@ -65,7 +67,7 @@ public class ContenidoSearchApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("get-contenidos-top-prestamos", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						ContenidoSearchSnippets.TOP_PRESTAMOS_PARAMS
 						));
 	}
@@ -76,7 +78,7 @@ public class ContenidoSearchApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
 				.andDo(document("get-contenido-by-id", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						ContenidoSnippets.ID_PATH_PARAM));
 	}
 }

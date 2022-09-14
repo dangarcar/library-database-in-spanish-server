@@ -31,12 +31,15 @@ public interface PerfilSnippets {
 					.description("El rol que el perfil tiene en la biblioteca").type(JsonFieldType.STRING))
 		);
 	
-	RequestFieldsSnippet PERFIL_REQUEST = requestFields(
+	RequestFieldsSnippet PERFIL_REQUEST_WITHOUT_ROLE = requestFields(
 			PERFIL_FIELDS.get("nombre"),
 			PERFIL_FIELDS.get("fechaNacimiento"),
 			PERFIL_FIELDS.get("email"),
-			PERFIL_FIELDS.get("password"),
-			PERFIL_FIELDS.get("role").optional()
+			PERFIL_FIELDS.get("password")
+		);
+	
+	RequestFieldsSnippet PERFIL_REQUEST = PERFIL_REQUEST_WITHOUT_ROLE.and(
+			PERFIL_FIELDS.get("role")
 		);
 	
 	ResponseFieldsSnippet PERFIL_RESPONSE = responseFields(

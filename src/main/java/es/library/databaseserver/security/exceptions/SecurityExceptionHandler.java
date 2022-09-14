@@ -21,11 +21,9 @@ public class SecurityExceptionHandler {
 
 	private Logger logger = LogManager.getLogger(SecurityExceptionHandler.class);
 	
-	@ExceptionHandler({
-		ExpiredTokenException.class, 
-		TokenExpiredException.class})
+	@ExceptionHandler(ExpiredRefreshTokenException.class)
 	@ResponseStatus(value = HttpStatus.GONE)
-	public ApiError goneExceptionHandler(Exception e, WebRequest r) {
+	public ApiError expiredRefreshTokenExceptionHandler(ExpiredRefreshTokenException e, WebRequest r) {
 		logger.warn("",e);
 		return new ApiError(
 				HttpStatus.GONE.value(), 
@@ -67,7 +65,9 @@ public class SecurityExceptionHandler {
 				e.getMessage());
 	}
 	
-	@ExceptionHandler(AuthorizationException.class)
+	@ExceptionHandler({
+		AuthorizationException.class, 
+		TokenExpiredException.class})
 	@ResponseStatus(value = HttpStatus.UNAUTHORIZED)
 	public ApiError authorizationExceptionHandler(AuthorizationException e, WebRequest r) {
 		logger.warn("",e);

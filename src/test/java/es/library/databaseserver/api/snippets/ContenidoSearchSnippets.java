@@ -1,11 +1,15 @@
 package es.library.databaseserver.api.snippets;
 
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 import org.springframework.restdocs.request.RequestParametersSnippet;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -141,5 +145,23 @@ public interface ContenidoSearchSnippets {
 	RequestParametersSnippet TOP_PRESTAMOS_PARAMS = requestParameters(
 			parameterWithName("limit")
 				.description("El número de contenidos que serán devueltos, por defecto 10").optional());
+	
+	ResponseFieldsSnippet UNIQUE_CONTENIDOS_RESPONSE = responseFields(
+			subsectionWithPath("[]").description("Un array de diferentes modelos de contenidos"),
+			fieldWithPath("[].titulo").optional().type(JsonFieldType.STRING)
+				.description("El título del contenido"),
+			fieldWithPath("[].autor").optional().type(JsonFieldType.STRING)
+				.description("El autor del contenido"),
+			fieldWithPath("[].descripcion").optional().type(JsonFieldType.STRING)
+				.description("La descripción del contenido"),
+			fieldWithPath("[].ano").optional().type(JsonFieldType.NUMBER)
+				.description("El año en el que se creó el contenido"),
+			fieldWithPath("[].idioma").optional().type(JsonFieldType.STRING)
+				.description("El idioma en el que está hecho el contenido"),
+			fieldWithPath("[].soporte").optional().type(JsonFieldType.STRING)
+				.description("El soporte en el que está el contenido"),
+			fieldWithPath("[].ids[]").optional().type(JsonFieldType.ARRAY)
+				.description("Las ID de los contenidos que comparten las anteriores características")
+		);
 	
 }

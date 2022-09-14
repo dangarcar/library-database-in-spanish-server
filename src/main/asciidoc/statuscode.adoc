@@ -1,0 +1,35 @@
+|===
+|Código|Descripción
+
+|`+200 OK+`
+|La solicitud ha tenido éxito
+
+|`+201 Created+`
+|El recurso ha sido creado correctamente
+
+|`+400 Bad Request+`
+|La solicitud no es válida
+
+|`+401 Unauthorized+`
+|El usuario no tiene autorización para realizar la solicitud, pero puede conseguirla
+
+|`+403 Forbidden+`
+|El usuario no tiene los permisos suficientes para realizar la solicitud
+
+|`+404 Not Found+`
+|El recurso que se pide no ha sido encontrado
+
+|`+409 Conflict+`
+|La solicitud quiere hacer algo que entra en conflicto con el servidor
+
+|`+410 Gone+`
+|El token de refresco ha caducado
+
+|`+500 Internal Server Error+`
+|El servidor no ha realizado la solicitud (usado para los errores que no son seguidos en el programa)
+
+|`+501 Not Implemented+`
+|La solicitud no está soportada por el servidor
+
+
+|===

@@ -1,15 +1,15 @@
 package es.library.databaseserver.security.refresh.service;
 
 import es.library.databaseserver.security.exceptions.DatabaseRefreshTokenException;
-import es.library.databaseserver.security.exceptions.ExpiredTokenException;
+import es.library.databaseserver.security.exceptions.ExpiredRefreshTokenException;
 import es.library.databaseserver.security.exceptions.RefreshTokenNotFoundException;
 import es.library.databaseserver.security.refresh.RefreshToken;
 
 public interface RefreshTokenService {
 
-	public RefreshToken getRefreshTokenByID(String id) throws RefreshTokenNotFoundException, ExpiredTokenException;
+	public RefreshToken getRefreshTokenByID(String id) throws RefreshTokenNotFoundException, ExpiredRefreshTokenException;
 	
-	public RefreshToken getRefreshTokenByUsername(String username) throws RefreshTokenNotFoundException, ExpiredTokenException;
+	public RefreshToken getRefreshTokenByUsername(String username) throws RefreshTokenNotFoundException, ExpiredRefreshTokenException;
 	
 	/**
 	 * Crea el usuario y lo inserta en la base de datos

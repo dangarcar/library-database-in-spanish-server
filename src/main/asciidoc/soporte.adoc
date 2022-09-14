@@ -1,0 +1,32 @@
+|===
+| Soporte | Descripción | Tipos
+
+|`+FISICO+`
+|El libro de papel
+|Libro
+
+|`+E_BOOK+`
+|El libro electrónico
+|Libro
+
+|`+CD+`
+|El cd
+|Audio, Vídeo
+
+|`+DVD+`
+|El dvd
+|Audio, Vídeo
+
+|`+BLURAY+`
+|El bluray
+|Audio, Vídeo
+
+|`+VINILO+`
+|El disco de vinilo
+|Audio
+
+|`+CASETE+`
+|La cinta de casete
+|Audio
+
+|===

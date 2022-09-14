@@ -77,7 +77,7 @@ public class PersonalSpaceApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("prestar-user", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						ContenidoSnippets.ID_PATH_PARAM,
 						PrestamoSnippets.PRESTAMO_RESPONSE));
 	}
@@ -90,7 +90,7 @@ public class PersonalSpaceApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("devolver-user", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						ContenidoSnippets.ID_PATH_PARAM,
 						PrestamoSnippets.PRESTAMO_RESPONSE))
 				.andReturn();
@@ -112,7 +112,7 @@ public class PersonalSpaceApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("get-my-info", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						PerfilSnippets.PERFIL_RESPONSE));
 	}
 	
@@ -124,7 +124,7 @@ public class PersonalSpaceApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("get-historial-prestamos", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						PersonalSpaceSnippets.LIST_CONTENIDO));
 		
 	}
@@ -137,7 +137,7 @@ public class PersonalSpaceApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("get-my-prestamos", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						PersonalSpaceSnippets.LIST_PRESTAMOS));
 	}
 	
@@ -149,7 +149,7 @@ public class PersonalSpaceApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("get-contenidos-en-prestamos", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						PersonalSpaceSnippets.LIST_CONTENIDO));
 	}
 	
@@ -168,7 +168,7 @@ public class PersonalSpaceApiTest {
 				.content(this.mapper.writeValueAsString(a)))
 				.andExpect(status().isOk())
 				.andDo(document("update-my-perfil", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						PerfilSnippets.PERFIL_REQUEST,
 						PerfilSnippets.PERFIL_RESPONSE));	
 	}
@@ -181,7 +181,7 @@ public class PersonalSpaceApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
 				.andDo(document("logout-user", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						PersonalSpaceSnippets.USERNAME_PATH_PARAM));
 	}
 	
@@ -193,7 +193,7 @@ public class PersonalSpaceApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("delete-perfil-user", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						PersonalSpaceSnippets.USERNAME_PATH_PARAM));
 	}
 	

@@ -41,7 +41,7 @@ public class PrestamoSearchApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("get-prestamos-by-params", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						PrestamoSearchSnippets.GET_PRESTAMOS_PARAMS_SNIPPET));
 	}
 	
@@ -51,7 +51,7 @@ public class PrestamoSearchApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
 				.andDo(document("get-prestamo-by-id", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						PrestamoSnippets.ID_PATH_PARAM));
 	}
 	

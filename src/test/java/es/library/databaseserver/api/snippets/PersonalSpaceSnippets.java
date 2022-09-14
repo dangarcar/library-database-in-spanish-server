@@ -1,6 +1,7 @@
 package es.library.databaseserver.api.snippets;
 
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 
@@ -19,6 +20,5 @@ public interface PersonalSpaceSnippets {
 	
 	ResponseFieldsSnippet LIST_PRESTAMOS = responseFields(
 			fieldWithPath("[]")
-				.description("La lista de préstamos"));
-	
+				.description("La lista de préstamos"));	
 }

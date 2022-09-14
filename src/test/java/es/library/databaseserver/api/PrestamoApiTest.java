@@ -131,7 +131,7 @@ public class PrestamoApiTest {
 				.content(this.mapper.writeValueAsString(p)))
 				.andExpect(status().isCreated())
 				.andDo(document("insert-prestamo", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						PrestamoSnippets.PRESTAMO_REQUEST,
 						PrestamoSnippets.PRESTAMO_RESPONSE))
 				.andReturn();
@@ -155,7 +155,7 @@ public class PrestamoApiTest {
 				.content(this.mapper.writeValueAsString(p)))
 				.andExpect(status().isOk())
 				.andDo(document("update-prestamo", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						PrestamoSnippets.ID_PATH_PARAM,
 						PrestamoSnippets.PRESTAMO_REQUEST,
 						PrestamoSnippets.PRESTAMO_RESPONSE))
@@ -170,7 +170,7 @@ public class PrestamoApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("delete-prestamo", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						PrestamoSnippets.ID_PATH_PARAM));
 	}
 	
@@ -183,7 +183,7 @@ public class PrestamoApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("prestar-transacciones", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						PrestamoSnippets.PRESTAR_DEVOLVER_PARAMS,
 						PrestamoSnippets.PRESTAMO_RESPONSE))
 				.andReturn();
@@ -200,7 +200,7 @@ public class PrestamoApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("devolver-transacciones", 
-						ApiTestUtils.HTTP_REQUEST,
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						PrestamoSnippets.PRESTAR_DEVOLVER_PARAMS,
 						PrestamoSnippets.PRESTAMO_RESPONSE));
 		

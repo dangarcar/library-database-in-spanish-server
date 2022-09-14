@@ -68,7 +68,7 @@ public class PerfilApiTest {
 				.content(this.mapper.writeValueAsString(a)))
 				.andExpect(status().isCreated())
 				.andDo(document("insert-perfil", 
-						ApiTestUtils.HTTP_REQUEST,
+ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						PerfilSnippets.PERFIL_REQUEST,
 						PerfilSnippets.PERFIL_RESPONSE))
 				.andReturn();
@@ -89,7 +89,7 @@ public class PerfilApiTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(this.mapper.writeValueAsString(a)))
 				.andDo(document("update-perfil-perfiles",
-							ApiTestUtils.HTTP_REQUEST,
+	ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 							PerfilSnippets.PERFIL_REQUEST,
 							PerfilSnippets.PERFIL_RESPONSE,
 							PerfilSnippets.ID_PATH_PARAM))
@@ -105,7 +105,7 @@ public class PerfilApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("set-role", 
-						ApiTestUtils.HTTP_REQUEST,
+ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						PerfilSnippets.ROLE_PATH_PARAM));
 	}
 	
@@ -116,7 +116,7 @@ public class PerfilApiTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("delete-perfil-perfiles", 
-						ApiTestUtils.HTTP_REQUEST,
+ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 						PerfilSnippets.ID_PATH_PARAM));
 	}
 	

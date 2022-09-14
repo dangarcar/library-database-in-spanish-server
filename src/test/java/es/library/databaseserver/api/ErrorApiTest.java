@@ -49,7 +49,8 @@ public class ErrorApiTest {
 		mockMvc.perform(delete("/contenidos/{id}",-6872387682637L)
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().is5xxServerError())
-			.andDo(document("error", 
+			.andDo(document("error",
+					ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
 					responseFields(
 							fieldWithPath("statusCode")
 								.description("El código HTTP del error"),
