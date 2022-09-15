@@ -32,8 +32,8 @@ Esto creará un perfil administrador con las siguientes credenciales si no exist
 4. Ahora ve a un cliente REST y envíe una petición *POST* a `/auth/login` incluyendo el siguiente cuerpo de solicitud:
 ```json
 {
-	username:admin
-	password:admin
+	"username":"admin",
+	"password":"admin"
 }
 ```
 
@@ -54,8 +54,8 @@ También hay que incluir el header Authorization con el token "Bearer +{access t
 6. Envíe una petición *POST* a `/auth/login` incluyendo el siguiente cuerpo de solicitud:
 ```json
 {
-	username:{Ponga el email que ha registrado anteriormente}
-	password:{Ponga la contraseña que ha registrado anteriormente}
+	"username":{Ponga el email que ha registrado anteriormente},
+	"password":{Ponga la contraseña que ha registrado anteriormente}
 }
 ```
 
