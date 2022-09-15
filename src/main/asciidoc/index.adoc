@@ -140,7 +140,6 @@ La autorización de la API se hace a través de pares de <<access-token,access>>
 
 Son algo así:
 [[token-pair]]
-.Respuesta de ejemplo
 include::{snippets}/registrarse/http-response.adoc[]
 
 
@@ -190,36 +189,46 @@ Esta petición devuelve un <<access-refresh,par access/refresh token>> para tene
 Si el refresh token ha caducado también haga lo indicado en el siguiente <<login,apartado>>.
 
 
+
+
 [[public]]
 == Parte pública
 Para hacer peticiones a esta sección no necesitas autorización de ningún tipo.
 
 === GET `/contenidos/search`
 Este método sirve para buscar contenidos en la base de datos según los siguientes parámetros:
+[caption=,cols="1s,3"]
 include::{snippets}/get-contenidos-by-params/request-parameters.adoc[]
 
 Devuelve una lista de contenidos, ya sean <<libro-response,libros>>, <<audio-response,audios>> o <<video-response,vídeos>>.
 
 === GET `/contenidos/search/unique`
 Este método sirve para buscar diferentes modelos de contenidos según los siguientes parámetros:
+[caption=,cols="1s,3"]
 include::{snippets}/get-unique-contenidos-by-params/request-parameters.adoc[]
 
 Devuelve una lista de modelos de contenidos como la siguiente:
+[caption=,cols="1s,1,3"]
 include::{snippets}/get-unique-contenidos-by-params/response-fields.adoc[]
 
 === GET `/contenidos/search/topprestamos`
 Este método sirve para buscar los contenidos más prestados de la biblioteca.
 
 .Parámetro (por defecto 10, no obligatorio)
+[caption=,cols="1s,3"]
 include::{snippets}/get-contenidos-top-prestamos/request-parameters.adoc[]
 
 Devuelve una lista de contenidos, ya sean <<libro-response,libros>>, <<audio-response,audios>> o <<video-response,vídeos>>.
 
 === GET `/contenidos/search/id/{id}`
 Busca un contenido con la id del parámetro id:
+[caption=,cols="1s,3"]
 include::{snippets}/get-contenido-by-id/path-parameters.adoc[]
 
 Devuelve un <<tipos-contenidos,contenido>> o un error 404 si no ha sido encontrado.
+
+
+
 
 [[user]]
 == Parte para usuarios
@@ -227,8 +236,10 @@ Para hacer peticiones a esta sección se necesita una <<seguridad,autorización>
 
 === GET `/user`
 Este método devuelve la información completa del perfil al cual pertenece el token de autorización, con la siguiente estructura:
+[caption=,cols="1s,1,3"]
 include::{snippets}/get-my-info/response-fields.adoc[]
 
+[[update-perfil]]
 === PUT `/user`
 Este método sirve para actualizar la información de tu perfil basado en el token de autorización.
 Se debe incluir un cuerpo de solicitud como el siguiente:
@@ -237,10 +248,200 @@ include::{snippets}/update-my-perfil/request-fields.adoc[]
 
 Devolverá un <<perfil-response,perfil>>
 
+[[logout]]
+=== POST `/user/logout`
+Este método sirve para cerrar sesión del usuario, determinado en el token de autorización.
+
+[[delete-perfil]]
+=== DELETE `/user/delete`
+Este método hace lo mismo que <<logout,logout>> además de eliminar el perfil de la base de datos.
+
+=== GET `/user/prestamos`
+Este método devuelve los contenidos que actualmente tiene en préstamo el perfil al que pertenece el token de autorización.
+
+El cuerpo de respuesta será una lista de contenidos, ya sean <<libro-response,libros>>, <<audio-response,audios>> o <<video-response,vídeos>>.
+
+=== GET `/user/prestamos/historial`
+Este método devuelve los contenidos que el perfil al que pertenece el token de autorización ha cogido prestados con anterioridad, pero ya ha devuelto.
+
+El cuerpo de respuesta será una lista de contenidos, ya sean <<libro-response,libros>>, <<audio-response,audios>> o <<video-response,vídeos>>.
+
+=== GET `/user/prestamos/todos`
+Este método devuelve los préstamos que el perfil al que pertenece el token de autorización ha hecho desde que está regisrtado en la biblioteca, ya sea que hayan sido devueltos o no.
+
+El cuerpo de respuesta será una lista de <<prestamo-response,préstamos>>
+
+[[prestar]]
+=== POST `/user/prestar/{id}`
+Este método coge en préstamo el contenido con id del parámetro id para el perfil propietario del token de autorización.
+[caption=,cols="1s,3"]
+include::{snippets}/prestar-user/path-parameters.adoc[]
+
+Devuelve el <<prestamo-response,préstamo>> resultante de la petición.
+
+[[devolver]]
+=== POST `/user/devolver/{id}`
+Este método devuelve el contenido con id del parámetro id para el perfil propietario del token de autorización.
+[caption=,cols="1s,3"]
+include::{snippets}/devolver-user/path-parameters.adoc[]
+
+Devuelve el <<prestamo-response,préstamo>> resultante de la devolución.
+
+
+
+
 [[staff]]
 == Parte para trabajadores
+Para hacer peticiones a esta sección se necesita una <<seguridad,autorización>> hecha con un perfil que tenga <<roles,rol de trabajador (ROLE_STAFF)>>
+
+=== POST `/contenidos`
+Este método sirve para crear un nuevo contenido en la base de datos.
+
+El cuerpo de la solicitud (contenido que se creará) puede ser un <<libro-request,libros>>, un <<audio-request,audios>> o un <<video-request,vídeos>>.
+
+El cuerpo de la repuesta (contenido que se ha creado) será <<libro-response,libros>>, <<audio-response,audios>> o <<video-response,vídeos>>.
+
+=== PUT `/contenidos/{id}`
+Este método sirve para actualizar los datos de un contenido de la base de datos según su id, especificado en el parámetro id:
+[caption=,cols="1s,3"]
+include::{snippets}/update-contenido/path-parameters.adoc[]
+
+El cuerpo de la solicitud (contenido completo con los nuevos datos) puede ser un <<libro-request,libros>>, un <<audio-request,audios>> o un <<video-request,vídeos>>.
+
+El cuerpo de la repuesta (contenido modificado) será <<libro-response,libros>>, <<audio-response,audios>> o <<video-response,vídeos>>.
+
+=== DELETE `/contenidos/{id}`
+Este método sirve para borrar un contenido de la base de datos según su id, especificado en el parámetro id:
+[caption=,cols="1s,3"]
+include::{snippets}/delete-contenido/path-parameters.adoc[]
+
+=== GET `/perfiles/search`
+Este método devuelve una lista de <<perfil-response,perfiles>> basado en los siguiente parámetros:
+[caption=,cols="1s,3"]
+include::{snippets}/get-perfil-by-params/request-parameters.adoc[]
+
+=== GET `/perfiles/search/id/{id}`
+Este método busca un perfil basado en el parámetro id:
+[caption=,cols="1s,3"]
+include::{snippets}/get-perfil-by-id/path-parameters.adoc[]
+
+Devuelve un <<perfil-response,perfiles>> o un error 404.
+
+=== GET `/perfiles/search/username/{username}`
+Este método busca un perfil basado en el parámetro username:
+[caption=,cols="1s,3"]
+include::{snippets}/get-perfil-by-username/path-parameters.adoc[]
+
+Devuelve un <<perfil-response,perfiles>> o un error 404.
+
+=== GET `/prestamos/search`
+Este método devuelve una lista de <<prestamo-response,préstamos>> basado en los siguientes parámetros:
+[caption=,cols="1s,3"]
+include::{snippets}/get-prestamos-by-params/request-parameters.adoc[]
+
+=== GET `/prestamos/search/id/{id}`
+Este método busca un préstamo basado el el parámetro id:
+[caption=,cols="1s,3"]
+include::{snippets}/get-prestamo-by-id/path-parameters.adoc[]
+
+Devuelve un <<prestamo-response,préstamo>> o un error 404.
+
+[[prestar-trans]]
+=== POST `/prestar`
+Este método sirve para que el perfil con la id del parámetro "perfil" coja prestado el contenido con la id del parámetro "contenido".
+.Parámetros de la solicitud
+[caption=,cols="1s,3"]
+include::{snippets}/prestar-transacciones/request-parameters.adoc[]
+
+Devuelve el <<prestamo-response,préstamo>> resultante de la petición.
+
+NOTE: Para coger algo prestado para uno mismo, se recomienda usar <<prestar,este otro método>>.
+
+[[devolver-trans]]
+=== POST `/devolver`
+Este método sirve para que el perfil con la id del parámetro "perfil" devuelva el contenido con la id del parámetro "contenido".
+.Parámetros de la solicitud
+[caption=,cols="1s,3"]
+include::{snippets}/devolver-transacciones/request-parameters.adoc[]
+
+Devuelve el <<prestamo-response,préstamo>> resultante de la devolución.
+
+NOTE: Para devolver algo por uno mismo, se recomienda usar <<devolver,este otro método>>
+
+
+
 
 [[admin]]
 == Parte para administradores
+Para hacer peticiones a esta sección se necesita una <<seguridad,autorización>> hecha con un perfil que tenga <<roles,rol de administrador (ROLE_ADMIN)>> 
 
-Acceso a <<audio-response, el audio>>
+=== PUT `/auth/logout/{username}`
+Este método sirve para cerrar la sesión de un perfil determinado por el parámetro username:
+[caption=,cols="1s,3"]
+include::{snippets}/logout/path-parameters.adoc[]
+
+NOTE: Para cerrar la sesión de uno mismo, se recomienda usar <<logout,este otro método>>
+
+[[delete-auth]]
+=== DELETE `/auth/delete/{username}`
+Este método sirve para eliminar un perfil y cerrar su sesión determinado por el parámetro username:
+[caption=,cols="1s,3"]
+include::{snippets}/delete-perfil-logout/path-parameters.adoc[]
+
+NOTE: Para borrar el perfil de uno mismo, se recomienda usar <<delete-perfil,este otro método>>
+
+=== POST `/perfiles`
+Este método sirve para crear un nuevo perfil en la base de datos.
+
+El cuerpo de la solicitud (perfil que se creará) es un <<perfil-request,perfil>>
+
+El cuerpo de la respuesta (perfil que se ha creado) es un <<perfil-response,perfil>>
+
+NOTE: Si se quiere crear un perfil de usuario, se recomienda usar <<signup,este otro método>>, que además abre una sesión.
+
+=== PUT `/perfiles/{id}`
+Este método sirve para actualizar los datos de un perfil determinado por el parámetro id:
+[caption=,cols="1s,3"]
+include::{snippets}/update-perfil-perfiles/path-parameters.adoc[]
+
+El cuerpo de la solicitud (perfil completo con los nuevos datos) es un <<perfil-request,perfil>>
+
+El cuerpo de la respuesta (perfil modificado) es un <<perfil-response,perfil>>
+
+NOTE: Si se quiere actualizar el perfil de uno mismo, se recomienda usar <<update-perfil,este otro método>>.
+
+=== PUT `/perfiles/roles/{id}/{role}`
+Este método sirve para modificar el rol de un usuario en la base de datos.
+.Parámetros de la solicitud
+[caption=,cols="1s,3"]
+include::{snippets}/set-role/path-parameters.adoc[]
+
+=== DELETE `/perfiles/{id}`
+Este método sirve para eliminar un perfil de la base de datos según su parámetro id:
+[caption=,cols="1s,3"]
+include::{snippets}/delete-perfil-perfiles/path-parameters.adoc[]
+
+NOTE: Se recomienda usar <<delete-auth,este otro método>> para eliminar los perfiles ya que también cierra si sesión.
+
+=== POST `/prestamos`
+Este método sirve para crear un nuevo préstamo en la base de datos.
+
+El cuerpo de la solicitud (préstamo que se creará) es un <<prestamo-request,préstamo>>
+
+El cuerpo de la respuesta (préstamo que se ha creado) es un <<prestamo-response,préstamo>>
+
+NOTE: Se recomienda usar <<prestar,este otro método>> o <<prestar-trans,este otro>> para crear un préstamo.
+
+=== PUT `/prestamos/{id}`
+Este método sirve para actualizar los datos de un préstamo determinado por el parámetro id:
+[caption=,cols="1s,3"]
+include::{snippets}/update-prestamo/path-parameters.adoc[]
+
+El cuerpo de la solicitud (préstamo completo con los nuevos datos) es un <<prestamo-request,préstamo>>
+
+El cuerpo de la respuesta (préstamo modificado) es un <<prestamo-response,préstamo>>
+
+=== DELETE `/prestamos/{id}`
+Este método sirve para eliminar un préstamo de la base de datos según su parámetro id:
+[caption=,cols="1s,3"]
+include::{snippets}/delete-prestamo/path-parameters.adoc[]

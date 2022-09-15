@@ -177,24 +177,22 @@ public class PersonalSpaceApiTest {
 	@Test
 	@WithMockUser(username = username, password = password, authorities = "ROLE_USER")
 	void logoutTest() throws Exception {
-		mockMvc.perform(post("/user/logout/{username}", username)
+		mockMvc.perform(post("/user/logout")
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound())
+				.andExpect(status().isOk())
 				.andDo(document("logout-user", 
-						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
-						PersonalSpaceSnippets.USERNAME_PATH_PARAM));
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE));
 	}
 	
 	@Order(9)
 	@Test
 	@WithMockUser(username = username, password = password, authorities = "ROLE_USER")
 	void deletePerfilTest() throws Exception {
-		mockMvc.perform(delete("/user/{username}", username)
+		mockMvc.perform(delete("/user/delete")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andDo(document("delete-perfil-user", 
-						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE,
-						PersonalSpaceSnippets.USERNAME_PATH_PARAM));
+						ApiTestUtils.HTTP_REQUEST,ApiTestUtils.HTTP_RESPONSE));
 	}
 	
 	//CREAR Y BORRAR LO NECESARIO PARA EL CONTENIDO

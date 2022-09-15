@@ -123,7 +123,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	
 	@Override
 	public void logout(String username) {		
-		refreshTokenService.deleteRefreshTokenByUsername(username);
+		try {
+			refreshTokenService.deleteRefreshTokenByUsername(username);
+		} catch (RefreshTokenNotFoundException e) {
+			logger.info("El usuario {} no tenía refresh token", username);
+		}
 	}
 	
 	@Override
