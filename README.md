@@ -61,7 +61,7 @@ También hay que incluir el header Authorization con el token "Bearer +{access t
 
 Guarde los access y refresh tokens para poder acceder a toda la API.
 
-7. Por último, elimine el administrador por defecto de la base de datos enviando una petición a `user/delete` añadiendo el header Authorization con el token "Bearer +{access token(del administrador por defecto)}.
+7. Por último, elimine el administrador por defecto de la base de datos enviando una petición a `/user/delete` añadiendo el header Authorization con el token "Bearer +{access token(del administrador por defecto)}.
 
 8. Ahora ya podrá navegar por toda la API siendo el administrador y sin el riesgo de que alguien entre con el adminstrador por defecto a su biblioteca.
 
