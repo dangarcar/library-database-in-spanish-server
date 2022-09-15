@@ -16,7 +16,7 @@ Sirve como servidor de una app que controla los préstamos, contenidos y usuario
 ## Empezando a usar Library Database In Spanish (SERVER)
 Al empezar a usar el programa, se creará un administrador de base para poder acceder a toda la API, pero se recomienda cambiarlo por uno mismo, el administrador del sitema de la biblioteca.
 
-1. En `+src/main/resources/application.properties+`, cambia el valor de `jwt.issuer` a tu compañía, `jwt.secret` a una string de al menos 256 bits.
+1. En `src/main/resources/application.properties`, cambia el valor de `jwt.issuer` a tu compañía, `jwt.secret` a una string de al menos 256 bits.
 
 2. Abre una terminal en el directorio del proyecto.
 
