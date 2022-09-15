@@ -10,6 +10,8 @@ Daniel García Carretero
 == Visión general
 {nombre-programa} es un programa que sirve como servidor de una app que controla los préstamos, contenidos y usuarios de una biblioteca, teniendo funcionalidades para usuarios anónimos, clientes de la biblioteca, trabajadores de la biblioteca y administradores del sistema.
 
+NOTE: Se recomienda leer el Empezando del README.md antes de ejecutar el programa. 
+
 [[ejecutar-app]]
 === Cómo ejecutar la aplicación
 1. En `+src/main/resources/application.properties+`, cambia el valor de `+jwt.issuer+` a tu compañía, `+jwt.secret+` a una string de al menos 256 bits.
@@ -445,3 +447,10 @@ El cuerpo de la respuesta (préstamo modificado) es un <<prestamo-response,prés
 Este método sirve para eliminar un préstamo de la base de datos según su parámetro id:
 [caption=,cols="1s,3"]
 include::{snippets}/delete-prestamo/path-parameters.adoc[]
+
+== Contribuir
+Si hace alguna modificación o añade algo al proyecto, escriba el test para generar el snippet de https://docs.spring.io/spring-restdocs/docs/current/reference/html5/[Spring Rest Docs] y añádalo a la plantilla localizada en src/main/asciidoc/index.adoc.
+
+Luego ejecuta el siguiente comando en el directorio del proyecto para generar el nuevo index.html:
+[source,bash]
+./mvnw test

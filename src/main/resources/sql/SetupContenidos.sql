@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS "Contenidos" (
 	"Titulo"	REAL NOT NULL,
 	"Autor"	TEXT,
 	"Descripcion"	TEXT,
-	"Año"	INTEGER,
+	"Year"	INTEGER,
 	"Idioma"	TEXT,
 	"Soporte"	TEXT,
 	"DiasDePrestamo"	INTEGER NOT NULL,
