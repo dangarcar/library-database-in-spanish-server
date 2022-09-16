@@ -17,6 +17,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import es.library.databaseserver.perfil.Perfil;
 import es.library.databaseserver.perfil.Roles;
@@ -26,6 +27,9 @@ import es.library.databaseserver.perfil.search.dao.PerfilSearchDAO;
 @Configuration
 public class SQliteDatabaseConfig {
 	private Logger logger = LogManager.getLogger(getClass());
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	//Base database
 	
@@ -96,7 +100,7 @@ public class SQliteDatabaseConfig {
 					"Base Admin", 
 					LocalDate.of(1, 1, 1), 
 					"admin", 
-					"admin", 
+					passwordEncoder.encode("admin"), 
 					Roles.ROLE_ADMIN);
 			
 			//Si no existe ningún administrador en la bbdd
