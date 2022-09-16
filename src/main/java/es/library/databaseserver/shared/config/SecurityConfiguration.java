@@ -1,4 +1,4 @@
-package es.library.databaseserver.security;
+package es.library.databaseserver.shared.config;
 
 import java.time.ZonedDateTime;
 
@@ -20,6 +20,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import es.library.databaseserver.security.JWTUtils;
+import es.library.databaseserver.security.PerfilAuthorizationFilter;
+import es.library.databaseserver.security.PerfilUserDetailsService;
 import es.library.databaseserver.security.exceptions.ExceptionHandlerFilter;
 import es.library.databaseserver.shared.exceptions.ApiError;
 
@@ -35,7 +38,7 @@ public class SecurityConfiguration {
 	@Autowired
 	private JWTUtils jwtUtils;
 	
-	@Bean
+	@Bean("passwordEncoder")
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
@@ -70,8 +73,6 @@ public class SecurityConfiguration {
 					"/contenidos/search/**")
 				.permitAll()
 			.antMatchers(
-					"/auth/logout/**",
-					"/auth/delete/**",
 					"/user/**")
 				.hasRole("USER")
 			.antMatchers(

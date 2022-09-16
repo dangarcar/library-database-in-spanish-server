@@ -13,12 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.crud.service.ContenidoService;
-import es.library.databaseserver.contenido.exceptions.ContenidoAlreadyExistsException;
-import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
-import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException;
-import es.library.databaseserver.contenido.exceptions.IllegalContenidoException;
-import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
-import es.library.databaseserver.contenido.exceptions.NotValidTypeContenidoException;
 
 @RequestMapping("/contenidos")
 @RestController
@@ -29,17 +23,17 @@ public class ContenidoController {
 	
 	@PostMapping
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public Contenido insertContenido(@RequestBody Contenido contenido) throws DatabaseContenidoException, NotValidTypeContenidoException, NotValidSoporteException, ContenidoAlreadyExistsException{
+	public Contenido insertContenido(@RequestBody Contenido contenido){
 		return contenidoService.insertContenido(contenido);
 	}
 	
-	@DeleteMapping(path = "{id}")
-	public void deleteContenidoByID(@PathVariable(name = "id") Long ID) throws ContenidoNotFoundException, NotValidTypeContenidoException, NotValidSoporteException {
+	@DeleteMapping(path = "/{id}")
+	public void deleteContenidoByID(@PathVariable(name = "id") Long ID) {
 		contenidoService.deleteContenidoByID(ID);
 	}
 	
-	@PutMapping(path = "{id}")
-	public Contenido updateContenidoByID(@PathVariable(name = "id") Long ID, @RequestBody Contenido contenido) throws ContenidoNotFoundException, NotValidTypeContenidoException, NotValidSoporteException, DatabaseContenidoException, ContenidoAlreadyExistsException, IllegalContenidoException{
+	@PutMapping(path = "/{id}")
+	public Contenido updateContenidoByID(@PathVariable(name = "id") Long ID, @RequestBody Contenido contenido) {
 		return contenidoService.updateContenidoByID(ID, contenido);
 	}
 }

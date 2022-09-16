@@ -1,0 +1,13 @@
+|===
+| Rol | Descripción
+
+|`+ROLE_USER+`
+|Los usuarios normales de la biblioteca
+
+|`+ROLE_STAFF+`
+|Los trabajadores de la biblioteca
+
+|`+ROLE_ADMIN+`
+|Los administradores de la biblioteca
+
+|===

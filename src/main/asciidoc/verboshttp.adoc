@@ -1,0 +1,11 @@
+|===
+| Verbo | Uso
+| `+GET+`
+| Usado para conseguir un recurso existente
+| `+POST+`
+| Usado para crear un nuevo recurso
+| `+PUT+`
+| Usado para actualizar un recurso
+| `+DELETE+`
+| Usado para eliminar un recurso existente
+|===

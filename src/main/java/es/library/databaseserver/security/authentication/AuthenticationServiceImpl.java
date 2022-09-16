@@ -13,9 +13,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import es.library.databaseserver.perfil.Perfil;
+import es.library.databaseserver.perfil.Roles;
 import es.library.databaseserver.perfil.crud.service.PerfilService;
 import es.library.databaseserver.security.JWTUtils;
-import es.library.databaseserver.security.exceptions.ExpiredTokenException;
+import es.library.databaseserver.security.exceptions.ExpiredRefreshTokenException;
 import es.library.databaseserver.security.exceptions.NotValidPasswordException;
 import es.library.databaseserver.security.exceptions.RefreshTokenNotFoundException;
 import es.library.databaseserver.security.model.JWTTokenPair;
@@ -48,6 +49,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	
 	@Override
 	public JWTTokenPair signUp(Perfil perfil) {
+		perfil.setRole(Roles.ROLE_USER);
 		String rawPassword = perfil.getContrasena();
 		JWTTokenPair response;
 		//Inserto el perfil en la base de datos
@@ -95,7 +97,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			try {
 				refreshToken = refreshTokenService.getRefreshTokenByUsername(credentials.getUsername()).getToken();
 			}
-			catch (ExpiredTokenException e) {
+			catch (ExpiredRefreshTokenException e) {
 				logger.debug("El refresh token expiró, se procederá a crear uno nuevo");
 				refreshTokenService.deleteRefreshTokenByUsername(credentials.getUsername());
 				refreshToken = refreshTokenService.createNewTokenFromUsername(credentials.getUsername()).getToken();
@@ -121,7 +123,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	
 	@Override
 	public void logout(String username) {		
-		refreshTokenService.deleteRefreshTokenByUsername(username);
+		try {
+			refreshTokenService.deleteRefreshTokenByUsername(username);
+		} catch (RefreshTokenNotFoundException e) {
+			logger.info("El usuario {} no tenía refresh token", username);
+		}
 	}
 	
 	@Override

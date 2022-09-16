@@ -1,0 +1,456 @@
+= Library Database in Spanish API Documentation
+Daniel García Carretero
+:source-highlighter: highlight.js
+:nombre-programa: Library Database in Spanish
+:toc: left
+:toc-title: Tabla de contenidos
+:toclevels: 5
+
+[[vision-general]]
+== Visión general
+{nombre-programa} es un programa que sirve como servidor de una app que controla los préstamos, contenidos y usuarios de una biblioteca, teniendo funcionalidades para usuarios anónimos, clientes de la biblioteca, trabajadores de la biblioteca y administradores del sistema.
+
+NOTE: Se recomienda leer el Empezando del README.md antes de ejecutar el programa. 
+
+[[ejecutar-app]]
+=== Cómo ejecutar la aplicación
+1. En `+src/main/resources/application.properties+`, cambia el valor de `+jwt.issuer+` a tu compañía, `+jwt.secret+` a una string de al menos 256 bits.
+
+2. Abre una terminal en el directorio del proyecto.
+
+3. Ejecuta el siguiente comando para ejecutar la aplicación:
+[source,bash]
+./mvnw spring-boot:run
+
+=== Consumir la API
+La API de {nombre-programa} es una https://es.wikipedia.org/wiki/Transferencia_de_Estado_Representacional[API REST], por lo que intenta seguir los estándares de HTTP y REST.
+
+[[verbos-http]]
+==== Verbos HTTP
+
+[caption=,cols="1s,2"]
+include::verboshttp.adoc[]
+
+[[status-code]]
+==== Códigos de respuesta HTTP
+
+[caption=,cols="1s,2"]
+include::statuscode.adoc[]
+
+[NOTE] 
+====
+Con los códigos 4xx y 5xx se adjuntará cuerpo de respuesta específico con la siguiente estructura:
+
+include::{snippets}/error/response-fields.adoc[]
+
+Si son 2xx, la respuesta será la de la solicitud.
+====
+
+[[funcionamiento]]
+=== Cómo funciona {nombre-programa}
+
+[[perfiles]]
+==== Perfiles
+Debido a que los usuarios de la biblioteca necesitan ser registrados, {nombre-programa} tiene una sección dedicada a los perfiles.
+
+[id=perfil-response,caption=,cols="1s,1,3"]
+.Respuesta Perfil
+include::{snippets}/insert-perfil/response-fields.adoc[]
+
+[id=perfil-request,caption=,cols="1s,1,3"]
+.Solicitud Perfil
+include::{snippets}/insert-perfil/request-fields.adoc[]
+
+[[roles]]
+===== Roles
+Como los perfiles de una bibloteca pueden desempeñar diferentes papeles, hay tres tipos de usuarios:
+
+[caption=,cols="1s,2"]
+include::roles.adoc[]
+
+[[contenidos]]
+==== Contenidos
+Debido a que una biblioteca tiene contenidos que prestar, {nombre-programa} tiene una sección en la que permite buscar y controlar los contenidos.
+
+[[tipos-contenidos]]
+===== Tipos de contenidos
+Como los contenidos de una biblioteca pueden ser muy variados, {nombre-programa} ha hecho tres tipos principales en los que pueden encajar prácticamente todos los contenidos de una biblioteca.
+
+[[libro]]
+====== Libro
+Este grupo incluye a todos los contenidos que contienen texto, ya sean libros en papel o e-books.
+
+[id=libro-response,caption=,cols="1s,1,3"]
+.Respuesta Libro
+include::{snippets}/insert-libro/response-fields.adoc[]
+
+[id=libro-request,caption=,cols="1s,1,3"]
+.Solicitud Libro
+include::{snippets}/insert-libro/request-fields.adoc[]
+
+[[audio]]
+====== Audio
+Este grupo incluye a todos los contenidos que se basen en sonido, como los discos de vinilo, etc.
+
+[id=audio-response,caption=,cols="1s,1,3"]
+.Respuesta Audio
+include::{snippets}/insert-audio/response-fields.adoc[]
+
+[id=audio-request,caption=,cols="1s,1,3"]
+.Solicitud Audio
+include::{snippets}/insert-audio/request-fields.adoc[]
+
+[[video]]
+====== Vídeo
+Este grupo incluye a todos los contenidos audiovisuales, como las películas, los documentales, etc.
+
+[id=video-response,caption=,cols="1s,1,3"]
+.Respuesta Vídeo
+include::{snippets}/insert-video/response-fields.adoc[]
+
+[id=video-request,caption=,cols="1s,1,3"]
+.Solicitud Vídeo
+include::{snippets}/insert-video/request-fields.adoc[]
+
+[[soporte]]
+===== Soporte
+Los soportes en los que los contenidos pueden estar:
+
+[caption=,cols="1s,3,1"]
+include::soporte.adoc[]
+
+[[prestamos]]
+==== Préstamos
+Debido a que {nombre-programa} es una biblioteca hecha para prestar libros, hay una sección dedicada a los préstamos.
+
+[id=prestamo-response,caption=,cols="1s,1,3"]
+.Respuesta Préstamo
+include::{snippets}/insert-prestamo/response-fields.adoc[]
+
+[id=prestamo-request,caption=,cols="1s,1,3"]
+.Solicitud Préstamo
+include::{snippets}/insert-prestamo/request-fields.adoc[]
+
+[[seguridad]]
+=== Autorización y autenticación
+{nombre-programa} utiliza tokens para la autorización de solicitudes.
+Aun así, hay partes de la API que sí <<public,son accesibles sin autorización>>
+
+[[access-refresh]]
+==== Pares access/refresh token
+La autorización de la API se hace a través de pares de <<access-token,access>> y <<refresh-token,refresh>> tokens
+
+Son algo así:
+[[token-pair]]
+include::{snippets}/registrarse/http-response.adoc[]
+
+
+[[access-token]]
+===== Access token
+Los access token son https://jwt.io/[JWT] que contienen información sobre el usuario y sirven para autorizar las solicitudes.
+
+En cada petición hay que añadir un header Authorization con la siguiente estructura:
+[source,http,options="nowrap"]
+----
+Authorization: Bearer {access-token}
+----
+
+Solo tienen validez por cinco minutos, por lo que deben ser <<refresh-token,refrescados>> y no necesitan ser guardados con gran seguridad
+
+[[refresh-token]]
+===== Refresh token
+Los refresh token son tokens guardados en base de datos que sirven para conseguir un nuevo access token, por lo que su validez es mayor (una semana) y debe ser guardado con seguridad por ello.
+
+Para aprender a usarlos mire <<new-token,Cómo conseguir un nuevo token una vez ha caducado>>
+
+
+[[signup]]
+==== Cómo registrarse
+Para registrarse en el sistema, envíe una petición *POST* a `+/auth/signup+` incluyendo cuerpo de solicitud con la siguiente estructura:
+[caption=,cols="1s,1,3"]
+include::{snippets}/registrarse/request-fields.adoc[]
+
+Se creará un perfil a partir de tu cuerpo de solicitud con <<roles,rol usuario>>, si es trabajador o administrador de la biblioteca póngase en contacto con un administrador para tener el rol que le pertenece.
+
+Se devolverá un <<access-refresh,par access/refresh token>> para tener autorización a los servicios de la API.
+
+[[login]]
+==== Cómo abrir sesión una vez que ya se está registrado
+Para abrir sesión y conseguir los tokens una vez que ya se había registrado en el sistema con anterioridad y su refresh token ha caducado, envíe una petición *POST* a `+/auth/login+` incluyendo cuerpo de solicitud con la siguiente estructura:
+[caption=,cols="1s,1,3"]
+include::{snippets}/login/request-fields.adoc[]
+
+Se devolverá un <<access-refresh,par access/refresh token>> para tener autorización a los servicios de la API.
+
+[[new-token]]
+==== Cómo conseguir un nuevo token una vez ha caducado
+Cuando el access token ha caducado, hay que enviar una petición *GET* a `+/auth/token/refresh/{token}+` donde {token} es el refresh token entregado al registrarse.
+
+Esta petición devuelve un <<access-refresh,par access/refresh token>> para tener autorización a los servicios de la API. Habrá que cambiar los actuales access y refresh tokens a los devueltos por esta petición, ya que los antiguos se eliminan.
+
+Si el refresh token ha caducado también haga lo indicado en el siguiente <<login,apartado>>.
+
+
+
+
+[[public]]
+== Parte pública
+Para hacer peticiones a esta sección no necesitas autorización de ningún tipo.
+
+=== GET `/contenidos/search`
+Este método sirve para buscar contenidos en la base de datos según los siguientes parámetros:
+[caption=,cols="1s,3"]
+include::{snippets}/get-contenidos-by-params/request-parameters.adoc[]
+
+Devuelve una lista de contenidos, ya sean <<libro-response,libros>>, <<audio-response,audios>> o <<video-response,vídeos>>.
+
+=== GET `/contenidos/search/unique`
+Este método sirve para buscar diferentes modelos de contenidos según los siguientes parámetros:
+[caption=,cols="1s,3"]
+include::{snippets}/get-unique-contenidos-by-params/request-parameters.adoc[]
+
+Devuelve una lista de modelos de contenidos como la siguiente:
+[caption=,cols="1s,1,3"]
+include::{snippets}/get-unique-contenidos-by-params/response-fields.adoc[]
+
+=== GET `/contenidos/search/topprestamos`
+Este método sirve para buscar los contenidos más prestados de la biblioteca.
+
+.Parámetro (por defecto 10, no obligatorio)
+[caption=,cols="1s,3"]
+include::{snippets}/get-contenidos-top-prestamos/request-parameters.adoc[]
+
+Devuelve una lista de contenidos, ya sean <<libro-response,libros>>, <<audio-response,audios>> o <<video-response,vídeos>>.
+
+=== GET `/contenidos/search/id/{id}`
+Busca un contenido con la id del parámetro id:
+[caption=,cols="1s,3"]
+include::{snippets}/get-contenido-by-id/path-parameters.adoc[]
+
+Devuelve un <<tipos-contenidos,contenido>> o un error 404 si no ha sido encontrado.
+
+
+
+
+[[user]]
+== Parte para usuarios
+Para hacer peticiones a esta sección se necesita una <<seguridad,autorización>> hecha con un perfil que tenga <<roles,rol de usuario (ROLE_USER)>> 
+
+=== GET `/user`
+Este método devuelve la información completa del perfil al cual pertenece el token de autorización, con la siguiente estructura:
+[caption=,cols="1s,1,3"]
+include::{snippets}/get-my-info/response-fields.adoc[]
+
+[[update-perfil]]
+=== PUT `/user`
+Este método sirve para actualizar la información de tu perfil basado en el token de autorización.
+Se debe incluir un cuerpo de solicitud como el siguiente:
+[caption=,cols="1s,1,3"]
+include::{snippets}/update-my-perfil/request-fields.adoc[]
+
+Devolverá un <<perfil-response,perfil>>
+
+[[logout]]
+=== POST `/user/logout`
+Este método sirve para cerrar sesión del usuario, determinado en el token de autorización.
+
+[[delete-perfil]]
+=== DELETE `/user/delete`
+Este método hace lo mismo que <<logout,logout>> además de eliminar el perfil de la base de datos.
+
+=== GET `/user/prestamos`
+Este método devuelve los contenidos que actualmente tiene en préstamo el perfil al que pertenece el token de autorización.
+
+El cuerpo de respuesta será una lista de contenidos, ya sean <<libro-response,libros>>, <<audio-response,audios>> o <<video-response,vídeos>>.
+
+=== GET `/user/prestamos/historial`
+Este método devuelve los contenidos que el perfil al que pertenece el token de autorización ha cogido prestados con anterioridad, pero ya ha devuelto.
+
+El cuerpo de respuesta será una lista de contenidos, ya sean <<libro-response,libros>>, <<audio-response,audios>> o <<video-response,vídeos>>.
+
+=== GET `/user/prestamos/todos`
+Este método devuelve los préstamos que el perfil al que pertenece el token de autorización ha hecho desde que está regisrtado en la biblioteca, ya sea que hayan sido devueltos o no.
+
+El cuerpo de respuesta será una lista de <<prestamo-response,préstamos>>
+
+[[prestar]]
+=== POST `/user/prestar/{id}`
+Este método coge en préstamo el contenido con id del parámetro id para el perfil propietario del token de autorización.
+[caption=,cols="1s,3"]
+include::{snippets}/prestar-user/path-parameters.adoc[]
+
+Devuelve el <<prestamo-response,préstamo>> resultante de la petición.
+
+[[devolver]]
+=== POST `/user/devolver/{id}`
+Este método devuelve el contenido con id del parámetro id para el perfil propietario del token de autorización.
+[caption=,cols="1s,3"]
+include::{snippets}/devolver-user/path-parameters.adoc[]
+
+Devuelve el <<prestamo-response,préstamo>> resultante de la devolución.
+
+
+
+
+[[staff]]
+== Parte para trabajadores
+Para hacer peticiones a esta sección se necesita una <<seguridad,autorización>> hecha con un perfil que tenga <<roles,rol de trabajador (ROLE_STAFF)>>
+
+=== POST `/contenidos`
+Este método sirve para crear un nuevo contenido en la base de datos.
+
+El cuerpo de la solicitud (contenido que se creará) puede ser un <<libro-request,libros>>, un <<audio-request,audios>> o un <<video-request,vídeos>>.
+
+El cuerpo de la repuesta (contenido que se ha creado) será <<libro-response,libros>>, <<audio-response,audios>> o <<video-response,vídeos>>.
+
+=== PUT `/contenidos/{id}`
+Este método sirve para actualizar los datos de un contenido de la base de datos según su id, especificado en el parámetro id:
+[caption=,cols="1s,3"]
+include::{snippets}/update-contenido/path-parameters.adoc[]
+
+El cuerpo de la solicitud (contenido completo con los nuevos datos) puede ser un <<libro-request,libros>>, un <<audio-request,audios>> o un <<video-request,vídeos>>.
+
+El cuerpo de la repuesta (contenido modificado) será <<libro-response,libros>>, <<audio-response,audios>> o <<video-response,vídeos>>.
+
+=== DELETE `/contenidos/{id}`
+Este método sirve para borrar un contenido de la base de datos según su id, especificado en el parámetro id:
+[caption=,cols="1s,3"]
+include::{snippets}/delete-contenido/path-parameters.adoc[]
+
+=== GET `/perfiles/search`
+Este método devuelve una lista de <<perfil-response,perfiles>> basado en los siguiente parámetros:
+[caption=,cols="1s,3"]
+include::{snippets}/get-perfil-by-params/request-parameters.adoc[]
+
+=== GET `/perfiles/search/id/{id}`
+Este método busca un perfil basado en el parámetro id:
+[caption=,cols="1s,3"]
+include::{snippets}/get-perfil-by-id/path-parameters.adoc[]
+
+Devuelve un <<perfil-response,perfiles>> o un error 404.
+
+=== GET `/perfiles/search/username/{username}`
+Este método busca un perfil basado en el parámetro username:
+[caption=,cols="1s,3"]
+include::{snippets}/get-perfil-by-username/path-parameters.adoc[]
+
+Devuelve un <<perfil-response,perfiles>> o un error 404.
+
+=== GET `/prestamos/search`
+Este método devuelve una lista de <<prestamo-response,préstamos>> basado en los siguientes parámetros:
+[caption=,cols="1s,3"]
+include::{snippets}/get-prestamos-by-params/request-parameters.adoc[]
+
+=== GET `/prestamos/search/id/{id}`
+Este método busca un préstamo basado el el parámetro id:
+[caption=,cols="1s,3"]
+include::{snippets}/get-prestamo-by-id/path-parameters.adoc[]
+
+Devuelve un <<prestamo-response,préstamo>> o un error 404.
+
+[[prestar-trans]]
+=== POST `/prestar`
+Este método sirve para que el perfil con la id del parámetro "perfil" coja prestado el contenido con la id del parámetro "contenido".
+.Parámetros de la solicitud
+[caption=,cols="1s,3"]
+include::{snippets}/prestar-transacciones/request-parameters.adoc[]
+
+Devuelve el <<prestamo-response,préstamo>> resultante de la petición.
+
+NOTE: Para coger algo prestado para uno mismo, se recomienda usar <<prestar,este otro método>>.
+
+[[devolver-trans]]
+=== POST `/devolver`
+Este método sirve para que el perfil con la id del parámetro "perfil" devuelva el contenido con la id del parámetro "contenido".
+.Parámetros de la solicitud
+[caption=,cols="1s,3"]
+include::{snippets}/devolver-transacciones/request-parameters.adoc[]
+
+Devuelve el <<prestamo-response,préstamo>> resultante de la devolución.
+
+NOTE: Para devolver algo por uno mismo, se recomienda usar <<devolver,este otro método>>
+
+
+
+
+[[admin]]
+== Parte para administradores
+Para hacer peticiones a esta sección se necesita una <<seguridad,autorización>> hecha con un perfil que tenga <<roles,rol de administrador (ROLE_ADMIN)>> 
+
+=== PUT `/auth/logout/{username}`
+Este método sirve para cerrar la sesión de un perfil determinado por el parámetro username:
+[caption=,cols="1s,3"]
+include::{snippets}/logout/path-parameters.adoc[]
+
+NOTE: Para cerrar la sesión de uno mismo, se recomienda usar <<logout,este otro método>>
+
+[[delete-auth]]
+=== DELETE `/auth/delete/{username}`
+Este método sirve para eliminar un perfil y cerrar su sesión determinado por el parámetro username:
+[caption=,cols="1s,3"]
+include::{snippets}/delete-perfil-logout/path-parameters.adoc[]
+
+NOTE: Para borrar el perfil de uno mismo, se recomienda usar <<delete-perfil,este otro método>>
+
+=== POST `/perfiles`
+Este método sirve para crear un nuevo perfil en la base de datos.
+
+El cuerpo de la solicitud (perfil que se creará) es un <<perfil-request,perfil>>
+
+El cuerpo de la respuesta (perfil que se ha creado) es un <<perfil-response,perfil>>
+
+NOTE: Si se quiere crear un perfil de usuario, se recomienda usar <<signup,este otro método>>, que además abre una sesión.
+
+=== PUT `/perfiles/{id}`
+Este método sirve para actualizar los datos de un perfil determinado por el parámetro id:
+[caption=,cols="1s,3"]
+include::{snippets}/update-perfil-perfiles/path-parameters.adoc[]
+
+El cuerpo de la solicitud (perfil completo con los nuevos datos) es un <<perfil-request,perfil>>
+
+El cuerpo de la respuesta (perfil modificado) es un <<perfil-response,perfil>>
+
+NOTE: Si se quiere actualizar el perfil de uno mismo, se recomienda usar <<update-perfil,este otro método>>.
+
+=== PUT `/perfiles/roles/{id}/{role}`
+Este método sirve para modificar el rol de un usuario en la base de datos.
+.Parámetros de la solicitud
+[caption=,cols="1s,3"]
+include::{snippets}/set-role/path-parameters.adoc[]
+
+=== DELETE `/perfiles/{id}`
+Este método sirve para eliminar un perfil de la base de datos según su parámetro id:
+[caption=,cols="1s,3"]
+include::{snippets}/delete-perfil-perfiles/path-parameters.adoc[]
+
+NOTE: Se recomienda usar <<delete-auth,este otro método>> para eliminar los perfiles ya que también cierra si sesión.
+
+=== POST `/prestamos`
+Este método sirve para crear un nuevo préstamo en la base de datos.
+
+El cuerpo de la solicitud (préstamo que se creará) es un <<prestamo-request,préstamo>>
+
+El cuerpo de la respuesta (préstamo que se ha creado) es un <<prestamo-response,préstamo>>
+
+NOTE: Se recomienda usar <<prestar,este otro método>> o <<prestar-trans,este otro>> para crear un préstamo.
+
+=== PUT `/prestamos/{id}`
+Este método sirve para actualizar los datos de un préstamo determinado por el parámetro id:
+[caption=,cols="1s,3"]
+include::{snippets}/update-prestamo/path-parameters.adoc[]
+
+El cuerpo de la solicitud (préstamo completo con los nuevos datos) es un <<prestamo-request,préstamo>>
+
+El cuerpo de la respuesta (préstamo modificado) es un <<prestamo-response,préstamo>>
+
+=== DELETE `/prestamos/{id}`
+Este método sirve para eliminar un préstamo de la base de datos según su parámetro id:
+[caption=,cols="1s,3"]
+include::{snippets}/delete-prestamo/path-parameters.adoc[]
+
+== Contribuir
+Si hace alguna modificación o añade algo al proyecto, escriba el test para generar el snippet de https://docs.spring.io/spring-restdocs/docs/current/reference/html5/[Spring Rest Docs] y añádalo a la plantilla localizada en src/main/asciidoc/index.adoc.
+
+Luego ejecuta el siguiente comando en el directorio del proyecto para generar el nuevo index.html:
+[source,bash]
+./mvnw test

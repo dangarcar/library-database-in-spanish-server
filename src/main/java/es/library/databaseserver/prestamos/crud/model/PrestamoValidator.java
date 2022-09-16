@@ -12,7 +12,7 @@ import es.library.databaseserver.prestamos.exceptions.IllegalPrestamoException;
 public class PrestamoValidator {
 		
 	public boolean validateFecha(LocalDateTime fecha) {
-		return fecha.isBefore(LocalDateTime.now()) || fecha.isEqual(LocalDateTime.now());
+		return fecha.minusMinutes(1).isBefore(LocalDateTime.now()) || fecha.minusMinutes(1).isEqual(LocalDateTime.now());
 	}
 	
 	public boolean validateDiasPrestamo(int dias) {

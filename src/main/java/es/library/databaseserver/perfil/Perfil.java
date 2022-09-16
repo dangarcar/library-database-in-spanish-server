@@ -3,11 +3,12 @@ package es.library.databaseserver.perfil;
 import java.time.LocalDate;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
 public class Perfil {
 	
@@ -43,7 +44,6 @@ public class Perfil {
 	public Roles getRole() { return role; }
 	public void setRole(Roles role) { this.role = role; }
 	
-	@JsonIgnore
 	public String getContrasena() { return contrasena; }
 	public void setContrasena(String contrasena) { this.contrasena = contrasena;}
 

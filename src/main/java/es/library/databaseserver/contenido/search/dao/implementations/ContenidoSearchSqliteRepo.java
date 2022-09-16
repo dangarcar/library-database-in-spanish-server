@@ -43,13 +43,13 @@ public class ContenidoSearchSqliteRepo implements ContenidoSearchDAO{
 
 	@Override
 	public List<Long> getContenidosIDByAno(Integer ano) {
-		final String sqlString = "SELECT ID FROM Contenidos WHERE Año = :ano";
+		final String sqlString = "SELECT ID FROM Contenidos WHERE Year = :ano";
 		
 		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("ano", ano), Utils.idRowMapper);
 	}
 	@Override
 	public List<Long> getContenidosIDByAno(Integer min, Integer max) {
-		final String sqlString = "SELECT ID FROM Contenidos WHERE Año BETWEEN :min AND :max";
+		final String sqlString = "SELECT ID FROM Contenidos WHERE Year BETWEEN :min AND :max";
 		
 		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("min", min).addValue("max", max), Utils.idRowMapper);
 	}

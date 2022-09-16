@@ -37,7 +37,7 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 	
 	@Override
 	public Optional<Contenido> getContenidoByID(Long ID) {
-		final String sqlString = "SELECT ID,Titulo,Autor,Descripcion,Año,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,FechaDisponibilidad,IDLibro,IDAudiovisual FROM Contenidos WHERE ID = :id";
+		final String sqlString = "SELECT ID,Titulo,Autor,Descripcion,Year,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,FechaDisponibilidad,IDLibro,IDAudiovisual FROM Contenidos WHERE ID = :id";
 		
 		var contenidos = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("id", ID), contenidoRowMapper);
 		
@@ -58,7 +58,7 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 	
 	@Override
 	public Contenido insertContenido(Contenido contenido) throws DatabaseContenidoException,ContenidoAlreadyExistsException, IllegalContenidoException {
-		final String sqlString = "INSERT INTO Contenidos(Titulo,Autor,Descripcion,Año,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,IDLibro,IDAudiovisual) "+
+		final String sqlString = "INSERT INTO Contenidos(Titulo,Autor,Descripcion,Year,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,IDLibro,IDAudiovisual) "+
 				"VALUES(:titulo,:autor,:descripcion,:ano,:idioma,:soporte,:diasDePrestamo,:prestable,:disponible,:IdLibro,:IdAudiovisual)";
 		 
 		final int i = jdbcTemplate.update(sqlString, new MapSqlParameterSource()
@@ -103,7 +103,7 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 				+ "Titulo = :titulo"
 				+ ",Autor = :autor"
 				+ ",Descripcion = :descripcion"
-				+ ",Año = :ano"
+				+ ",Year = :ano"
 				+ ",Idioma = :idioma"
 				+ ",Soporte = :soporte"
 				+ ",DiasDePrestamo = :diasDePrestamo"
@@ -142,7 +142,7 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 	
 	private RowMapper<Contenido> contenidoRowMapper = (rs, rowNum) -> {
 		var c = new Contenido(rs.getLong("ID"), rs.getString("Titulo"), rs.getString("Autor"),
-				rs.getString("Descripcion"), rs.getInt("Año"), rs.getString("Idioma"),
+				rs.getString("Descripcion"), rs.getInt("Year"), rs.getString("Idioma"),
 				Soporte.valueOf(rs.getString("Soporte")), rs.getBoolean("Prestable"), rs.getInt("DiasDePrestamo"),
 				rs.getBoolean("Disponible"), ((rs.getString("FechaDisponibilidad") != null) ? LocalDate
 						.parse(rs.getString("FechaDisponibilidad"), DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null));

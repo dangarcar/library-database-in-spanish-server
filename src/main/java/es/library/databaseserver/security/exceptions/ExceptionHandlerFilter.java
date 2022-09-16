@@ -25,7 +25,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter{
 			filterChain.doFilter(request, response);
 		}
 		catch (TokenExpiredException e) {
-			writeError(HttpStatus.GONE.value(), e, response, e.getMessage()+" Vaya a /refresh/token para conseguir un nuevo token o vuelva a /login");
+			writeError(HttpStatus.UNAUTHORIZED.value(), e, response, e.getMessage()+" Vaya a /refresh/token para conseguir un nuevo token o vuelva a /login");
 		}
 		catch (RuntimeException e) {
 			writeError(HttpStatus.UNAUTHORIZED.value(), e, response);

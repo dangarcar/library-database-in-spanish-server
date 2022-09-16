@@ -129,7 +129,7 @@ public class ContenidoServiceImpl implements ContenidoService{
 	
 	private ContenidoModelSet getContenidoModelSetByID(long ID) throws ContenidoNotFoundException, NotValidTypeContenidoException {
 		Contenido c = contenidoRepository.getContenidoByID(ID).orElseThrow(
-				() -> new ContenidoNotFoundException("El contenido que se pide no existe"));
+				() -> new ContenidoNotFoundException("El contenido que se pide no existe con id: "+ID));
 		var audio = dAudiovisualDAO.getAudiovisualByID(c.getIDAudiovisual());
 		var libro = dLibroDAO.getLibroByID(c.getIDLibro());
 		

@@ -1,7 +1,9 @@
-package es.library.databaseserver.shared;
+package es.library.databaseserver.shared.config;
 
 import javax.sql.DataSource;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -15,12 +17,14 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 @Configuration
 public class SQliteDatabaseConfig {
+	private Logger logger = LogManager.getLogger(getClass());
 	
 	//Base database
 	
 	@Bean(name = "baseDB")
 	@ConfigurationProperties(prefix = "spring.datasource")
 	public DataSource baseDb() {
+		logger.info("Se creó la base de datos de la biblioteca.");
 		return DataSourceBuilder.create().build();
 	}
 	
@@ -35,15 +39,17 @@ public class SQliteDatabaseConfig {
 			Resource resource = new ClassPathResource("/sql/SetupContenidos.sql");
 			ResourceDatabasePopulator populator = new ResourceDatabasePopulator(resource);
 			populator.execute(ds);
+			logger.info("Se creó la tabla de los contenidos");
 		};
 	}
 	
-	@Bean
+	@Bean("setupPerfil")
 	CommandLineRunner setupPerfilDatabase(@Qualifier("baseDB") DataSource ds) {
 		return args -> {
 			Resource resource = new ClassPathResource("/sql/SetupPerfiles.sql");
 			ResourceDatabasePopulator populator = new ResourceDatabasePopulator(resource);
 			populator.execute(ds);
+			logger.info("Se creó la tabla de los perfiles");
 		};
 	}
 	
@@ -53,6 +59,7 @@ public class SQliteDatabaseConfig {
 			Resource resource = new ClassPathResource("/sql/SetupPrestamos.sql");
 			ResourceDatabasePopulator populator = new ResourceDatabasePopulator(resource);
 			populator.execute(ds);
+			logger.info("Se creó la tabla de los préstamos");
 		};
 	}
 	
@@ -76,13 +83,12 @@ public class SQliteDatabaseConfig {
 		};
 	}
 	
-	
-	
 	//Token database
 	
 	@Bean(name = "tokenDB")
 	@ConfigurationProperties(prefix = "spring.tokens")
 	public DataSource tokenDb() {
+		logger.info("Se creó la base de datos de los tokens.");
 		return DataSourceBuilder.create().build();
 	}
 	
@@ -97,7 +103,7 @@ public class SQliteDatabaseConfig {
 			Resource resource = new ClassPathResource("/sql/SetupTokens.sql");
 			ResourceDatabasePopulator populator = new ResourceDatabasePopulator(resource);
 			populator.execute(ds);
+			logger.info("Se creó la tabla de los tokens");
 		};
 	}
-	
 }

@@ -97,8 +97,7 @@ public class ContenidoSearchController {
 			@RequestParam(required = false) Integer maxCalidad, 
 			@RequestParam(required = false) String type, 
 			@RequestParam(required = false) Boolean d, 
-			@RequestParam(required = false) Boolean p,
-			@RequestParam(defaultValue = "false") Boolean unique){
+			@RequestParam(required = false) Boolean p){
 		if (query == null && titulo == null && autor == null && minAno == null && maxAno == null && idioma == null
 				&& soporte == null && minPaginas == null && maxPaginas == null && editorial == null && isbn == null
 				&& minEdad == null && maxEdad == null && minDuracion == null && maxDuracion == null
