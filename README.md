@@ -45,7 +45,7 @@ Conseguirá un par de tokens. Guarde el access token.
   "email" : {Ponga su email},
   "password" : {Ponga su contraseña},
   "nombre" : {Ponga su nombre},
-  "fechaNacimiento" : {Ponga su fecha de nacimiento codificada en ISO-8601}
+  "fechaNacimiento" : {Ponga su fecha de nacimiento codificada en ISO-8601},
   "role" : "ROLE_ADMIN"
 }
 ```
