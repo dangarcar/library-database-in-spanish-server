@@ -35,7 +35,7 @@ public class SecurityConfiguration {
 	@Autowired
 	private JWTUtils jwtUtils;
 	
-	@Bean
+	@Bean("passwordEncoder")
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
