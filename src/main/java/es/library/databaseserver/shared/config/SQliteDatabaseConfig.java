@@ -1,4 +1,4 @@
-package es.library.databaseserver.shared;
+package es.library.databaseserver.shared.config;
 
 import javax.sql.DataSource;
 
@@ -39,6 +39,7 @@ public class SQliteDatabaseConfig {
 			Resource resource = new ClassPathResource("/sql/SetupContenidos.sql");
 			ResourceDatabasePopulator populator = new ResourceDatabasePopulator(resource);
 			populator.execute(ds);
+			logger.info("Se creó la tabla de los contenidos");
 		};
 	}
 	
@@ -48,6 +49,7 @@ public class SQliteDatabaseConfig {
 			Resource resource = new ClassPathResource("/sql/SetupPerfiles.sql");
 			ResourceDatabasePopulator populator = new ResourceDatabasePopulator(resource);
 			populator.execute(ds);
+			logger.info("Se creó la tabla de los perfiles");
 		};
 	}
 	
@@ -57,6 +59,7 @@ public class SQliteDatabaseConfig {
 			Resource resource = new ClassPathResource("/sql/SetupPrestamos.sql");
 			ResourceDatabasePopulator populator = new ResourceDatabasePopulator(resource);
 			populator.execute(ds);
+			logger.info("Se creó la tabla de los préstamos");
 		};
 	}
 	
@@ -100,7 +103,7 @@ public class SQliteDatabaseConfig {
 			Resource resource = new ClassPathResource("/sql/SetupTokens.sql");
 			ResourceDatabasePopulator populator = new ResourceDatabasePopulator(resource);
 			populator.execute(ds);
+			logger.info("Se creó la tabla de los tokens");
 		};
 	}
-	
 }

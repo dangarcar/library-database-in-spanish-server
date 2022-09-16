@@ -1,4 +1,4 @@
-package es.library.databaseserver.security;
+package es.library.databaseserver.shared.config;
 
 import java.time.ZonedDateTime;
 
@@ -20,6 +20,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import es.library.databaseserver.security.JWTUtils;
+import es.library.databaseserver.security.PerfilAuthorizationFilter;
+import es.library.databaseserver.security.PerfilUserDetailsService;
 import es.library.databaseserver.security.exceptions.ExceptionHandlerFilter;
 import es.library.databaseserver.shared.exceptions.ApiError;
 
