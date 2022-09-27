@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import es.library.databaseserver.perfil.Perfil;
 import es.library.databaseserver.perfil.Roles;
 import es.library.databaseserver.perfil.crud.service.PerfilService;
+import es.library.databaseserver.perfil.exceptions.EmailAlreadyExistPerfilException;
+import es.library.databaseserver.perfil.exceptions.PerfilNotFoundException;
 import es.library.databaseserver.security.JWTUtils;
 import es.library.databaseserver.security.exceptions.ExpiredRefreshTokenException;
 import es.library.databaseserver.security.exceptions.NotValidPasswordException;
@@ -53,14 +55,31 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		String rawPassword = perfil.getContrasena();
 		JWTTokenPair response;
 		//Inserto el perfil en la base de datos
-		Long id = perfilService.insertPerfil(perfil).getID();
+		Long id = null;
+		
+		boolean usercreated = true;
+		
+		try {
+			id = perfilService.insertPerfil(perfil).getID();
+		} catch (Exception e) {
+			logger.info("No se ha creado el perfil, pero se intentará hacer el login de todas formas");
+			usercreated = false;
+		}
 		
 		try {
 			response = this.login(new LoginCredentials(
 					perfil.getCorreoElectronico(), 
 					rawPassword));
-		} catch (Exception e) {
-			perfilService.deletePerfilByID(id);
+		}
+		catch (Exception e) {
+			if(!usercreated) {
+				throw new EmailAlreadyExistPerfilException("El usuario "+perfil.getCorreoElectronico()+ " ya existe en la base de datos");
+			}
+			try {
+				perfilService.deletePerfilByID(id);
+			} catch (PerfilNotFoundException e2) {
+				//NO se borra y ya está
+			}
 			throw e;
 		}
 		

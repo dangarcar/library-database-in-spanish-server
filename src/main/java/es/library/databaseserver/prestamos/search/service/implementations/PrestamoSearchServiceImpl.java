@@ -107,20 +107,15 @@ public class PrestamoSearchServiceImpl implements PrestamoSearchService{
 			LocalDateTime fromPrestamo, LocalDateTime toPrestamo, LocalDateTime fromDevolucion,
 			LocalDateTime toDevolucion, Boolean d) {
 		List<Set<Prestamo>> prestamoSet = new ArrayList<>();
-		
-		try {
-			if(idContenido != null) 						prestamoSet.add(new HashSet<>(getPrestamosByIdContenido(idContenido)));
-		}
-		catch (ContenidoNotFoundException e) {}
-		
-		try {
-			if(idPerfil != null) 							prestamoSet.add(new HashSet<>(getPrestamosIdPerfil(idPerfil)));
-		} catch (PerfilNotFoundException e) {}
-		
+
+		if(idContenido != null) 							prestamoSet.add(new HashSet<>(getPrestamosByIdContenido(idContenido)));
+
+		if(idPerfil != null) 								prestamoSet.add(new HashSet<>(getPrestamosIdPerfil(idPerfil)));
+
 		if(minDias != null || maxDias != null)				prestamoSet.add(new HashSet<>(getPrestamosByDiasDePrestamo(minDias, maxDias)));
 		if(fromPrestamo != null || toPrestamo != null) 		prestamoSet.add(new HashSet<>(getPrestamosBetweenTwoPrestamoDates(fromPrestamo, toPrestamo)));
 		if(fromDevolucion != null || toDevolucion != null) 	prestamoSet.add(new HashSet<>(getPrestamosBetweenTwoDevolucionDates(fromDevolucion, toDevolucion)));
-		
+
 		return PrestamoSearchService.filterDevueltosPrestamos(intersection(prestamoSet).stream().toList(), d);
 	}
 

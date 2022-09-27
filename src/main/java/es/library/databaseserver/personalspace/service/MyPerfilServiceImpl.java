@@ -46,6 +46,7 @@ public class MyPerfilServiceImpl implements MyPerfilService {
 	@Override
 	public Perfil updateMyAccount(String username, Perfil perfil) {
 		long idPerfil = perfilService.getPerfilByUsername(username).getID();
+		perfil.setRole(getMyInfo(username).getRole());
 		return perfilService.updatePerfilByID(idPerfil, perfil);
 	}
 

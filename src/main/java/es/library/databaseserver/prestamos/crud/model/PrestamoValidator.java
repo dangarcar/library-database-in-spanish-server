@@ -3,14 +3,43 @@ package es.library.databaseserver.prestamos.crud.model;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
+import es.library.databaseserver.contenido.search.service.ContenidoSearchService;
+import es.library.databaseserver.perfil.exceptions.PerfilNotFoundException;
+import es.library.databaseserver.perfil.search.service.PerfilSearchService;
 import es.library.databaseserver.prestamos.Prestamo;
 import es.library.databaseserver.prestamos.exceptions.IllegalPrestamoException;
 
 @Component
 public class PrestamoValidator {
-		
+	
+	@Autowired
+	private ContenidoSearchService contenidoSearchService;
+	
+	@Autowired
+	private PerfilSearchService perfilSearchService;
+	
+	public boolean validatePerfil(long id) {
+		try {
+			perfilSearchService.getPerfilByID(id);
+			return true;
+		} catch (PerfilNotFoundException e) {
+			return false;
+		}
+	}
+	
+	public boolean validateContenido(long id) {
+		try {
+			contenidoSearchService.getContenidoById(id);
+			return true;
+		} catch (ContenidoNotFoundException e) {
+			return false;
+		}
+	}
+	
 	public boolean validateFecha(LocalDateTime fecha) {
 		return fecha.minusMinutes(1).isBefore(LocalDateTime.now()) || fecha.minusMinutes(1).isEqual(LocalDateTime.now());
 	}
@@ -26,6 +55,20 @@ public class PrestamoValidator {
 	public void validatePrestamoCorrect(Prestamo prestamo) throws IllegalPrestamoException{
 		StringBuilder errorBuilder = new StringBuilder();
 
+		if(!validatePerfil(prestamo.getIDPerfil())) {
+			errorBuilder.append(System.lineSeparator());
+			errorBuilder.append("El perfil con id: ");
+			errorBuilder.append(prestamo.getIDPerfil());
+			errorBuilder.append(" no existe");
+		}
+		
+		if(!validateContenido(prestamo.getIDContenido())) {
+			errorBuilder.append(System.lineSeparator());
+			errorBuilder.append("El contenido con id: ");
+			errorBuilder.append(prestamo.getIDContenido());
+			errorBuilder.append(" no existe");
+		}
+		
 		if(!validateFecha(prestamo.getFechaHoraPrestamo())) {
 			errorBuilder.append(System.lineSeparator());
 			errorBuilder.append("La fecha de prestamo ");
