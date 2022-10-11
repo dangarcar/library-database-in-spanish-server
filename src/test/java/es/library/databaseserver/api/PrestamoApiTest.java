@@ -1,15 +1,16 @@
 package es.library.databaseserver.api;
 
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.net.URL;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.ZonedDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
@@ -80,8 +81,8 @@ public class PrestamoApiTest {
 				Contenido.Soporte.CD, 
 				true, 
 				7, 
-				true, 
-				null, 
+				true,
+				new URL("https://imagessl0.casadellibro.com/a/l/t5/60/9788495971760.jpg"),
 				100.67
 				);
 
@@ -121,7 +122,7 @@ public class PrestamoApiTest {
 		Prestamo p = new Prestamo(null, 
 				100l, 
 				100l, 
-				LocalDateTime.now().minus(Period.ofDays(30)), 
+				ZonedDateTime.now().minus(Period.ofDays(30)), 
 				null, 
 				400, 
 				false);
@@ -145,8 +146,8 @@ public class PrestamoApiTest {
 		Prestamo p = new Prestamo(null, 
 				100l, 
 				100l, 
-				LocalDateTime.now().minus(Period.ofDays(30)), 
-				LocalDateTime.now(), 
+				ZonedDateTime.now().minus(Period.ofDays(30)), 
+				ZonedDateTime.now(), 
 				400, 
 				true);
 		

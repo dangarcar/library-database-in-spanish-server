@@ -18,6 +18,7 @@ import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 import es.library.databaseserver.contenido.exceptions.NotValidTypeContenidoException;
 import es.library.databaseserver.contenido.search.dao.ContenidoSearchDAO;
+import es.library.databaseserver.contenido.search.models.ContenidoModel;
 import es.library.databaseserver.contenido.search.service.ContenidoSearchService;
 import es.library.databaseserver.contenido.types.AbstractContenido;
 import es.library.databaseserver.contenido.types.Audio;
@@ -142,8 +143,9 @@ public class ContenidoSearchServiceImpl implements ContenidoSearchService {
 		return contenidoCRUDService.idListToContenidoList(contenidoSearchDAO.getContenidosIDByCalidad(min,max));
 	}
 	
-	public List<Contenido> getContenidosMasPrestados(int nContenidos) {
-		return contenidoCRUDService.idListToContenidoList(prestamoSearchDAO.getContenidosMasPrestados(nContenidos));
+	public List<ContenidoModel> getContenidosMasPrestados(int nContenidos) {
+		var contenidos = contenidoCRUDService.idListToContenidoList(prestamoSearchDAO.getContenidosMasPrestados(nContenidos));
+		return ContenidoSearchService.getUniqueContenidos(contenidos);
 	}
 	
 	@Override

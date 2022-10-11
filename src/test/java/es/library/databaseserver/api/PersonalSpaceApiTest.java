@@ -8,6 +8,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.net.URL;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -223,8 +224,8 @@ public class PersonalSpaceApiTest {
 				Contenido.Soporte.CD, 
 				true, 
 				7, 
-				true, 
-				null, 
+				true,
+				new URL("https://imagessl0.casadellibro.com/a/l/t5/60/9788495971760.jpg"),
 				100.67
 				);
 

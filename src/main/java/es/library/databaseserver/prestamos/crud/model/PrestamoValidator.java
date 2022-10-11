@@ -1,6 +1,6 @@
 package es.library.databaseserver.prestamos.crud.model;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +40,15 @@ public class PrestamoValidator {
 		}
 	}
 	
-	public boolean validateFecha(LocalDateTime fecha) {
-		return fecha.minusMinutes(1).isBefore(LocalDateTime.now()) || fecha.minusMinutes(1).isEqual(LocalDateTime.now());
+	public boolean validateFecha(ZonedDateTime fecha) {
+		return fecha.minusMinutes(1).isBefore(ZonedDateTime.now()) || fecha.minusMinutes(1).isEqual(ZonedDateTime.now());
 	}
 	
 	public boolean validateDiasPrestamo(int dias) {
 		return dias>0;
 	}
 	
-	public boolean validateFechasPrestamoDevolucion(LocalDateTime prestamo, LocalDateTime devolucion) {
+	public boolean validateFechasPrestamoDevolucion(ZonedDateTime prestamo, ZonedDateTime devolucion) {
 		return prestamo.isBefore(devolucion) || prestamo.isEqual(devolucion);
 	}
 	

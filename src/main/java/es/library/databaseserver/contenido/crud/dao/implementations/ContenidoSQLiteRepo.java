@@ -1,7 +1,7 @@
 package es.library.databaseserver.contenido.crud.dao.implementations;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +37,7 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 	
 	@Override
 	public Optional<Contenido> getContenidoByID(Long ID) {
-		final String sqlString = "SELECT ID,Titulo,Autor,Descripcion,Year,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,FechaDisponibilidad,IDLibro,IDAudiovisual FROM Contenidos WHERE ID = :id";
+		final String sqlString = "SELECT ID,Titulo,Autor,Descripcion,Year,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,IDLibro,IDAudiovisual,Imagen FROM Contenidos WHERE ID = :id";
 		
 		var contenidos = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("id", ID), contenidoRowMapper);
 		
@@ -58,8 +58,8 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 	
 	@Override
 	public Contenido insertContenido(Contenido contenido) throws DatabaseContenidoException,ContenidoAlreadyExistsException, IllegalContenidoException {
-		final String sqlString = "INSERT INTO Contenidos(Titulo,Autor,Descripcion,Year,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,IDLibro,IDAudiovisual) "+
-				"VALUES(:titulo,:autor,:descripcion,:ano,:idioma,:soporte,:diasDePrestamo,:prestable,:disponible,:IdLibro,:IdAudiovisual)";
+		final String sqlString = "INSERT INTO Contenidos(Titulo,Autor,Descripcion,Year,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,IDLibro,IDAudiovisual,Imagen) "+
+				"VALUES(:titulo,:autor,:descripcion,:ano,:idioma,:soporte,:diasDePrestamo,:prestable,:disponible,:IdLibro,:IdAudiovisual,:imagen)";
 		 
 		final int i = jdbcTemplate.update(sqlString, new MapSqlParameterSource()
 					.addValue("titulo", contenido.getTitulo())
@@ -73,6 +73,7 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 					.addValue("disponible", contenido.getDisponible())
 					.addValue("IdLibro", contenido.getIDLibro())
 					.addValue("IdAudiovisual", contenido.getIDAudiovisual())
+					.addValue("imagen", contenido.getImagen())
 				);
 		
 		if(i == 0) throw new DatabaseContenidoException("El contenido no ha sido insertado en la base de datos por alguna razon");
@@ -109,9 +110,10 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 				+ ",DiasDePrestamo = :diasDePrestamo"
 				+ ",Prestable = :prestable"
 				+ ",Disponible = :disponible"
-				+ ",FechaDisponibilidad = :fecha"
+//				+ ",FechaDisponibilidad = :fecha"
 				+ ",IDLibro = :IdLibro"
 				+ ",IDAudiovisual = :IdAudiovisual "
+				+ ",Imagen = :imagen"
 				+ " WHERE ID = :id";
 		
 		var a = this.getContenidoByID(ID);
@@ -127,10 +129,11 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 					.addValue("diasDePrestamo", contenido.getDiasDePrestamo())
 					.addValue("prestable", contenido.getPrestable())
 					.addValue("disponible", contenido.getDisponible())
-					.addValue("fecha", contenido.getFechaDisponibilidad())
+//					.addValue("fecha", contenido.getFechaDisponibilidad())
 					.addValue("IdLibro", contenido.getIDLibro())
 					.addValue("IdAudiovisual", contenido.getIDAudiovisual())
 					.addValue("id", ID)
+					.addValue("imagen", contenido.getImagen())
 				);
 		}
 		else {
@@ -141,11 +144,16 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 	}
 	
 	private RowMapper<Contenido> contenidoRowMapper = (rs, rowNum) -> {
-		var c = new Contenido(rs.getLong("ID"), rs.getString("Titulo"), rs.getString("Autor"),
-				rs.getString("Descripcion"), rs.getInt("Year"), rs.getString("Idioma"),
-				Soporte.valueOf(rs.getString("Soporte")), rs.getBoolean("Prestable"), rs.getInt("DiasDePrestamo"),
-				rs.getBoolean("Disponible"), ((rs.getString("FechaDisponibilidad") != null) ? LocalDate
-						.parse(rs.getString("FechaDisponibilidad"), DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null));
+		Contenido c = null;
+		try {
+			c = new Contenido(rs.getLong("ID"), rs.getString("Titulo"), rs.getString("Autor"),
+					rs.getString("Descripcion"), rs.getInt("Year"), rs.getString("Idioma"),
+					Soporte.valueOf(rs.getString("Soporte")), rs.getBoolean("Prestable"), rs.getInt("DiasDePrestamo"),
+					rs.getBoolean("Disponible"),new URL(rs.getString("Imagen"))/*, 
+					((rs.getString("FechaDisponibilidad") != null) ? LocalDate.parse(rs.getString("FechaDisponibilidad"), DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null)*/);
+		} catch (MalformedURLException e) {
+			new RuntimeException(e);
+		}
 		c.setIDLibro(rs.getLong("IDLibro") == 0L ? null : rs.getLong("IDLibro"));
 		c.setIDAudiovisual(rs.getLong("IDAudiovisual") == 0L ? null : rs.getLong("IDAudiovisual"));
 		return c;

@@ -1,6 +1,6 @@
 package es.library.databaseserver.prestamos;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -12,12 +12,12 @@ public class Prestamo {
 	private Long ID;
 	private Long IDPerfil;
 	private Long IDContenido;
-	private LocalDateTime fechaHoraPrestamo;
-	private LocalDateTime fechaHoraDevolucion;
+	private ZonedDateTime fechaHoraPrestamo;
+	private ZonedDateTime fechaHoraDevolucion;
 	private int diasdePrestamo;
 	private boolean devuelto;
 	
-	public Prestamo(Long iD, Long iDContenido, Long iDPerfil, LocalDateTime fechaHoraPrestamo, LocalDateTime fechaHoraDevolucion,
+	public Prestamo(Long iD, Long iDContenido, Long iDPerfil, ZonedDateTime fechaHoraPrestamo, ZonedDateTime fechaHoraDevolucion,
 			int diasdePrestamo, boolean devuelto) {
 		super();
 		ID = iD;
@@ -38,11 +38,11 @@ public class Prestamo {
 	public Long getIDContenido() {return IDContenido;}
 	public void setIDContenido(Long iDContenido) {IDContenido = iDContenido;}
 	
-	public LocalDateTime getFechaHoraPrestamo() {return fechaHoraPrestamo;}
-	public void setFechaHoraPrestamo(LocalDateTime fechaHoraPrestamo) {this.fechaHoraPrestamo = fechaHoraPrestamo;}
+	public ZonedDateTime getFechaHoraPrestamo() {return fechaHoraPrestamo;}
+	public void setFechaHoraPrestamo(ZonedDateTime fechaHoraPrestamo) {this.fechaHoraPrestamo = fechaHoraPrestamo;}
 	
-	public LocalDateTime getFechaHoraDevolucion() {return fechaHoraDevolucion;}
-	public void setFechaHoraDevolucion(LocalDateTime fechaHoraDevolucion) {this.fechaHoraDevolucion = fechaHoraDevolucion;}
+	public ZonedDateTime getFechaHoraDevolucion() {return fechaHoraDevolucion;}
+	public void setFechaHoraDevolucion(ZonedDateTime fechaHoraDevolucion) {this.fechaHoraDevolucion = fechaHoraDevolucion;}
 	
 	public int getDiasdePrestamo() {return diasdePrestamo;}
 	public void setDiasdePrestamo(int diasdePrestamo) {this.diasdePrestamo = diasdePrestamo;}

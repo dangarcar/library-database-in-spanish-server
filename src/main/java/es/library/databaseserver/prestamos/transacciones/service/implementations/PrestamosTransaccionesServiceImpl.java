@@ -1,7 +1,6 @@
 package es.library.databaseserver.prestamos.transacciones.service.implementations;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.ZonedDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,18 +55,15 @@ public class PrestamosTransaccionesServiceImpl implements PrestamosTransacciones
 		
 		if (!contenido.getDisponible()) {
 			throw new PrestamoNotAllowedException(
-					"El contenido " + contenidoId + " ya está prestado." + (contenido.getFechaDisponibilidad() == null
+					"El contenido " + contenidoId + " ya está prestado." /*+ (contenido.getFechaDisponibilidad() == null
 							? ""
-							: "Creemos que estara disponible el "+contenido.getFechaDisponibilidad().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))));
+							: "Creemos que estara disponible el "+contenido.getFechaDisponibilidad().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")))*/);
 		}
 		
 		Prestamo prestamo = prestamoService.insertPrestamo(new Prestamo(null, contenido.getID(), perfil.getID(),
-				LocalDateTime.now(), null, contenido.getDiasDePrestamo(), false));
+				ZonedDateTime.now(), null, contenido.getDiasDePrestamo(), false));
 
 		contenido.setDisponible(false);
-		contenido.setFechaDisponibilidad(prestamo.getFechaHoraPrestamo()
-				.plusDays(contenido.getDiasDePrestamo())
-				.toLocalDate());
 
 		contenidoService.updateContenidoByID(contenido.getID(), contenido);
 		
@@ -102,12 +98,11 @@ public class PrestamosTransaccionesServiceImpl implements PrestamosTransacciones
 		var p = prestamos.get(0);
 		
 		p.setDevuelto(true);
-		p.setFechaHoraDevolucion(LocalDateTime.now());
+		p.setFechaHoraDevolucion(ZonedDateTime.now());
 		
 		Prestamo prestamo = prestamoService.updatePrestamoByID(p.getID(),p);
 		
 		contenido.setDisponible(true);
-		contenido.setFechaDisponibilidad(null);
 		
 		contenidoService.updateContenidoByID(contenido.getID(), contenido);
 		

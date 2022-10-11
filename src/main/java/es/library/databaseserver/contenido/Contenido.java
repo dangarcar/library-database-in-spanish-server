@@ -1,19 +1,18 @@
 package es.library.databaseserver.contenido;
 
-import java.time.LocalDate;
+import java.net.URL;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import es.library.databaseserver.contenido.types.AbstractContenido;
 import es.library.databaseserver.contenido.types.Audio;
 import es.library.databaseserver.contenido.types.Libro;
 import es.library.databaseserver.contenido.types.Video;
-
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonInclude(Include.NON_NULL)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -34,9 +33,10 @@ public class Contenido implements AbstractContenido{
 	private boolean prestable;
 	private Integer diasDePrestamo;
 	private boolean disponible;
-	private LocalDate fechaDisponibilidad;
+//	private LocalDate fechaDisponibilidad;
 	private Long IDLibro;
 	private Long IDAudiovisual;
+	private URL imagen;
 	
 	/**
 	 * Enum que define los soportes en los que pueden estar los contenidos de la biblioteca
@@ -70,8 +70,8 @@ public class Contenido implements AbstractContenido{
 	}
 	
 	public Contenido(Long iD, String titulo, String autor, String descripcion, Integer ano, String idioma,
-			Soporte soporte, boolean prestable, Integer diasDePrestamo, boolean disponible,
-			LocalDate fechaDisponibilidad) {
+			Soporte soporte, boolean prestable, Integer diasDePrestamo, boolean disponible, URL imagen/*,
+			LocalDate fechaDisponibilidad*/) {
 		ID = iD;
 		this.titulo = titulo;
 		this.autor = autor;
@@ -82,7 +82,8 @@ public class Contenido implements AbstractContenido{
 		this.prestable = prestable;
 		this.diasDePrestamo = diasDePrestamo;
 		this.disponible = disponible;
-		this.fechaDisponibilidad = fechaDisponibilidad;
+		this.imagen = imagen;
+//		this.fechaDisponibilidad = fechaDisponibilidad;
 	}
 
 	//TIPICOS GETTERS Y SETTERS DE UNA CLASE JAVA
@@ -116,8 +117,11 @@ public class Contenido implements AbstractContenido{
 	public boolean getDisponible() {return disponible;}
 	public void setDisponible(boolean disponible) {this.disponible = disponible;}
 	
-	public LocalDate getFechaDisponibilidad() {return fechaDisponibilidad;}
-	public void setFechaDisponibilidad(LocalDate fechaDisponibilidad) {this.fechaDisponibilidad = fechaDisponibilidad;}
+	public URL getImagen() {return imagen;}
+	public void setImagen(URL imagen) {this.imagen = imagen;}
+	
+//	public LocalDate getFechaDisponibilidad() {return fechaDisponibilidad;}
+//	public void setFechaDisponibilidad(LocalDate fechaDisponibilidad) {this.fechaDisponibilidad = fechaDisponibilidad;}
 	
 	@JsonIgnore
 	public Long getIDAudiovisual() {return IDAudiovisual;}
@@ -147,7 +151,7 @@ public class Contenido implements AbstractContenido{
 		return Objects.equals(ID, other.ID) && Objects.equals(IDAudiovisual, other.IDAudiovisual)
 				&& Objects.equals(IDLibro, other.IDLibro) && ano == other.ano && Objects.equals(autor, other.autor)
 				&& Objects.equals(descripcion, other.descripcion) && diasDePrestamo == other.diasDePrestamo
-				&& disponible == other.disponible && Objects.equals(fechaDisponibilidad, other.fechaDisponibilidad)
+				&& disponible == other.disponible /*&& Objects.equals(fechaDisponibilidad, other.fechaDisponibilidad)*/
 				&& Objects.equals(idioma, other.idioma) && prestable == other.prestable && soporte == other.soporte
 				&& Objects.equals(titulo, other.titulo);
 	}
@@ -156,6 +160,6 @@ public class Contenido implements AbstractContenido{
 	public String toString() {
 		return "Contenido [ID=" + ID + ", titulo=" + titulo + ", autor=" + autor + ", ano=" + ano + ", idioma=" + idioma
 				+ ", soporte=" + soporte + ", prestable=" + prestable + ", diasDePrestamo=" + diasDePrestamo
-				+ ", disponible=" + disponible + ", fechaDisponibilidad=" + fechaDisponibilidad + "]";
+				+ ", disponible=" + disponible + /*", fechaDisponibilidad=" + fechaDisponibilidad +*/ "]";
 	}
 }

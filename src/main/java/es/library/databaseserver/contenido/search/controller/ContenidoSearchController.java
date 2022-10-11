@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.Contenido.Soporte;
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
+import es.library.databaseserver.contenido.search.models.ContenidoModel;
 import es.library.databaseserver.contenido.search.service.ContenidoSearchService;
-import es.library.databaseserver.contenido.types.ContenidoModel;
 
 @RequestMapping("/contenidos/search")
 @RestController
@@ -132,7 +132,7 @@ public class ContenidoSearchController {
 	}
 	
 	@GetMapping(path = "/topprestamos")
-	public List<Contenido> getContenidosMasPrestados(@RequestParam(defaultValue = "10", name = "limit") int nContenidos) {
+	public List<ContenidoModel> getContenidosMasPrestados(@RequestParam(defaultValue = "10", name = "limit") int nContenidos) {
 		return searchService.getContenidosMasPrestados(nContenidos);
 	}
 	

@@ -1,6 +1,6 @@
 package es.library.databaseserver.contenido.types;
 
-import java.time.LocalDate;
+import java.net.URL;
 
 public class Video extends Audio{
 	
@@ -8,10 +8,10 @@ public class Video extends Audio{
 	private Integer calidad;
 	
 	public Video(Long iD, String titulo, String autor, String descripcion, Integer ano, String idioma, Soporte soporte,
-			boolean prestable, Integer diasDePrestamo, boolean disponible, LocalDate fechaDisponibilidad,
+			boolean prestable, Integer diasDePrestamo, boolean disponible, URL imagen,/*LocalDate fechaDisponibilidad,*/
 			Double duracion, Integer edadRecomendada, Integer calidad) {
-		super(iD, titulo, autor, descripcion, ano, idioma, soporte, prestable, diasDePrestamo, disponible,
-				fechaDisponibilidad, duracion);
+		super(iD, titulo, autor, descripcion, ano, idioma, soporte, prestable, diasDePrestamo, disponible, imagen/*,
+				fechaDisponibilidad*/, duracion);
 		this.edadRecomendada = edadRecomendada;
 		this.calidad = calidad;
 	}

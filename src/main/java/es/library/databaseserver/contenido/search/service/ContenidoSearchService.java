@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.Contenido.Soporte;
 import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException;
+import es.library.databaseserver.contenido.search.models.ContenidoModel;
 import es.library.databaseserver.contenido.types.AbstractContenido;
-import es.library.databaseserver.contenido.types.ContenidoModel;
 
 public interface ContenidoSearchService {
 
@@ -54,7 +54,7 @@ public interface ContenidoSearchService {
 	
 	//Util methods
 	
-	public List<Contenido> getContenidosMasPrestados(int nContenidos);
+	public List<ContenidoModel> getContenidosMasPrestados(int nContenidos);
 	
 	public static List<Contenido> filterContenidosByDisponibilidad(List<Contenido> conts, Boolean disponibles) {
 		if(disponibles == null) return conts;

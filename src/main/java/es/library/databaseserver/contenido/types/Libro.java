@@ -1,6 +1,6 @@
 package es.library.databaseserver.contenido.types;
 
-import java.time.LocalDate;
+import java.net.URL;
 
 import es.library.databaseserver.contenido.Contenido;
 
@@ -11,10 +11,10 @@ public class Libro extends Contenido{
 	private String editorial;
 	
 	public Libro(Long iD, String titulo, String autor, String descripcion, Integer ano, String idioma, Soporte soporte,
-			boolean prestable, Integer diasDePrestamo, boolean disponible, LocalDate fechaDisponibilidad, String iSBN,
+			boolean prestable, Integer diasDePrestamo, boolean disponible, URL imagen,/*LocalDate fechaDisponibilidad,*/ String iSBN,
 			Integer paginas, String editorial) {
-		super(iD, titulo, autor, descripcion, ano, idioma, soporte, prestable, diasDePrestamo, disponible,
-				fechaDisponibilidad);
+		super(iD, titulo, autor, descripcion, ano, idioma, soporte, prestable, diasDePrestamo, disponible, imagen/*,
+				fechaDisponibilidad*/);
 		ISBN = iSBN;
 		this.paginas = paginas;
 		this.editorial = editorial;

@@ -7,6 +7,8 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.net.URL;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -68,10 +70,10 @@ public class ContenidoApiTest {
 				1860, 
 				"Japones",
 				Contenido.Soporte.CD, 
-				true, 
+				true,
 				7, 
-				true, 
-				null, 
+				true,
+				new URL("https://imagessl0.casadellibro.com/a/l/t5/60/9788495971760.jpg"),
 				100.67);
 
 		MvcResult result = mockMvc
@@ -99,8 +101,8 @@ public class ContenidoApiTest {
 				Contenido.Soporte.BLURAY, 
 				true, 
 				7, 
-				true, 
-				null,
+				true,
+				new URL("https://imagessl0.casadellibro.com/a/l/t5/60/9788495971760.jpg"),
 				100.67, 
 				16, 
 				1080);
@@ -130,8 +132,8 @@ public class ContenidoApiTest {
 				Contenido.Soporte.FISICO, 
 				true, 
 				21, 
-				true, 
-				null,
+				true,
+				new URL("https://imagessl0.casadellibro.com/a/l/t5/60/9788495971760.jpg"),
 				"test ISBN",
 				1,
 				"test editorial"
@@ -162,8 +164,8 @@ public class ContenidoApiTest {
 				Contenido.Soporte.FISICO, 
 				true, 
 				21, 
-				true, 
-				null,
+				true,
+				new URL("https://imagessl0.casadellibro.com/a/l/t5/60/9788495971760.jpg"),
 				"test ISBN",
 				1,
 				"test editorial"

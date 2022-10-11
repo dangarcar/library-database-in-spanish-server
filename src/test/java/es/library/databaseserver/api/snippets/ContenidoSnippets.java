@@ -9,7 +9,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import java.util.Map;
 
 import org.springframework.restdocs.payload.FieldDescriptor;
-import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.RequestFieldsSnippet;
 import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 import org.springframework.restdocs.request.PathParametersSnippet;
@@ -39,9 +38,8 @@ public interface ContenidoSnippets {
 				.description("Los días que el contenido será prestado")),
 			Map.entry("disponible", fieldWithPath("disponible")
 				.description("Si el contenido está actualmente disponible o no")),
-			Map.entry("fechaDisponibilidad", fieldWithPath("fechaDisponibilidad")
-					.description("La fecha en la que el préstamo actual del libro caduca")
-					.type(JsonFieldType.STRING)),
+			Map.entry("imagen", fieldWithPath("imagen")
+					.description("La URL de la imagen del contenido. Puede ser nula")),
 			
 			Map.entry("duracion", fieldWithPath("duracion")
 				.description("La duración del contenido audiovisual en minutos")),
@@ -69,7 +67,8 @@ public interface ContenidoSnippets {
 			CONTENIDO_FIELDS.get("soporte"),
 			CONTENIDO_FIELDS.get("prestable"),
 			CONTENIDO_FIELDS.get("diasDePrestamo"),
-			CONTENIDO_FIELDS.get("disponible")
+			CONTENIDO_FIELDS.get("disponible"),
+			CONTENIDO_FIELDS.get("imagen")
 		);
 
 	RequestFieldsSnippet AUDIO_REQUEST = CONTENIDO_REQUEST.and(
@@ -98,8 +97,7 @@ public interface ContenidoSnippets {
 			CONTENIDO_FIELDS.get("soporte"),
 			CONTENIDO_FIELDS.get("prestable"),
 			CONTENIDO_FIELDS.get("diasDePrestamo"),
-			CONTENIDO_FIELDS.get("disponible"),
-			CONTENIDO_FIELDS.get("fechaDisponibilidad").optional()
+			CONTENIDO_FIELDS.get("disponible")
 		);
 
 	ResponseFieldsSnippet AUDIO_RESPONSE = CONTENIDO_RESPONSE.and(

@@ -1,6 +1,6 @@
 package es.library.databaseserver.prestamos.crud.dao.implementations;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -61,8 +61,8 @@ public class PrestamoSQLiteRepo implements PrestamoDAO {
 		final int i = jdbcTemplate.update(sqlString, new MapSqlParameterSource()
 				.addValue("idContenido", prestamo.getIDContenido())
 				.addValue("idPerfil", prestamo.getIDPerfil())
-				.addValue("fechaHoraPrestamo", prestamo.getFechaHoraPrestamo()!=null? prestamo.getFechaHoraPrestamo().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME):null)
-				.addValue("fechaHoraDevolucion", prestamo.getFechaHoraDevolucion()!=null? prestamo.getFechaHoraDevolucion().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME):null)
+				.addValue("fechaHoraPrestamo", prestamo.getFechaHoraPrestamo()!=null? prestamo.getFechaHoraPrestamo().format(DateTimeFormatter.ISO_DATE_TIME):null)
+				.addValue("fechaHoraDevolucion", prestamo.getFechaHoraDevolucion()!=null? prestamo.getFechaHoraDevolucion().format(DateTimeFormatter.ISO_DATE_TIME):null)
 				.addValue("diasDePrestamo", prestamo.getDiasdePrestamo())
 				.addValue("devuelto", prestamo.isDevuelto())
 			);
@@ -107,8 +107,8 @@ public class PrestamoSQLiteRepo implements PrestamoDAO {
 			jdbcTemplate.update(sqlString, new MapSqlParameterSource()
 					.addValue("idContenido", prestamo.getIDContenido())
 					.addValue("idPerfil", prestamo.getIDPerfil())
-					.addValue("fechaHoraPrestamo", prestamo.getFechaHoraPrestamo()!=null? prestamo.getFechaHoraPrestamo().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME):null)
-					.addValue("fechaHoraDevolucion", prestamo.getFechaHoraDevolucion()!=null? prestamo.getFechaHoraDevolucion().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME):null)
+					.addValue("fechaHoraPrestamo", prestamo.getFechaHoraPrestamo()!=null? prestamo.getFechaHoraPrestamo().format(DateTimeFormatter.ISO_DATE_TIME):null)
+					.addValue("fechaHoraDevolucion", prestamo.getFechaHoraDevolucion()!=null? prestamo.getFechaHoraDevolucion().format(DateTimeFormatter.ISO_DATE_TIME):null)
 					.addValue("diasDePrestamo", prestamo.getDiasdePrestamo())
 					.addValue("devuelto", prestamo.isDevuelto())
 					.addValue("id", ID)
@@ -124,10 +124,10 @@ public class PrestamoSQLiteRepo implements PrestamoDAO {
 	private RowMapper<Prestamo> prestamoRowMapper = (rs, rowNum) -> {
 		var p = new Prestamo(rs.getLong("ID"), rs.getLong("IDContenido"), rs.getLong("IDPerfil"),
 				rs.getString("FechaHoraPrestamo") != null
-						? LocalDateTime.parse(rs.getString("FechaHoraPrestamo"), DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+						? ZonedDateTime.parse(rs.getString("FechaHoraPrestamo"), DateTimeFormatter.ISO_DATE_TIME)
 						: null,
-				rs.getString("FechaHoraDevolucion") != null ? LocalDateTime.parse(rs.getString("FechaHoraDevolucion"),
-						DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null,
+				rs.getString("FechaHoraDevolucion") != null ? ZonedDateTime.parse(rs.getString("FechaHoraDevolucion"),
+						DateTimeFormatter.ISO_DATE_TIME) : null,
 				rs.getInt("DiasDePrestamo"), rs.getBoolean("Devuelto"));
 		return p;
 	};
