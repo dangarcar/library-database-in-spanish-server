@@ -1,6 +1,6 @@
 package es.library.databaseserver.contenido.search.service.implementations;
 
-import static es.library.databaseserver.shared.Utils.*;
+import static es.library.databaseserver.shared.Utils.intersection;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,6 +19,7 @@ import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 import es.library.databaseserver.contenido.exceptions.NotValidTypeContenidoException;
 import es.library.databaseserver.contenido.search.dao.ContenidoSearchDAO;
 import es.library.databaseserver.contenido.search.models.ContenidoModel;
+import es.library.databaseserver.contenido.search.service.ContenidoParamsDto;
 import es.library.databaseserver.contenido.search.service.ContenidoSearchService;
 import es.library.databaseserver.contenido.types.AbstractContenido;
 import es.library.databaseserver.contenido.types.Audio;
@@ -145,7 +146,7 @@ public class ContenidoSearchServiceImpl implements ContenidoSearchService {
 	
 	public List<ContenidoModel> getContenidosMasPrestados(int nContenidos) {
 		var contenidos = contenidoCRUDService.idListToContenidoList(prestamoSearchDAO.getContenidosMasPrestados(nContenidos));
-		return ContenidoSearchService.getUniqueContenidos(contenidos);
+		return this.contenidoListToModelList(contenidos);
 	}
 	
 	@Override
@@ -161,47 +162,82 @@ public class ContenidoSearchServiceImpl implements ContenidoSearchService {
 
 
 	@Override
-	public List<? extends AbstractContenido> getContenidosByMultipleParams(String query, String titulo, String autor,
-			Integer minAno, Integer maxAno, String idioma, Soporte soporte, Integer minPaginas, Integer maxPaginas,
-			String editorial, String isbn, Integer minEdad, Integer maxEdad, Double minDuracion, Double maxDuracion,
-			Integer minCalidad, Integer maxCalidad, String type, Boolean d, Boolean unique, Boolean prestable) {
+	public List<? extends AbstractContenido> getContenidosByMultipleParams(ContenidoParamsDto params) {
 		
-		List<Set<Contenido>> contenidoSets = new ArrayList<>();
+		List<Set<Contenido>> contenidoSets = new ArrayList<>();	
 		
+		if(params.getQuery() != null)     										contenidoSets.add(new HashSet<>(getContenidosByPrompt(params.getQuery())));
 		
-		if(query != null)     							contenidoSets.add(new HashSet<>(getContenidosByPrompt(query)));
+		if(params.getTitulo() != null)    										contenidoSets.add(new HashSet<>(getContenidosByTitulo(params.getTitulo()))); 
 		
-		if(titulo != null)    							contenidoSets.add(new HashSet<>(getContenidosByTitulo(titulo))); 
+		if(params.getAutor() != null)     										contenidoSets.add(new HashSet<>(getContenidosByAutor(params.getAutor())));
 		
-		if(autor != null)     							contenidoSets.add(new HashSet<>(getContenidosByAutor(autor)));
+		if(params.getMinAno() != null || params.getMaxAno() != null)  			contenidoSets.add(new HashSet<>(getContenidosByAno(params.getMinAno(), params.getMaxAno())));
 		
-		if(minAno != null || maxAno != null)  			contenidoSets.add(new HashSet<>(getContenidosByAno(minAno, maxAno)));
+		if(params.getIdioma() != null)    										contenidoSets.add(new HashSet<>(getContenidosByIdioma(params.getIdioma()))); 
 		
-		if(idioma != null)    							contenidoSets.add(new HashSet<>(getContenidosByIdioma(idioma))); 
+		if(params.getSoporte() != null)  										contenidoSets.add(new HashSet<>(getContenidosBySoporte(params.getSoporte())));
 		
-		if(soporte != null)  							contenidoSets.add(new HashSet<>(getContenidosBySoporte(soporte)));
+		if(params.getMinPaginas() != null || params.getMaxPaginas() != null)	contenidoSets.add(new HashSet<>(getContenidosByPaginas(params.getMinPaginas(), params.getMaxPaginas())));
 		
-		if(minPaginas != null || maxPaginas != null)    contenidoSets.add(new HashSet<>(getContenidosByPaginas(minPaginas, maxPaginas)));
+		if(params.getEditorial() != null) 										contenidoSets.add(new HashSet<>(getContenidosByEditorial(params.getEditorial())));
 		
-		if(editorial != null) 							contenidoSets.add(new HashSet<>(getContenidosByEditorial(editorial)));
+		if(params.getIsbn() != null)      										contenidoSets.add(new HashSet<>(getContenidosByISBN(params.getIsbn())));
 		
-		if(isbn != null)      							contenidoSets.add(new HashSet<>(getContenidosByISBN(isbn)));
+		if(params.getMinEdad() != null || params.getMaxEdad() != null)      	contenidoSets.add(new HashSet<>(getContenidosByEdadRecomendada(params.getMinEdad(), params.getMaxEdad())));
 		
-		if(minEdad != null || maxEdad != null)          contenidoSets.add(new HashSet<>(getContenidosByEdadRecomendada(minEdad, maxEdad)));
-		
-		if(minDuracion != null || maxDuracion != null)  contenidoSets.add(new HashSet<>(getContenidosByDuracion(minDuracion, maxDuracion)));
+		if(params.getMinDuracion() != null || params.getMaxDuracion() != null)  contenidoSets.add(new HashSet<>(getContenidosByDuracion(params.getMinDuracion(), params.getMaxDuracion())));
 		 
-		if(minCalidad != null || maxCalidad != null)    contenidoSets.add(new HashSet<>(getContenidosByCalidad(minCalidad, maxCalidad)));
+		if(params.getMinCalidad() != null || params.getMaxCalidad() != null)    contenidoSets.add(new HashSet<>(getContenidosByCalidad(params.getMinCalidad(), params.getMaxCalidad())));
 		
-		if(type != null)      							contenidoSets.add(new HashSet<>(getContenidosByType(type)));		
-		
+		if(params.getType() != null)      										contenidoSets.add(new HashSet<>(getContenidosByType(params.getType())));		
 		
 		var contenidoList = intersection(contenidoSets).stream().toList();
 		
-		if(unique) {
+		if(params.getUnique()) {
 			return ContenidoSearchService.getUniqueContenidos(contenidoList);
 		}
-		return ContenidoSearchService.filterContenidosByDisponibilidadAndPrestable(contenidoList, d,prestable);
+		return ContenidoSearchService.filterContenidosByDisponibilidadAndPrestable(contenidoList, params.getDisponible(), params.getPrestable());
 	}
 
+	@SuppressWarnings("unchecked")
+	private List<ContenidoModel> contenidoListToModelList(List<Contenido> contenidos) {
+		Set<ContenidoModel> modelos = new HashSet<>();
+		
+		for(Contenido c: contenidos) {
+			ContenidoParamsDto dto = new ContenidoParamsDto(null, 
+					c.getTitulo(), 
+					c.getAutor(), 
+					c.getAno(), 
+					c.getAno(), 
+					c.getIdioma(), 
+					c.getSoporte(), 
+					null, null, null, null, null, null, null, null, null, null, null, null, 
+					true, null);
+			
+			if(c instanceof Audio a) {
+				dto.setMaxDuracion(a.getDuracion());
+				dto.setMinDuracion(a.getDuracion());
+			}
+			if(c instanceof Video v) {
+				dto.setMaxEdad(v.getEdadRecomendada());
+				dto.setMinEdad(v.getEdadRecomendada());
+				dto.setMaxCalidad(v.getCalidad());
+				dto.setMinCalidad(v.getCalidad());
+			}
+			if(c instanceof Libro l) {
+				dto.setIsbn(l.getISBN());
+				dto.setMaxPaginas(l.getPaginas());
+				dto.setMinPaginas(l.getPaginas());
+				dto.setEditorial(l.getEditorial());
+			}
+			
+			var resultadoC = (List<ContenidoModel>) this.getContenidosByMultipleParams(dto);
+			
+			modelos.addAll(resultadoC);
+		}
+		
+		return modelos.stream().toList();
+	}
+	
 }

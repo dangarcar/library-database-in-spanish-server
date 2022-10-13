@@ -13,6 +13,7 @@ import es.library.databaseserver.contenido.Contenido;
 import es.library.databaseserver.contenido.Contenido.Soporte;
 import es.library.databaseserver.contenido.exceptions.NotValidSoporteException;
 import es.library.databaseserver.contenido.search.models.ContenidoModel;
+import es.library.databaseserver.contenido.search.service.ContenidoParamsDto;
 import es.library.databaseserver.contenido.search.service.ContenidoSearchService;
 
 @RequestMapping("/contenidos/search")
@@ -50,7 +51,7 @@ public class ContenidoSearchController {
 			return ContenidoSearchService.getUniqueContenidos(searchService.getAllContenidos());
 		}
 
-		return (List<ContenidoModel>) searchService.getContenidosByMultipleParams(
+		return (List<ContenidoModel>) searchService.getContenidosByMultipleParams(new ContenidoParamsDto(
 				query, 
 				titulo, 
 				autor,
@@ -72,7 +73,7 @@ public class ContenidoSearchController {
 				null, 
 				true,
 				null
-			);
+			));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -106,7 +107,7 @@ public class ContenidoSearchController {
 					d, p);
 		}
 
-		return (List<Contenido>) searchService.getContenidosByMultipleParams(
+		return (List<Contenido>) searchService.getContenidosByMultipleParams(new ContenidoParamsDto(
 				query, 
 				titulo, 
 				autor,
@@ -128,7 +129,7 @@ public class ContenidoSearchController {
 				d, 
 				false,
 				p
-			);
+			));
 	}
 	
 	@GetMapping(path = "/topprestamos")

@@ -1,9 +1,9 @@
 package es.library.databaseserver.contenido.types;
 
 import java.net.URL;
+import java.util.Objects;
 
 public class Video extends Audio{
-	
 	private Integer edadRecomendada;
 	private Integer calidad;
 	
@@ -26,4 +26,25 @@ public class Video extends Audio{
 	public String toString() {
 		return super.toString()+"\nVideos [edadRecomendada=" + edadRecomendada + ", calidad=" + calidad + "]";
 	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(calidad, edadRecomendada);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Video other = (Video) obj;
+		return super.equals(obj) && Objects.equals(calidad, other.calidad) && Objects.equals(edadRecomendada, other.edadRecomendada);
+	}
+	
 }

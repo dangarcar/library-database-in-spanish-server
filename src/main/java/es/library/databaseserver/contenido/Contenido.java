@@ -33,7 +33,6 @@ public class Contenido implements AbstractContenido{
 	private boolean prestable;
 	private Integer diasDePrestamo;
 	private boolean disponible;
-//	private LocalDate fechaDisponibilidad;
 	private Long IDLibro;
 	private Long IDAudiovisual;
 	private URL imagen;
@@ -70,8 +69,7 @@ public class Contenido implements AbstractContenido{
 	}
 	
 	public Contenido(Long iD, String titulo, String autor, String descripcion, Integer ano, String idioma,
-			Soporte soporte, boolean prestable, Integer diasDePrestamo, boolean disponible, URL imagen/*,
-			LocalDate fechaDisponibilidad*/) {
+			Soporte soporte, boolean prestable, Integer diasDePrestamo, boolean disponible, URL imagen) {
 		ID = iD;
 		this.titulo = titulo;
 		this.autor = autor;
@@ -83,7 +81,6 @@ public class Contenido implements AbstractContenido{
 		this.diasDePrestamo = diasDePrestamo;
 		this.disponible = disponible;
 		this.imagen = imagen;
-//		this.fechaDisponibilidad = fechaDisponibilidad;
 	}
 
 	//TIPICOS GETTERS Y SETTERS DE UNA CLASE JAVA
@@ -120,9 +117,6 @@ public class Contenido implements AbstractContenido{
 	public URL getImagen() {return imagen;}
 	public void setImagen(URL imagen) {this.imagen = imagen;}
 	
-//	public LocalDate getFechaDisponibilidad() {return fechaDisponibilidad;}
-//	public void setFechaDisponibilidad(LocalDate fechaDisponibilidad) {this.fechaDisponibilidad = fechaDisponibilidad;}
-	
 	@JsonIgnore
 	public Long getIDAudiovisual() {return IDAudiovisual;}
 	@JsonIgnore
@@ -136,9 +130,10 @@ public class Contenido implements AbstractContenido{
 	//TIPICOS hashCode(), equals() y toString() DE UNA CLASE JAVA
 	@Override
 	public int hashCode() {
-		return Objects.hash(ID, autor, soporte, titulo);
+		return Objects.hash(ID, IDAudiovisual, IDLibro, ano, autor, descripcion, diasDePrestamo, disponible, idioma,
+				imagen, prestable, soporte, titulo);
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -149,17 +144,17 @@ public class Contenido implements AbstractContenido{
 			return false;
 		Contenido other = (Contenido) obj;
 		return Objects.equals(ID, other.ID) && Objects.equals(IDAudiovisual, other.IDAudiovisual)
-				&& Objects.equals(IDLibro, other.IDLibro) && ano == other.ano && Objects.equals(autor, other.autor)
-				&& Objects.equals(descripcion, other.descripcion) && diasDePrestamo == other.diasDePrestamo
-				&& disponible == other.disponible /*&& Objects.equals(fechaDisponibilidad, other.fechaDisponibilidad)*/
-				&& Objects.equals(idioma, other.idioma) && prestable == other.prestable && soporte == other.soporte
-				&& Objects.equals(titulo, other.titulo);
+				&& Objects.equals(IDLibro, other.IDLibro) && Objects.equals(ano, other.ano)
+				&& Objects.equals(autor, other.autor) && Objects.equals(descripcion, other.descripcion)
+				&& Objects.equals(diasDePrestamo, other.diasDePrestamo) && disponible == other.disponible
+				&& Objects.equals(idioma, other.idioma) && Objects.equals(imagen, other.imagen)
+				&& prestable == other.prestable && soporte == other.soporte && Objects.equals(titulo, other.titulo);
 	}
 	
 	@Override
 	public String toString() {
 		return "Contenido [ID=" + ID + ", titulo=" + titulo + ", autor=" + autor + ", ano=" + ano + ", idioma=" + idioma
 				+ ", soporte=" + soporte + ", prestable=" + prestable + ", diasDePrestamo=" + diasDePrestamo
-				+ ", disponible=" + disponible + /*", fechaDisponibilidad=" + fechaDisponibilidad +*/ "]";
+				+ ", disponible=" + disponible + "]";
 	}
 }

@@ -91,8 +91,5 @@ public interface ContenidoSearchService {
 				.toList();
 	}
 	
-	public List<? extends AbstractContenido> getContenidosByMultipleParams(String query, String titulo, String autor,
-			Integer minAno, Integer maxAno, String idioma, Soporte soporte, Integer minPaginas, Integer maxPaginas,
-			String editorial, String isbn, Integer minEdad, Integer maxEdad, Double minDuracion, Double maxDuracion,
-			Integer minCalidad, Integer maxCalidad, String type, Boolean d, Boolean unique, Boolean prestable);
+	public List<? extends AbstractContenido> getContenidosByMultipleParams(ContenidoParamsDto dto);
 }
