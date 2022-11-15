@@ -9,12 +9,10 @@ public class DatabasePerfilException extends RuntimeException{
 
 	public DatabasePerfilException(String message, Throwable cause) {
 		super(message, cause);
-		// TODO Auto-generated constructor stub
 	}
 
 	public DatabasePerfilException(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
 	}
 	
 }
