@@ -110,7 +110,6 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 				+ ",DiasDePrestamo = :diasDePrestamo"
 				+ ",Prestable = :prestable"
 				+ ",Disponible = :disponible"
-//				+ ",FechaDisponibilidad = :fecha"
 				+ ",IDLibro = :IdLibro"
 				+ ",IDAudiovisual = :IdAudiovisual "
 				+ ",Imagen = :imagen"
@@ -129,7 +128,6 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 					.addValue("diasDePrestamo", contenido.getDiasDePrestamo())
 					.addValue("prestable", contenido.getPrestable())
 					.addValue("disponible", contenido.getDisponible())
-//					.addValue("fecha", contenido.getFechaDisponibilidad())
 					.addValue("IdLibro", contenido.getIDLibro())
 					.addValue("IdAudiovisual", contenido.getIDAudiovisual())
 					.addValue("id", ID)
@@ -149,8 +147,7 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 			c = new Contenido(rs.getLong("ID"), rs.getString("Titulo"), rs.getString("Autor"),
 					rs.getString("Descripcion"), rs.getInt("Year"), rs.getString("Idioma"),
 					Soporte.valueOf(rs.getString("Soporte")), rs.getBoolean("Prestable"), rs.getInt("DiasDePrestamo"),
-					rs.getBoolean("Disponible"),new URL(rs.getString("Imagen"))/*, 
-					((rs.getString("FechaDisponibilidad") != null) ? LocalDate.parse(rs.getString("FechaDisponibilidad"), DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null)*/);
+					rs.getBoolean("Disponible"),rs.getString("Imagen")==null? null:new URL(rs.getString("Imagen")));
 		} catch (MalformedURLException e) {
 			new RuntimeException(e);
 		}
