@@ -19,7 +19,7 @@ import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException
 import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException;
 
 @Repository
-public class DetallesAudiovisualSQLiteRepo implements ContenidoDetallesAudiovisualDAO{
+public class DetallesAudiovisualPostgresRepo implements ContenidoDetallesAudiovisualDAO{
 
 	@Autowired
 	@Qualifier("baseJDBC")
@@ -27,7 +27,7 @@ public class DetallesAudiovisualSQLiteRepo implements ContenidoDetallesAudiovisu
 	
 	@Override
 	public List<Long> getAllAudiovisualID() {
-		final String sqlString = "SELECT ID FROM Detalles_Audiovisual";
+		final String sqlString = "SELECT \"ID\" FROM \"Detalles_Audiovisual\"";
 		
 		return jdbcTemplate.query(sqlString, new RowMapper<Long>() {
 				@Override
@@ -40,7 +40,7 @@ public class DetallesAudiovisualSQLiteRepo implements ContenidoDetallesAudiovisu
 	
 	@Override
 	public Optional<DetallesAudiovisualModel> getAudiovisualByID(Long ID) {
-		final String sqlString = "SELECT ID,Duracion,IsVideo,EdadRecomendada,Calidad FROM Detalles_Audiovisual WHERE ID = :id";
+		final String sqlString = "SELECT \"ID\",\"Duracion\",\"IsVideo\",\"EdadRecomendada\",\"Calidad\" FROM \"Detalles_Audiovisual\" WHERE \"ID\" = :id";
 		
 		var contenidos = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("id", ID), audiovisualRowMapper);
 		
@@ -51,7 +51,7 @@ public class DetallesAudiovisualSQLiteRepo implements ContenidoDetallesAudiovisu
 	
 	@Override
 	public DetallesAudiovisualModel insertAudiovisual(DetallesAudiovisualModel audiovisual) throws DatabaseContenidoException {
-		final String sqlString = "INSERT INTO Detalles_Audiovisual(Duracion,IsVideo,EdadRecomendada,Calidad) "+
+		final String sqlString = "INSERT INTO \"Detalles_Audiovisual\"(\"Duracion\",\"IsVideo\",\"EdadRecomendada\",\"Calidad\") "+
 				"VALUES(:duracion,:isVideo,:edadRecomendada,:calidad)";
 		
 		var a = this.getAudiovisualByID(audiovisual.getID());
@@ -72,7 +72,7 @@ public class DetallesAudiovisualSQLiteRepo implements ContenidoDetallesAudiovisu
 	@Override
 	@Deprecated
 	public DetallesAudiovisualModel deleteAudiovisualByID(Long ID) throws ContenidoNotFoundException{
-		final String sqlString = "DELETE FROM Detalles_Audiovisual WHERE ID = :id";
+		final String sqlString = "DELETE FROM \"Detalles_Audiovisual\" WHERE \"ID\" = :id";
 		
 		var a = this.getAudiovisualByID(ID);
 		
@@ -88,12 +88,12 @@ public class DetallesAudiovisualSQLiteRepo implements ContenidoDetallesAudiovisu
 	
 	@Override
 	public DetallesAudiovisualModel updateAudiovisualByID(Long ID, DetallesAudiovisualModel audiovisual) throws ContenidoNotFoundException {
-		final String sqlString = "UPDATE Detalles_Audiovisual SET "
-				+ "Duracion = :duracion"
-				+ ",IsVideo = :isVideo"
-				+ ",EdadRecomendada = :edadRecomendada"
-				+ ",Calidad = :calidad"
-				+ " WHERE ID = :id";
+		final String sqlString = "UPDATE \"Detalles_Audiovisual\" SET "
+				+ "\"Duracion\" = :duracion"
+				+ ",\"IsVideo\" = :isVideo"
+				+ ",\"EdadRecomendada\" = :edadRecomendada"
+				+ ",\"Calidad\" = :calidad"
+				+ " WHERE \"ID\" = :id";
 		
 		var a = this.getAudiovisualByID(ID);
 		
@@ -117,12 +117,12 @@ public class DetallesAudiovisualSQLiteRepo implements ContenidoDetallesAudiovisu
 	public Optional<DetallesAudiovisualModel> getAudiovisualIfIdIsNull(DetallesAudiovisualModel audiovisualIdNull) {
 		String sqlString;
 		if(audiovisualIdNull.getIsVideo()) {
-			sqlString = "SELECT ID,Duracion,IsVideo,EdadRecomendada,Calidad FROM Detalles_Audiovisual "
-					+ "WHERE Duracion = :duracion AND IsVideo = :isVideo AND EdadRecomendada = :edad AND Calidad = :calidad";
+			sqlString = "SELECT \"ID\",\"Duracion\",\"IsVideo\",\"EdadRecomendada\",\"Calidad\" FROM \"Detalles_Audiovisual\" "
+					+ "WHERE \"Duracion\" = :duracion AND \"IsVideo\" = :isVideo AND \"EdadRecomendada\" = :edad AND \"Calidad\" = :calidad";
 		}
 		else {
-			sqlString = "SELECT ID,Duracion,IsVideo,EdadRecomendada,Calidad FROM Detalles_Audiovisual "
-					+ "WHERE Duracion = :duracion AND IsVideo = :isVideo";
+			sqlString = "SELECT \"ID\",\"Duracion\",\"IsVideo\",\"EdadRecomendada\",\"Calidad\" FROM \"Detalles_Audiovisual\" "
+					+ "WHERE \"Duracion\" = :duracion AND \"IsVideo\" = :isVideo";
 		}
 		
 		var contenidos = jdbcTemplate.query(sqlString, new MapSqlParameterSource()
@@ -139,7 +139,7 @@ public class DetallesAudiovisualSQLiteRepo implements ContenidoDetallesAudiovisu
 
 	@Override
 	public void deleteAudiovisualByIDIfIsNotPointed(Long ID, boolean ifOne) throws ContenidoNotFoundException {
-		final String sqlString = "DELETE FROM Detalles_Audiovisual WHERE ID = :id AND (SELECT count(*) FROM Contenidos WHERE IDAudiovisual = :id) <= :num;";
+		final String sqlString = "DELETE FROM \"Detalles_Audiovisual\" WHERE \"ID\" = :id AND (SELECT count(*) FROM \"Contenidos\" WHERE \"IDAudiovisual\" = :id) <= :num;";
 		
 		var a = this.getAudiovisualByID(ID);
 		

@@ -20,7 +20,7 @@ import es.library.databaseserver.perfil.exceptions.PerfilNotFoundException;
 import es.library.databaseserver.shared.Utils;
 
 @Repository
-public class PerfilSQLiteRepo implements PerfilDAO{
+public class PerfilPostgresRepo implements PerfilDAO{
 
 	@Autowired
 	@Qualifier("baseJDBC")
@@ -28,14 +28,14 @@ public class PerfilSQLiteRepo implements PerfilDAO{
 
 	@Override
 	public List<Long> getAllPerfilesID() {
-		final String sqlString = "SELECT ID FROM Perfiles";
+		final String sqlString = "SELECT \"ID\" FROM \"Perfiles\"";
 		
 		return jdbcTemplate.query(sqlString, Utils.idRowMapper);
 	}
 
 	@Override
 	public Optional<Perfil> getPerfilByID(Long ID) {
-		final String sqlString = "SELECT ID,Nombre,FechaDeNacimiento,CorreoElectronico,Password,Roles FROM Perfiles WHERE ID = :id";
+		final String sqlString = "SELECT \"ID\",\"Nombre\",\"FechaDeNacimiento\",\"CorreoElectronico\",\"Password\",\"Roles\" FROM \"Perfiles\" WHERE \"ID\" = :id";
 		
 		var perfiles = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("id", ID), perfilRowMapper);
 		
@@ -47,7 +47,7 @@ public class PerfilSQLiteRepo implements PerfilDAO{
 
 	@Override
 	public Optional<Perfil> getPerfilByUsername(String username) {
-		final String sqlString = "SELECT ID,Nombre,FechaDeNacimiento,CorreoElectronico,Password,Roles FROM Perfiles WHERE CorreoElectronico = :username";
+		final String sqlString = "SELECT \"ID\",\"Nombre\",\"FechaDeNacimiento\",\"CorreoElectronico\",\"Password\",\"Roles\" FROM \"Perfiles\" WHERE \"CorreoElectronico\" = :username";
 		
 		var perfiles = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("username", username), perfilRowMapper);
 		
@@ -55,33 +55,24 @@ public class PerfilSQLiteRepo implements PerfilDAO{
 		
 		return Optional.ofNullable(perfiles.get(0));
 	}
-
-	private long getIdLastInserted() {
-		final String sqlString = "SELECT seq AS ID FROM sqlite_sequence WHERE name = 'Perfiles';";
-		
-		var id = jdbcTemplate.query(sqlString, Utils.idRowMapper);
-		
-		if(id.isEmpty()) return -1L;
-		
-		return id.get(0);
-	}
 	
 	@Override
-	public Perfil insertPerfil(Perfil perfil) {
-		final String sqlString = "INSERT INTO Perfiles(Nombre,FechaDeNacimiento,CorreoElectronico,Password,Roles) "+
-				"VALUES(:nombre,:fechaDeNacimiento,:correoElectronico,:password,:roles)";
+	public Perfil insertPerfil(Perfil perfil) {		
+		final String sqlString = "INSERT INTO \"Perfiles\"(\"Nombre\",\"FechaDeNacimiento\",\"CorreoElectronico\",\"Password\",\"Roles\") "+
+				"VALUES(:nombre,:fechaDeNacimiento,:correoElectronico,:password,:roles) RETURNING \"ID\"";
 
-		final int i = jdbcTemplate.update(sqlString, new MapSqlParameterSource()
+		var i = jdbcTemplate.query(sqlString, new MapSqlParameterSource()
 				.addValue("nombre", perfil.getNombre())
 				.addValue("fechaDeNacimiento", perfil.getFechaNacimiento())
 				.addValue("correoElectronico", perfil.getCorreoElectronico())
 				.addValue("password", perfil.getContrasena())
-				.addValue("roles", perfil.getRole())
-			);
+				.addValue("roles", perfil.getRole().toString()),
+				Utils.idRowMapper
+				);
 
-		if(i == 0) throw new DatabasePerfilException("El perfil no ha sido insertado en la base de datos por alguna razon");
+		if(i.isEmpty()) throw new DatabasePerfilException("El perfil no ha sido insertado en la base de datos por alguna razon");
 
-		long idPerfil = getIdLastInserted();
+		long idPerfil = i.get(0);
 
 		return this.getPerfilByID(idPerfil).orElseThrow(
 				() -> new DatabasePerfilException("El perfil no ha sido insertado en la base de datos por alguna razon"));
@@ -89,7 +80,7 @@ public class PerfilSQLiteRepo implements PerfilDAO{
 
 	@Override
 	public void deletePerfilByID(Long ID) throws PerfilNotFoundException{
-		final String sqlString = "DELETE FROM Perfiles WHERE ID = :id";
+		final String sqlString = "DELETE FROM \"Perfiles\" WHERE \"ID\" = :id";
 		
 		var a = this.getPerfilByID(ID);
 		
@@ -103,13 +94,13 @@ public class PerfilSQLiteRepo implements PerfilDAO{
 
 	@Override
 	public Perfil updatePerfilByID(Long ID, Perfil perfil) throws PerfilNotFoundException {
-		final String sqlString = "UPDATE Perfiles SET "
-				+ " Nombre = :nombre,"
-				+ " FechaDeNacimiento = :fechaDeNacimiento,"
-				+ " CorreoElectronico = :correoElectronico,"
-				+ " Password = :password,"
-				+ " Roles = :roles"
-				+ " WHERE ID = :id";
+		final String sqlString = "UPDATE \"Perfiles\" SET "
+				+ " \"Nombre\" = :nombre,"
+				+ " \"FechaDeNacimiento\" = :fechaDeNacimiento,"
+				+ " \"CorreoElectronico\" = :correoElectronico,"
+				+ " \"Password\" = :password,"
+				+ " \"Roles\" = :roles"
+				+ " WHERE \"ID\" = :id";
 		
 		var a = this.getPerfilByID(ID);
 		
@@ -119,7 +110,7 @@ public class PerfilSQLiteRepo implements PerfilDAO{
 					.addValue("fechaDeNacimiento", perfil.getFechaNacimiento())
 					.addValue("correoElectronico", perfil.getCorreoElectronico())
 					.addValue("password", perfil.getContrasena())
-					.addValue("roles", perfil.getRole())
+					.addValue("roles", perfil.getRole().toString())
 					.addValue("id", ID));
 		}
 

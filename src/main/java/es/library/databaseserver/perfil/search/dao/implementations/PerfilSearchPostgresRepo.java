@@ -15,42 +15,44 @@ import es.library.databaseserver.perfil.search.dao.PerfilSearchDAO;
 import es.library.databaseserver.shared.Utils;
 
 @Repository
-public class PerfilSearchSQLiteRepo implements PerfilSearchDAO{
+public class PerfilSearchPostgresRepo implements PerfilSearchDAO {
 
 	@Autowired
 	@Qualifier("baseJDBC")
 	private NamedParameterJdbcTemplate jdbcTemplate;
 	
 	@Override
+	public List<Long> getPerfilesByPrompt(String prompt) {		
+		final String query = "to_tsquery(:word)";
+		final String vector = "to_tsvector('spanish',coalesce(cast(\"ID\" as VARCHAR),'')||' '||coalesce(\"Nombre\",'')||' '||coalesce(\"CorreoElectronico\",''))";
+		final String sqlString = "SELECT \"ID\", ts_rank("+vector+", "+query+") AS \"RANK\" FROM \"Perfiles\" WHERE "+vector+" @@ "+query+" ORDER BY \"RANK\";";
+		
+		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("word", prompt), Utils.idRowMapper);
+	}
+	
+	@Override
 	public List<Long> getPerfilesByNombre(String nombre) {
-		final String sqlString = "SELECT ID FROM Perfiles WHERE Nombre LIKE :nombre";
+		final String sqlString = "SELECT \"ID\" FROM \"Perfiles\" WHERE \"Nombre\" LIKE :nombre";
 		
 		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("nombre", "%"+nombre+"%"), Utils.idRowMapper);
 	}
 
 	@Override
 	public List<Long> getPerfilesByEmail(String email) {
-		final String sqlString = "SELECT ID FROM Perfiles WHERE CorreoElectronico LIKE :email";
+		final String sqlString = "SELECT \"ID\" FROM \"Perfiles\" WHERE \"CorreoElectronico\" LIKE :email";
 		
 		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("email", "%"+email+"%"), Utils.idRowMapper);
 	}
 
 	@Override
 	public List<Long> getPerfilesByNacimiento(String nacimiento) {
-		final String sqlString = "SELECT ID FROM Perfiles WHERE FechaDeNacimiento LIKE :nacimiento";
+		final String sqlString = "SELECT \"ID\" FROM \"Perfiles\" WHERE \"FechaDeNacimiento\" LIKE :nacimiento";
 		
 		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("nacimiento", "%"+nacimiento.toString()+"%"), Utils.idRowMapper);
 	}
 
-	@Override
-	public List<Long> getPerfilesByPrompt(String prompt) {
-		final String sqlString = "SELECT ID FROM BusquedaPerfiles WHERE BusquedaPerfiles = :word ORDER BY RANK;";
-		
-		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("word", prompt), Utils.idRowMapper);
-	}
-
 	public List<Long> getPerfilesBetweenTwoBirthDates(LocalDate from, LocalDate to) {
-		final String sqlString = "SELECT ID FROM Perfiles WHERE FechaDeNacimiento BETWEEN :from AND :to";
+		final String sqlString = "SELECT \"ID\" FROM \"Perfiles\" WHERE \"FechaDeNacimiento\" BETWEEN :from AND :to";
 		
 		return jdbcTemplate.query(sqlString, new MapSqlParameterSource()
 				.addValue("from", from.format(DateTimeFormatter.ISO_LOCAL_DATE))
@@ -59,9 +61,8 @@ public class PerfilSearchSQLiteRepo implements PerfilSearchDAO{
 
 	@Override
 	public List<Long> getPerfilesByRole(Roles roles) {
-		final String sqlString = "SELECT ID FROM Perfiles WHERE Roles = :roles";
+		final String sqlString = "SELECT \"ID\" FROM \"Perfiles\" WHERE \"Roles\" = :roles";
 		
-		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("roles", roles), Utils.idRowMapper);
+		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("roles", roles.toString()), Utils.idRowMapper);
 	}
-	
 }

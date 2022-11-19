@@ -2,20 +2,20 @@
 Creo la tabla principal de los perfiles
 */
 CREATE TABLE IF NOT EXISTS "Perfiles" (
-	"Nombre"	TEXT NOT NULL,
-	"FechaDeNacimiento"	TEXT NOT NULL,
-	"Password"	TEXT NOT NULL,
-	"CorreoElectronico"	TEXT NOT NULL UNIQUE,
-	"Roles"	TEXT NOT NULL,
-	"ID"	INTEGER,
-	PRIMARY KEY("ID" AUTOINCREMENT)
+	"ID" SERIAL PRIMARY KEY,
+	"Nombre" VARCHAR(64) NOT NULL,
+	"FechaDeNacimiento"	VARCHAR(64) NOT NULL,
+	"Password" VARCHAR(512) NOT NULL,
+	"CorreoElectronico"	VARCHAR(64) NOT NULL UNIQUE,
+	"Roles"	VARCHAR(32) NOT NULL
 );
 
+
 /*
-Creo la tabla de busqueda
+Creo el índice para la busqueda de perfiles
 */
-CREATE VIRTUAL TABLE IF NOT EXISTS BusquedaPerfiles USING fts5(
-    "ID",
-    "Nombre",
-    "CorreoElectronico"
-);
+CREATE INDEX IF NOT EXISTS "Perfiles_IDX" ON "Perfiles" USING GIN (to_tsvector('spanish',
+	coalesce(cast("ID" as VARCHAR),'') || ' ' ||
+	coalesce("Nombre",'') || ' ' ||
+	coalesce("CorreoElectronico",'')
+));

@@ -18,7 +18,7 @@ import es.library.databaseserver.contenido.exceptions.ContenidoNotFoundException
 import es.library.databaseserver.contenido.exceptions.DatabaseContenidoException;
 
 @Repository
-public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
+public class DetallesLibroPostgresRepo implements ContenidoDetallesLibroDAO{
 
 	@Autowired
 	@Qualifier("baseJDBC")
@@ -26,7 +26,7 @@ public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
 
 	@Override
 	public List<Long> getAllLibroID() {
-		final String sqlString = "SELECT ID FROM Detalles_Libros";
+		final String sqlString = "SELECT \"ID\" FROM \"Detalles_Libros\"";
 		
 		return jdbcTemplate.query(sqlString, new RowMapper<Long>() {
 				@Override
@@ -39,7 +39,7 @@ public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
 	
 	@Override
 	public Optional<DetallesLibroModel> getLibroByID(Long ID) {
-		final String sqlString = "SELECT ID,ISBN,Paginas,Editorial FROM Detalles_Libros WHERE ID = :id";
+		final String sqlString = "SELECT \"ID\",\"ISBN\",\"Paginas\",\"Editorial\" FROM \"Detalles_Libros\" WHERE \"ID\" = :id";
 		
 		var contenidos = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("id", ID), libroRowMapper);
 		
@@ -50,7 +50,7 @@ public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
 	
 	@Override
 	public DetallesLibroModel insertLibro(DetallesLibroModel libro) throws DatabaseContenidoException {
-		final String sqlString = "INSERT INTO Detalles_Libros(ISBN,Paginas,Editorial) "+
+		final String sqlString = "INSERT INTO \"Detalles_Libros\"(\"ISBN\",\"Paginas\",\"Editorial\") "+
 				"VALUES(:isbn,:paginas,:editorial)";
 		
 		var a = this.getLibroByID(libro.getID());
@@ -73,7 +73,7 @@ public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
 	@Override
 	@Deprecated
 	public DetallesLibroModel deleteLibroByID(Long ID) throws ContenidoNotFoundException {
-		final String sqlString = "DELETE FROM Detalles_Libros WHERE ID = :id";
+		final String sqlString = "DELETE FROM \"Detalles_Libros\" WHERE \"ID\" = :id";
 		
 		var a = this.getLibroByID(ID);
 		
@@ -89,11 +89,11 @@ public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
 	
 	@Override
 	public DetallesLibroModel updateLibroByID(Long ID, DetallesLibroModel libro) throws ContenidoNotFoundException {
-		final String sqlString = "UPDATE Detalles_Libros SET "
-				+ "ISBN = :isbn"
-				+ ",Paginas = :paginas"
-				+ ",Editorial = :editorial"
-				+ " WHERE ID = :id";
+		final String sqlString = "UPDATE \"Detalles_Libros\" SET "
+				+ "\"ISBN\" = :isbn"
+				+ ",\"Paginas\" = :paginas"
+				+ ",\"Editorial\" = :editorial"
+				+ " WHERE \"ID\" = :id";
 		
 		var a = this.getLibroByID(ID);
 		
@@ -114,7 +114,7 @@ public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
 
 	@Override
 	public Optional<DetallesLibroModel> getLibroIfIdIsNull(DetallesLibroModel libroIdNull) {
-		final String sqlString = "SELECT ID,ISBN,Paginas,Editorial FROM Detalles_Libros WHERE ISBN = :isbn AND Paginas = :paginas AND Editorial = :edit;";
+		final String sqlString = "SELECT \"ID\",\"ISBN\",\"Paginas\",\"Editorial\" FROM \"Detalles_Libros\" WHERE \"ISBN\" = :isbn AND \"Paginas\" = :paginas AND \"Editorial\" = :edit;";
 		
 		var contenidos = jdbcTemplate.query(sqlString, new MapSqlParameterSource()
 					.addValue("isbn", libroIdNull.getISBN())
@@ -129,7 +129,7 @@ public class DetallesLibroSQLiteRepo implements ContenidoDetallesLibroDAO{
 
 	@Override
 	public void deleteLibroByIDIfIsNotPointed(Long ID, boolean ifOne) throws ContenidoNotFoundException {
-		final String sqlString = "DELETE FROM Detalles_Libros WHERE ID = :id AND (SELECT count(*) FROM Contenidos WHERE IDLibro = :id) <= :num;";
+		final String sqlString = "DELETE FROM \"Detalles_Libros\" WHERE \"ID\" = :id AND (SELECT count(*) FROM \"Contenidos\" WHERE \"IDLibro\" = :id) <= :num;";
 		
 		var a = this.getLibroByID(ID);
 		

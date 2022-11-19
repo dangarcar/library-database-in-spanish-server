@@ -19,7 +19,7 @@ import es.library.databaseserver.prestamos.exceptions.PrestamoNotFoundException;
 import es.library.databaseserver.shared.Utils;
 
 @Repository
-public class PrestamoSQLiteRepo implements PrestamoDAO {
+public class PrestamoPostgresRepo implements PrestamoDAO {
 
 	@Autowired
 	@Qualifier("baseJDBC")
@@ -27,14 +27,14 @@ public class PrestamoSQLiteRepo implements PrestamoDAO {
 	
 	@Override
 	public List<Long> getAllPrestamosID() {
-		final String sqlString = "SELECT ID FROM Prestamos";
+		final String sqlString = "SELECT \"ID\" FROM \"Prestamos\"";
 		
 		return jdbcTemplate.query(sqlString, Utils.idRowMapper);
 	}
 
 	@Override
 	public Optional<Prestamo> getPrestamoByID(Long ID) {
-		final String sqlString = "SELECT ID,IDContenido,IDPerfil,FechaHoraPrestamo,FechaHoraDevolucion,DiasDePrestamo,Devuelto FROM Prestamos WHERE ID = :id";
+		final String sqlString = "SELECT \"ID\",\"IDContenido\",\"IDPerfil\",\"FechaHoraPrestamo\",\"FechaHoraDevolucion\",\"DiasDePrestamo\",\"Devuelto\" FROM \"Prestamos\" WHERE \"ID\" = :id";
 		
 		var prestamos = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("id", ID), prestamoRowMapper);
 		
@@ -42,34 +42,25 @@ public class PrestamoSQLiteRepo implements PrestamoDAO {
 		
 		return Optional.ofNullable(prestamos.get(0));
 	}
-
-	private long getIdLastInserted() {
-		final String sqlString = "SELECT seq AS ID FROM sqlite_sequence WHERE name = 'Prestamos';";
-		
-		var id = jdbcTemplate.query(sqlString, Utils.idRowMapper);
-		
-		if(id.isEmpty()) return -1L;
-		
-		return id.get(0);
-	}
 	
 	@Override
 	public Prestamo insertPrestamo(Prestamo prestamo) {
-		final String sqlString = "INSERT INTO Prestamos(IDContenido,IDPerfil,FechaHoraPrestamo,FechaHoraDevolucion,DiasDePrestamo,Devuelto) "+
-				"VALUES(:idContenido,:idPerfil,:fechaHoraPrestamo,:fechaHoraDevolucion,:diasDePrestamo,:devuelto)";
+		final String sqlString = "INSERT INTO \"Prestamos\"(\"IDContenido\",\"IDPerfil\",\"FechaHoraPrestamo\",\"FechaHoraDevolucion\",\"DiasDePrestamo\",\"Devuelto\") "+
+				"VALUES(:idContenido,:idPerfil,:fechaHoraPrestamo,:fechaHoraDevolucion,:diasDePrestamo,:devuelto) RETURNING \"ID\"";
 
-		final int i = jdbcTemplate.update(sqlString, new MapSqlParameterSource()
+		var i = jdbcTemplate.query(sqlString, new MapSqlParameterSource()
 				.addValue("idContenido", prestamo.getIDContenido())
 				.addValue("idPerfil", prestamo.getIDPerfil())
 				.addValue("fechaHoraPrestamo", prestamo.getFechaHoraPrestamo()!=null? prestamo.getFechaHoraPrestamo().format(DateTimeFormatter.ISO_DATE_TIME):null)
 				.addValue("fechaHoraDevolucion", prestamo.getFechaHoraDevolucion()!=null? prestamo.getFechaHoraDevolucion().format(DateTimeFormatter.ISO_DATE_TIME):null)
 				.addValue("diasDePrestamo", prestamo.getDiasdePrestamo())
-				.addValue("devuelto", prestamo.isDevuelto())
+				.addValue("devuelto", prestamo.isDevuelto()),
+				Utils.idRowMapper
 			);
 
-		if(i == 0) throw new DatabasePrestamoException("El prestamo no ha sido insertado en la base de datos por alguna razon");
+		if(i.isEmpty()) throw new DatabasePrestamoException("El prestamo no ha sido insertado en la base de datos por alguna razon");
 
-		long idContenido = getIdLastInserted();
+		long idContenido = i.get(0);
 
 		return this.getPrestamoByID(idContenido).orElseThrow(
 				() -> new DatabasePrestamoException("El prestamo no ha sido insertado en la base de datos por alguna razon"));
@@ -78,7 +69,7 @@ public class PrestamoSQLiteRepo implements PrestamoDAO {
 
 	@Override
 	public void deletePrestamoByID(Long ID) throws PrestamoNotFoundException {
-		final String sqlString = "DELETE FROM Prestamos WHERE ID = :id";
+		final String sqlString = "DELETE FROM \"Prestamos\" WHERE \"ID\" = :id";
 		
 		var a = this.getPrestamoByID(ID);
 		
@@ -92,14 +83,14 @@ public class PrestamoSQLiteRepo implements PrestamoDAO {
 
 	@Override
 	public Prestamo updatePrestamoByID(Long ID, Prestamo prestamo) throws PrestamoNotFoundException {
-		final String sqlString = "UPDATE Prestamos SET "
-				+ " IDContenido = :idContenido,"
-				+ " IDPerfil = :idPerfil,"
-				+ " FechaHoraPrestamo = fechaHoraPrestamo,"
-				+ " FechaHoraDevolucion = :fechaHoraDevolucion,"
-				+ " DiasDePrestamo = :diasDePrestamo,"
-				+ " Devuelto = :devuelto"
-				+ " WHERE ID = :id";
+		final String sqlString = "UPDATE \"Prestamos\" SET "
+				+ " \"IDContenido\" = :idContenido,"
+				+ " \"IDPerfil\" = :idPerfil,"
+				+ " \"FechaHoraPrestamo\" = :fechaHoraPrestamo,"
+				+ " \"FechaHoraDevolucion\" = :fechaHoraDevolucion,"
+				+ " \"DiasDePrestamo\" = :diasDePrestamo,"
+				+ " \"Devuelto\" = :devuelto"
+				+ " WHERE \"ID\" = :id";
 		
 		var a = this.getPrestamoByID(ID);
 		

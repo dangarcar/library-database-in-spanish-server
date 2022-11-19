@@ -1,52 +1,49 @@
 /*
 Empiezo creando las tablas de detalles, necesarias para las foreign keys de los Contenidos
 */
+
 CREATE TABLE IF NOT EXISTS "Detalles_Audiovisual" (
-	"ID"	INTEGER,
-	"Duracion"	REAL,
-	"IsVideo"	INTEGER NOT NULL,
-	"EdadRecomendada"	INTEGER,
-	"Calidad"	INTEGER,
-	CONSTRAINT "PK_Detalles_Audiovisual" PRIMARY KEY("ID" AUTOINCREMENT)
+	"ID" SERIAL PRIMARY KEY,
+	"Duracion" REAL,
+	"IsVideo" BOOLEAN NOT NULL,
+	"EdadRecomendada" INT,
+	"Calidad" INT
 );
 
-
 CREATE TABLE IF NOT EXISTS "Detalles_Libros" (
-	"ID"	INTEGER NOT NULL,
-	"Paginas"	INTEGER,
-	"Editorial"	TEXT,
-	"ISBN"	TEXT,
-	CONSTRAINT "PK_Detalles_Libros" PRIMARY KEY("ID" AUTOINCREMENT)
+	"ID" SERIAL PRIMARY KEY,
+	"Paginas" INT,
+	"Editorial" VARCHAR(64),
+	"ISBN" VARCHAR(64)
 );
 
 /*
 Creo la tabla principal de los Contenidos
 */
 CREATE TABLE IF NOT EXISTS "Contenidos" (
-	"ID"	INTEGER,
-	"Titulo"	REAL NOT NULL,
-	"Autor"	TEXT,
-	"Descripcion"	TEXT,
-	"Year"	INTEGER,
-	"Idioma"	TEXT,
-	"Soporte"	TEXT,
-	"DiasDePrestamo"	INTEGER NOT NULL,
-	"Prestable"	INTEGER NOT NULL,
-	"Disponible"	INTEGER DEFAULT 0,
-	"IDLibro"	INTEGER DEFAULT NULL,
-	"IDAudiovisual"	INTEGER DEFAULT NULL,
-	"Imagen"	TEXT DEFAULT NULL,
-	CONSTRAINT "FK_Audiovisual" FOREIGN KEY("IDAudiovisual") REFERENCES "Detalles_Audiovisual"("ID") ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT "FK_Libro" FOREIGN KEY("IDLibro") REFERENCES "Detalles_Libros"("ID") ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT "PK_ID" PRIMARY KEY("ID" AUTOINCREMENT)
+	"ID" SERIAL PRIMARY KEY,
+	"Titulo" VARCHAR(64),
+	"Autor"	VARCHAR(64),
+	"Descripcion" VARCHAR(64),
+	"Year"	INT,
+	"Idioma" VARCHAR(64),
+	"Soporte" VARCHAR(64),
+	"DiasDePrestamo" INT,
+	"Prestable"	BOOL NOT NULL,
+	"Disponible" BOOL NOT NULL,
+	"IDLibro" INT DEFAULT NULL,
+	"IDAudiovisual" INT DEFAULT NULL,
+	"Imagen" VARCHAR(64) DEFAULT NULL,
+	CONSTRAINT "FK_Audiovisual" FOREIGN KEY("IDAudiovisual") REFERENCES "Detalles_Audiovisual"("ID"),
+	CONSTRAINT "FK_Libro" FOREIGN KEY("IDLibro") REFERENCES "Detalles_Libros"("ID")
 );
 
 /*
-Creo la tabla para la busqueda de contenidos
+Creo el índice para la búsqueda de contenidos
 */
-CREATE VIRTUAL TABLE IF NOT EXISTS "BusquedaContenidos" USING fts5(
-    "ID",
-    "Titulo",
-    "Autor",
-    "Descripcion"
-);
+CREATE INDEX IF NOT EXISTS "Contenidos_IDX" ON "Contenidos" USING GIN (to_tsvector('spanish',
+	coalesce(cast("ID" as VARCHAR),'') || ' ' ||
+	coalesce("Titulo",'') || ' ' ||
+	coalesce("Autor",'') || ' ' ||
+	coalesce("Descripcion",'')
+));

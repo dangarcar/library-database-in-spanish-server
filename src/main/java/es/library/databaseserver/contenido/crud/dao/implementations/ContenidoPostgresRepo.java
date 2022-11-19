@@ -22,7 +22,7 @@ import es.library.databaseserver.contenido.exceptions.IllegalContenidoException;
 import es.library.databaseserver.shared.Utils;
 
 @Repository
-public class ContenidoSQLiteRepo implements ContenidoDAO {
+public class ContenidoPostgresRepo implements ContenidoDAO {
 	
 	@Autowired
 	@Qualifier("baseJDBC")
@@ -30,14 +30,14 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 	
 	@Override
 	public List<Long> getAllContenidosID(){
-		final String sqlString = "SELECT ID FROM Contenidos";
+		final String sqlString = "SELECT \"ID\" FROM \"Contenidos\"";
 		
 		return jdbcTemplate.query(sqlString, Utils.idRowMapper);
 	}
 	
 	@Override
 	public Optional<Contenido> getContenidoByID(Long ID) {
-		final String sqlString = "SELECT ID,Titulo,Autor,Descripcion,Year,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,IDLibro,IDAudiovisual,Imagen FROM Contenidos WHERE ID = :id";
+		final String sqlString = "SELECT \"ID\",\"Titulo\",\"Autor\",\"Descripcion\",\"Year\",\"Idioma\",\"Soporte\",\"DiasDePrestamo\",\"Prestable\",\"Disponible\",\"IDLibro\",\"IDAudiovisual\",\"Imagen\" FROM \"Contenidos\" WHERE \"ID\" = :id";
 		
 		var contenidos = jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("id", ID), contenidoRowMapper);
 		
@@ -46,39 +46,30 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 		return Optional.ofNullable(contenidos.get(0));
 	}
 	
-	private long getIdLastInserted() {
-		final String sqlString = "SELECT seq AS ID FROM sqlite_sequence WHERE name = 'Contenidos';";
-		
-		var id = jdbcTemplate.query(sqlString, Utils.idRowMapper);
-		
-		if(id.isEmpty()) return -1L;
-		
-		return id.get(0);
-	}
-	
 	@Override
 	public Contenido insertContenido(Contenido contenido) throws DatabaseContenidoException,ContenidoAlreadyExistsException, IllegalContenidoException {
-		final String sqlString = "INSERT INTO Contenidos(Titulo,Autor,Descripcion,Year,Idioma,Soporte,DiasDePrestamo,Prestable,Disponible,IDLibro,IDAudiovisual,Imagen) "+
-				"VALUES(:titulo,:autor,:descripcion,:ano,:idioma,:soporte,:diasDePrestamo,:prestable,:disponible,:IdLibro,:IdAudiovisual,:imagen)";
+		final String sqlString = "INSERT INTO \"Contenidos\"(\"Titulo\",\"Autor\",\"Descripcion\",\"Year\",\"Idioma\",\"Soporte\",\"DiasDePrestamo\",\"Prestable\",\"Disponible\",\"IDLibro\",\"IDAudiovisual\",\"Imagen\") "+
+				"VALUES(:titulo,:autor,:descripcion,:ano,:idioma,:soporte,:diasDePrestamo,:prestable,:disponible,:IdLibro,:IdAudiovisual,:imagen) RETURNING \"ID\"";
 		 
-		final int i = jdbcTemplate.update(sqlString, new MapSqlParameterSource()
+		var i = jdbcTemplate.query(sqlString, new MapSqlParameterSource()
 					.addValue("titulo", contenido.getTitulo())
 					.addValue("autor", contenido.getAutor())
 					.addValue("descripcion", contenido.getDescripcion())
 					.addValue("ano", contenido.getAno())
 					.addValue("idioma", contenido.getIdioma())
-					.addValue("soporte", contenido.getSoporte())
+					.addValue("soporte", contenido.getSoporte().toString())
 					.addValue("diasDePrestamo", contenido.getDiasDePrestamo())
 					.addValue("prestable", contenido.getPrestable())
 					.addValue("disponible", contenido.getDisponible())
 					.addValue("IdLibro", contenido.getIDLibro())
 					.addValue("IdAudiovisual", contenido.getIDAudiovisual())
-					.addValue("imagen", contenido.getImagen())
+					.addValue("imagen", contenido.getImagen()==null? null:contenido.getImagen().toString()),
+					Utils.idRowMapper
 				);
 		
-		if(i == 0) throw new DatabaseContenidoException("El contenido no ha sido insertado en la base de datos por alguna razon");
+		if(i.isEmpty()) throw new DatabaseContenidoException("El contenido no ha sido insertado en la base de datos por alguna razon");
 		
-		long idContenido = getIdLastInserted();
+		long idContenido = i.get(0);
 		
 		return this.getContenidoByID(idContenido).orElseThrow(
 				() -> new DatabaseContenidoException("El contenido no ha sido insertado en la base de datos por alguna razon"));
@@ -86,7 +77,7 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 	
 	@Override
 	public void deleteContenidoByID(Long ID) throws ContenidoNotFoundException{
-		final String sqlString = "DELETE FROM Contenidos WHERE ID = :id";
+		final String sqlString = "DELETE FROM \"Contenidos\" WHERE \"ID\" = :id";
 		
 		var a = this.getContenidoByID(ID);
 		
@@ -100,20 +91,20 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 	
 	@Override
 	public Contenido updateContenidoByID(Long ID, Contenido contenido) throws ContenidoNotFoundException{		
-		final String sqlString = "UPDATE Contenidos SET "
-				+ "Titulo = :titulo"
-				+ ",Autor = :autor"
-				+ ",Descripcion = :descripcion"
-				+ ",Year = :ano"
-				+ ",Idioma = :idioma"
-				+ ",Soporte = :soporte"
-				+ ",DiasDePrestamo = :diasDePrestamo"
-				+ ",Prestable = :prestable"
-				+ ",Disponible = :disponible"
-				+ ",IDLibro = :IdLibro"
-				+ ",IDAudiovisual = :IdAudiovisual "
-				+ ",Imagen = :imagen"
-				+ " WHERE ID = :id";
+		final String sqlString = "UPDATE \"Contenidos\" SET "
+				+ "\"Titulo\" = :titulo"
+				+ ",\"Autor\" = :autor"
+				+ ",\"Descripcion\" = :descripcion"
+				+ ",\"Year\" = :ano"
+				+ ",\"Idioma\" = :idioma"
+				+ ",\"Soporte\" = :soporte"
+				+ ",\"DiasDePrestamo\" = :diasDePrestamo"
+				+ ",\"Prestable\" = :prestable"
+				+ ",\"Disponible\" = :disponible"
+				+ ",\"IDLibro\" = :IdLibro"
+				+ ",\"IDAudiovisual\" = :IdAudiovisual "
+				+ ",\"Imagen\" = :imagen"
+				+ " WHERE \"ID\" = :id";
 		
 		var a = this.getContenidoByID(ID);
 		
@@ -124,14 +115,14 @@ public class ContenidoSQLiteRepo implements ContenidoDAO {
 					.addValue("descripcion", contenido.getDescripcion())
 					.addValue("ano", contenido.getAno())
 					.addValue("idioma", contenido.getIdioma())
-					.addValue("soporte", contenido.getSoporte())
+					.addValue("soporte", contenido.getSoporte().toString())
 					.addValue("diasDePrestamo", contenido.getDiasDePrestamo())
 					.addValue("prestable", contenido.getPrestable())
 					.addValue("disponible", contenido.getDisponible())
 					.addValue("IdLibro", contenido.getIDLibro())
 					.addValue("IdAudiovisual", contenido.getIDAudiovisual())
 					.addValue("id", ID)
-					.addValue("imagen", contenido.getImagen())
+					.addValue("imagen", contenido.getImagen()==null? null:contenido.getImagen().toString())
 				);
 		}
 		else {
