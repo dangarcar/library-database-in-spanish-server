@@ -40,7 +40,7 @@ public class ContenidoValidator {
 			builder.append("El año de creación del contenido debe ser mayor que cero");
 		}
 		
-		if(!validateNumberGreaterThanZero(contenido.getDiasDePrestamo())) {
+		if(contenido.getDiasDePrestamo()!= null && !validateNumberGreaterThanZero(contenido.getDiasDePrestamo())) {
 			builder.append(System.lineSeparator());
 			builder.append("El numero de dias que un contenido puede ser prestado debe ser mayor que cero");
 		}

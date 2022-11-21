@@ -81,9 +81,9 @@ public class ContenidoServiceImpl implements ContenidoService{
 	
 	public void deleteContenidoByID(long ID) throws ContenidoNotFoundException, NotValidTypeContenidoException, NotValidSoporteException {
 		var a = getContenidoByID(ID);
-		if(a instanceof Audio)dAudiovisualDAO.deleteAudiovisualByIDIfIsNotPointed(a.getIDAudiovisual(),true);
-		if(a instanceof Libro)dLibroDAO.deleteLibroByIDIfIsNotPointed(a.getIDLibro(),true);
 		contenidoRepository.deleteContenidoByID(ID);
+		if(a instanceof Audio)dAudiovisualDAO.deleteAudiovisualByIDIfIsNotPointed(a.getIDAudiovisual(),false);
+		if(a instanceof Libro)dLibroDAO.deleteLibroByIDIfIsNotPointed(a.getIDLibro(),false);
 	}
 	
 	public Contenido updateContenidoByID(long ID, Contenido contenido) throws ContenidoNotFoundException, NotValidTypeContenidoException, NotValidSoporteException, DatabaseContenidoException, ContenidoAlreadyExistsException,IllegalContenidoException {

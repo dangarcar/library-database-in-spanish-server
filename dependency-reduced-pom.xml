@@ -10,13 +10,20 @@
   <groupId>es.library</groupId>
   <artifactId>database-server</artifactId>
   <name>database-server</name>
-  <version>2.1.0-alpha</version>
+  <version>2.1.1</version>
   <description>Library database server with Spring Boot</description>
   <build>
     <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <configuration>
+              <mainClass>es.library.databaseserver.DatabaseServerApplication</mainClass>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
@@ -90,6 +97,12 @@
       <groupId>org.xerial</groupId>
       <artifactId>sqlite-jdbc</artifactId>
       <version>3.36.0.3</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.3.6</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

@@ -23,7 +23,7 @@ public class PostgresDatabaseConfig {
 	
 	@Bean(name = "baseDB")
 	@ConfigurationProperties(prefix = "spring.datasource")
-	public DataSource baseDb() {
+	public DataSource baseDb() {		
 		logger.info("Se creó la base de datos de la biblioteca.");
 		return DataSourceBuilder.create().build();
 	}

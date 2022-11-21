@@ -1,5 +1,6 @@
 package es.library.databaseserver.contenido.search.dao.implementations;
 
+import java.sql.Types;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,13 +117,13 @@ public class ContenidoSearchPostgresRepo implements ContenidoSearchDAO{
 	public List<Long> getContenidosIDByDuracion(Double duracion) {
 		final String sqlString = "SELECT \"C\".\"ID\" AS \"ID\" FROM \"Contenidos\" AS \"C\" INNER JOIN \"Detalles_Audiovisual\" as \"DA\" on \"C\".\"IDAudiovisual\" = \"DA\".\"ID\" WHERE \"DA\".\"Duracion\" = :duracion";
 		
-		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("duracion", duracion), Utils.idRowMapper);
+		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("duracion", duracion, Types.REAL), Utils.idRowMapper);
 	}
 	@Override
 	public List<Long> getContenidosIDByDuracion(Double min, Double max) {
 		final String sqlString = "SELECT \"C\".\"ID\" AS \"ID\" FROM \"Contenidos\" AS \"C\" INNER JOIN \"Detalles_Audiovisual\" as \"DA\" on \"C\".\"IDAudiovisual\" = \"DA\".\"ID\" WHERE \"DA\".\"Duracion\" BETWEEN :min AND :max";
 		
-		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("min", min).addValue("max", max), Utils.idRowMapper);
+		return jdbcTemplate.query(sqlString, new MapSqlParameterSource().addValue("min", min, Types.REAL).addValue("max", max, Types.REAL), Utils.idRowMapper);
 	}
 	
 	@Override

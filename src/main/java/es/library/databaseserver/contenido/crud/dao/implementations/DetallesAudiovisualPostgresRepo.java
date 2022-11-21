@@ -66,7 +66,7 @@ public class DetallesAudiovisualPostgresRepo implements ContenidoDetallesAudiovi
 		}
 
 		return this.getAudiovisualIfIdIsNull(audiovisual).orElseThrow(
-				() -> new DatabaseContenidoException("El contenido no ha sido insertado en la base de datos por alguna razon"));
+				() -> new DatabaseContenidoException("El contenido no ha sido insertado en la base de datos por alguna razón"));
 	}
 	
 	@Override
@@ -116,21 +116,21 @@ public class DetallesAudiovisualPostgresRepo implements ContenidoDetallesAudiovi
 	@Override
 	public Optional<DetallesAudiovisualModel> getAudiovisualIfIdIsNull(DetallesAudiovisualModel audiovisualIdNull) {
 		String sqlString;
+		var sqlParamenter = new MapSqlParameterSource()
+				.addValue("duracion", audiovisualIdNull.getDuracion(), Types.REAL)
+				.addValue("isVideo", audiovisualIdNull.getIsVideo());
 		if(audiovisualIdNull.getIsVideo()) {
 			sqlString = "SELECT \"ID\",\"Duracion\",\"IsVideo\",\"EdadRecomendada\",\"Calidad\" FROM \"Detalles_Audiovisual\" "
 					+ "WHERE \"Duracion\" = :duracion AND \"IsVideo\" = :isVideo AND \"EdadRecomendada\" = :edad AND \"Calidad\" = :calidad";
+			
+			sqlParamenter = sqlParamenter.addValue("edad", audiovisualIdNull.getEdadRecomendada()).addValue("calidad", audiovisualIdNull.getCalidad());
 		}
 		else {
 			sqlString = "SELECT \"ID\",\"Duracion\",\"IsVideo\",\"EdadRecomendada\",\"Calidad\" FROM \"Detalles_Audiovisual\" "
 					+ "WHERE \"Duracion\" = :duracion AND \"IsVideo\" = :isVideo";
 		}
 		
-		var contenidos = jdbcTemplate.query(sqlString, new MapSqlParameterSource()
-				.addValue("duracion", audiovisualIdNull.getDuracion())
-				.addValue("isVideo", audiovisualIdNull.getIsVideo())
-				.addValue("edad", audiovisualIdNull.getEdadRecomendada(),Types.NULL)
-				.addValue("calidad", audiovisualIdNull.getCalidad(),Types.NULL)
-			,audiovisualRowMapper);
+		var contenidos = jdbcTemplate.query(sqlString, sqlParamenter,audiovisualRowMapper);
 		
 		if(contenidos.isEmpty()) return Optional.empty();
 		

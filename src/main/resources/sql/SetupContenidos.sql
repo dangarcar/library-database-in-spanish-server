@@ -13,8 +13,8 @@ CREATE TABLE IF NOT EXISTS "Detalles_Audiovisual" (
 CREATE TABLE IF NOT EXISTS "Detalles_Libros" (
 	"ID" SERIAL PRIMARY KEY,
 	"Paginas" INT,
-	"Editorial" VARCHAR(64),
-	"ISBN" VARCHAR(64)
+	"Editorial" VARCHAR(128),
+	"ISBN" VARCHAR(128)
 );
 
 /*
@@ -22,9 +22,9 @@ Creo la tabla principal de los Contenidos
 */
 CREATE TABLE IF NOT EXISTS "Contenidos" (
 	"ID" SERIAL PRIMARY KEY,
-	"Titulo" VARCHAR(64),
-	"Autor"	VARCHAR(64),
-	"Descripcion" VARCHAR(64),
+	"Titulo" VARCHAR(128),
+	"Autor"	VARCHAR(128),
+	"Descripcion" VARCHAR(1024),
 	"Year"	INT,
 	"Idioma" VARCHAR(64),
 	"Soporte" VARCHAR(64),
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS "Contenidos" (
 	"Disponible" BOOL NOT NULL,
 	"IDLibro" INT DEFAULT NULL,
 	"IDAudiovisual" INT DEFAULT NULL,
-	"Imagen" VARCHAR(64) DEFAULT NULL,
+	"Imagen" VARCHAR(1024) DEFAULT NULL,
 	CONSTRAINT "FK_Audiovisual" FOREIGN KEY("IDAudiovisual") REFERENCES "Detalles_Audiovisual"("ID"),
 	CONSTRAINT "FK_Libro" FOREIGN KEY("IDLibro") REFERENCES "Detalles_Libros"("ID")
 );
