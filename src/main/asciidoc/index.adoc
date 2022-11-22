@@ -12,15 +12,49 @@ Daniel García Carretero
 
 NOTE: Se recomienda leer el Empezando del README.md antes de ejecutar el programa. 
 
+[[Prerrequisitos]]
+=== Prerrequisitos
+Descarga https://www.docker.com/products/docker-desktop[Docker Desktop] para Mac o Windows. https://docs.docker.com/compose[Docker Compose] se instalará. En Linux, asegúrate de tener la última versión de https://docs.docker.com/compose/install/[Docker Compose].
+
 [[ejecutar-app]]
 === Cómo ejecutar la aplicación
-1. En `+src/main/resources/application.properties+`, cambia el valor de `+jwt.issuer+` a tu compañía, `+jwt.secret+` a una string de al menos 256 bits.
+1. En `.env`, cambia el valor de `JWT_SECRET` a una string de al menos 256 bits que alterne caracteres alfanuméricos. Es recomendable cambiar también el valor del resto de variables.
 
 2. Abre una terminal en el directorio del proyecto.
 
 3. Ejecuta el siguiente comando para ejecutar la aplicación:
 [source,bash]
-./mvnw spring-boot:run
+./mvnw clean package -DskipTests
+
+4. Ejecuta el siguiente comando para iniciar la aplicación y la base de datos:
+[source,bash]
+docker compose up --build
+
+5. Ahora la aplicación estará accesible en `http://{tu_ip}:{SERVER_PORT}/`, por defecto el puerto es 8080.
+
+===== Variables de entorno
+
+[source,env]
+----
+#Nombre de la base de datos (por defecto 'test')
+POSTGRES_DB={inserte_su_bbdd}
+
+#Usuario de la base de datos (por defecto 'user')
+POSTGRES_USER={inserte_su_usuario}
+
+#Contraseña de la base de datos (por defecto 'password')
+POSTGRES_PASSWORD={inserte_su_contraseña}
+
+#Propietario que va a firmar los tokens (por defecto 'es.library.databaseserver')
+JWT_ISSUER={inserte_su_propietario}
+
+#String con el se firman los JWT 
+#______IMPORTANTE MODIFICARLA_______
+JWT_SECRET={inserte_su_clave}
+
+#Puerto en el que se ejecuta el servidor (por defecto '8080')
+SERVER_PORT={inserte_su_puerto}
+----
 
 === Consumir la API
 La API de {nombre-programa} es una https://es.wikipedia.org/wiki/Transferencia_de_Estado_Representacional[API REST], por lo que intenta seguir los estándares de HTTP y REST.
@@ -452,5 +486,9 @@ include::{snippets}/delete-prestamo/path-parameters.adoc[]
 Si hace alguna modificación o añade algo al proyecto, escriba el test para generar el snippet de https://docs.spring.io/spring-restdocs/docs/current/reference/html5/[Spring Rest Docs] y añádalo a la plantilla localizada en src/main/asciidoc/index.adoc.
 
 Luego ejecuta el siguiente comando en el directorio del proyecto para generar el nuevo index.html:
+
 [source,bash]
-./mvnw test
+----
+./mvnw clean package
+----
+Asegúrate de que la base de datos está corriendo mientras ejecutas el anterior comando.

@@ -6,7 +6,7 @@ services:
     image: 'database-server:latest'
     container_name: library-database
     ports:
-      - "8080:8080"
+      - "${SERVER_PORT}:${SERVER_PORT}"
     environment:
       - SPRING_DATASOURCE_JDBCURL=jdbc:postgresql://library-database-db:5432/${POSTGRES_DB}
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}

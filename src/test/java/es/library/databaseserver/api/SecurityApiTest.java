@@ -36,8 +36,6 @@ import es.library.databaseserver.perfil.Perfil;
 import es.library.databaseserver.security.model.JWTTokenPair;
 import es.library.databaseserver.security.model.LoginCredentials;
 
-//Está terminada
-
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

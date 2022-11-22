@@ -97,7 +97,8 @@ public interface ContenidoSnippets {
 			CONTENIDO_FIELDS.get("soporte"),
 			CONTENIDO_FIELDS.get("prestable"),
 			CONTENIDO_FIELDS.get("diasDePrestamo"),
-			CONTENIDO_FIELDS.get("disponible")
+			CONTENIDO_FIELDS.get("disponible"),
+			CONTENIDO_FIELDS.get("imagen")
 		);
 
 	ResponseFieldsSnippet AUDIO_RESPONSE = CONTENIDO_RESPONSE.and(

@@ -449,7 +449,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel1">
 <li><a href="#vision-general">Visión general</a>
 <ul class="sectlevel2">
-<li><a href="#ejecutar-app">Cómo ejecutar la aplicación</a></li>
+<li><a href="#Prerrequisitos">Prerrequisitos</a></li>
+<li><a href="#ejecutar-app">Cómo ejecutar la aplicación</a>
+<ul class="sectlevel4">
+<li><a href="#_variables_de_entorno">Variables de entorno</a></li>
+</ul>
+</li>
 <li><a href="#_consumir_la_api">Consumir la API</a>
 <ul class="sectlevel3">
 <li><a href="#verbos-http">Verbos HTTP</a></li>
@@ -565,11 +570,17 @@ Se recomienda leer el Empezando del README.md antes de ejecutar el programa.
 </table>
 </div>
 <div class="sect2">
+<h3 id="Prerrequisitos">Prerrequisitos</h3>
+<div class="paragraph">
+<p>Descarga <a href="https://www.docker.com/products/docker-desktop">Docker Desktop</a> para Mac o Windows. <a href="https://docs.docker.com/compose">Docker Compose</a> se instalará. En Linux, asegúrate de tener la última versión de <a href="https://docs.docker.com/compose/install/">Docker Compose</a>.</p>
+</div>
+</div>
+<div class="sect2">
 <h3 id="ejecutar-app">Cómo ejecutar la aplicación</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>En <code>src/main/resources/application.properties</code>, cambia el valor de <code>jwt.issuer</code> a tu compañía, <code>jwt.secret</code> a una string de al menos 256 bits.</p>
+<p>En <code>.env</code>, cambia el valor de <code>JWT_SECRET</code> a una string de al menos 256 bits que alterne caracteres alfanuméricos. Es recomendable cambiar también el valor del resto de variables.</p>
 </li>
 <li>
 <p>Abre una terminal en el directorio del proyecto.</p>
@@ -578,11 +589,47 @@ Se recomienda leer el Empezando del README.md antes de ejecutar el programa.
 <p>Ejecuta el siguiente comando para ejecutar la aplicación:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">./mvnw spring-boot:run</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">./mvnw clean package -DskipTests</code></pre>
 </div>
 </div>
 </li>
+<li>
+<p>Ejecuta el siguiente comando para iniciar la aplicación y la base de datos:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker compose up --build</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Ahora la aplicación estará accesible en <code><a href="http://{tu_ip}:{SERVER_PORT}/" class="bare">http://{tu_ip}:{SERVER_PORT}/</a></code>, por defecto el puerto es 8080.</p>
+</li>
 </ol>
+</div>
+<div class="sect4">
+<h5 id="_variables_de_entorno">Variables de entorno</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-env hljs" data-lang="env">#Nombre de la base de datos (por defecto 'test')
+POSTGRES_DB={inserte_su_bbdd}
+
+#Usuario de la base de datos (por defecto 'user')
+POSTGRES_USER={inserte_su_usuario}
+
+#Contraseña de la base de datos (por defecto 'password')
+POSTGRES_PASSWORD={inserte_su_contraseña}
+
+#Propietario que va a firmar los tokens (por defecto 'es.library.databaseserver')
+JWT_ISSUER={inserte_su_propietario}
+
+#String con el se firman los JWT
+#______IMPORTANTE MODIFICARLA_______
+JWT_SECRET={inserte_su_clave}
+
+#Puerto en el que se ejecuta el servidor (por defecto '8080')
+SERVER_PORT={inserte_su_puerto}</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -687,9 +734,37 @@ Se recomienda leer el Empezando del README.md antes de ejecutar el programa.
 <div class="paragraph">
 <p>Con los códigos 4xx y 5xx se adjuntará cuerpo de respuesta específico con la siguiente estructura:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/error/response-fields.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nombre</th>
+<th class="tableblock halign-left valign-top">Tipo</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>statusCode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El código HTTP del error</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>timestamp</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El momento en el que el error se ha comunicado, codificado en ISO-8601</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El mensaje de error</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>Si son 2xx, la respuesta será la de la solicitud.</p>
 </div>
@@ -706,14 +781,90 @@ Se recomienda leer el Empezando del README.md antes de ejecutar el programa.
 <div class="paragraph">
 <p>Debido a que los usuarios de la biblioteca necesitan ser registrados, Library Database in Spanish tiene una sección dedicada a los perfiles.</p>
 </div>
-<div id="perfil-response" class="paragraph">
-<div class="title">Respuesta Perfil</div>
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/insert-perfil/response-fields.adoc[]</p>
-</div>
-<div id="perfil-request" class="paragraph">
-<div class="title">Solicitud Perfil</div>
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/insert-perfil/request-fields.adoc[]</p>
-</div>
+<table id="perfil-response" class="tableblock frame-all grid-all stretch">
+<caption class="title">Respuesta Perfil</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nombre</th>
+<th class="tableblock halign-left valign-top">Tipo</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>id</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador del perfil en la base de datos</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>nombre</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El nombre completo (nombre y apellidos del perfil)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>fechaNacimiento</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La fecha de naciento del usuario,</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>email</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El correo electrónico del usuario, que será usado como su username</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>role</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El rol que el perfil tiene en la biblioteca</p></td>
+</tr>
+</tbody>
+</table>
+<table id="perfil-request" class="tableblock frame-all grid-all stretch">
+<caption class="title">Solicitud Perfil</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nombre</th>
+<th class="tableblock halign-left valign-top">Tipo</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>nombre</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El nombre completo (nombre y apellidos del perfil)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>fechaNacimiento</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La fecha de naciento del usuario,</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>email</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El correo electrónico del usuario, que será usado como su username</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>password</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La contraseña del usuario. Debe tener más de 8 caracteres y tener letras y números</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>role</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El rol que el perfil tiene en la biblioteca</p></td>
+</tr>
+</tbody>
+</table>
 <div class="sect4">
 <h5 id="roles">Roles</h5>
 <div class="paragraph">
@@ -762,42 +913,535 @@ Se recomienda leer el Empezando del README.md antes de ejecutar el programa.
 <div class="paragraph">
 <p>Este grupo incluye a todos los contenidos que contienen texto, ya sean libros en papel o e-books.</p>
 </div>
-<div id="libro-response" class="paragraph">
-<div class="title">Respuesta Libro</div>
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/insert-libro/response-fields.adoc[]</p>
-</div>
-<div id="libro-request" class="paragraph">
-<div class="title">Solicitud Libro</div>
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/insert-libro/request-fields.adoc[]</p>
-</div>
+<table id="libro-response" class="tableblock frame-all grid-all stretch">
+<caption class="title">Respuesta Libro</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nombre</th>
+<th class="tableblock halign-left valign-top">Tipo</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>id</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador del contenido en la base de datos</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>type</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El tipo de contenido que puede ser: audio, video o libro</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>titulo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El título del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>autor</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El autor del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>descripcion</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La descripción del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>ano</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El año en el que se creó el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>idioma</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El idioma en el que está hecho el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>soporte</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El soporte en el que está el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>prestable</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indica si el contenido es prestable o no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>diasDePrestamo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Los días que el contenido será prestado</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>disponible</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Si el contenido está actualmente disponible o no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>imagen</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La URL de la imagen del contenido. Puede ser nula</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>isbn</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El ISBN del libro</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>paginas</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El número de páginas del libro</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>editorial</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La editorial del libro</p></td>
+</tr>
+</tbody>
+</table>
+<table id="libro-request" class="tableblock frame-all grid-all stretch">
+<caption class="title">Solicitud Libro</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nombre</th>
+<th class="tableblock halign-left valign-top">Tipo</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>type</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El tipo de contenido que puede ser: audio, video o libro</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>titulo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El título del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>autor</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El autor del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>descripcion</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La descripción del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>ano</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El año en el que se creó el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>idioma</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El idioma en el que está hecho el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>soporte</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El soporte en el que está el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>prestable</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indica si el contenido es prestable o no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>diasDePrestamo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Los días que el contenido será prestado</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>disponible</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Si el contenido está actualmente disponible o no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>imagen</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La URL de la imagen del contenido. Puede ser nula</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>isbn</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El ISBN del libro</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>paginas</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El número de páginas del libro</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>editorial</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La editorial del libro</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect5">
 <h6 id="audio">Audio</h6>
 <div class="paragraph">
 <p>Este grupo incluye a todos los contenidos que se basen en sonido, como los discos de vinilo, etc.</p>
 </div>
-<div id="audio-response" class="paragraph">
-<div class="title">Respuesta Audio</div>
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/insert-audio/response-fields.adoc[]</p>
-</div>
-<div id="audio-request" class="paragraph">
-<div class="title">Solicitud Audio</div>
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/insert-audio/request-fields.adoc[]</p>
-</div>
+<table id="audio-response" class="tableblock frame-all grid-all stretch">
+<caption class="title">Respuesta Audio</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nombre</th>
+<th class="tableblock halign-left valign-top">Tipo</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>id</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador del contenido en la base de datos</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>type</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El tipo de contenido que puede ser: audio, video o libro</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>titulo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El título del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>autor</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El autor del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>descripcion</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La descripción del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>ano</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El año en el que se creó el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>idioma</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El idioma en el que está hecho el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>soporte</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El soporte en el que está el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>prestable</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indica si el contenido es prestable o no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>diasDePrestamo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Los días que el contenido será prestado</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>disponible</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Si el contenido está actualmente disponible o no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>imagen</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La URL de la imagen del contenido. Puede ser nula</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>duracion</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La duración del contenido audiovisual en minutos</p></td>
+</tr>
+</tbody>
+</table>
+<table id="audio-request" class="tableblock frame-all grid-all stretch">
+<caption class="title">Solicitud Audio</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nombre</th>
+<th class="tableblock halign-left valign-top">Tipo</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>type</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El tipo de contenido que puede ser: audio, video o libro</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>titulo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El título del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>autor</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El autor del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>descripcion</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La descripción del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>ano</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El año en el que se creó el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>idioma</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El idioma en el que está hecho el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>soporte</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El soporte en el que está el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>prestable</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indica si el contenido es prestable o no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>diasDePrestamo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Los días que el contenido será prestado</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>disponible</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Si el contenido está actualmente disponible o no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>imagen</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La URL de la imagen del contenido. Puede ser nula</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>duracion</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La duración del contenido audiovisual en minutos</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect5">
 <h6 id="video">Vídeo</h6>
 <div class="paragraph">
 <p>Este grupo incluye a todos los contenidos audiovisuales, como las películas, los documentales, etc.</p>
 </div>
-<div id="video-response" class="paragraph">
-<div class="title">Respuesta Vídeo</div>
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/insert-video/response-fields.adoc[]</p>
-</div>
-<div id="video-request" class="paragraph">
-<div class="title">Solicitud Vídeo</div>
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/insert-video/request-fields.adoc[]</p>
-</div>
+<table id="video-response" class="tableblock frame-all grid-all stretch">
+<caption class="title">Respuesta Vídeo</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nombre</th>
+<th class="tableblock halign-left valign-top">Tipo</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>id</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador del contenido en la base de datos</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>type</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El tipo de contenido que puede ser: audio, video o libro</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>titulo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El título del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>autor</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El autor del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>descripcion</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La descripción del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>ano</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El año en el que se creó el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>idioma</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El idioma en el que está hecho el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>soporte</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El soporte en el que está el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>prestable</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indica si el contenido es prestable o no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>diasDePrestamo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Los días que el contenido será prestado</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>disponible</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Si el contenido está actualmente disponible o no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>imagen</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La URL de la imagen del contenido. Puede ser nula</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>duracion</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La duración del contenido audiovisual en minutos</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>edadRecomendada</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La edad mínima recomendada para ver el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>calidad</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El número de píxeles que tiene el vídeo</p></td>
+</tr>
+</tbody>
+</table>
+<table id="video-request" class="tableblock frame-all grid-all stretch">
+<caption class="title">Solicitud Vídeo</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nombre</th>
+<th class="tableblock halign-left valign-top">Tipo</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>type</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El tipo de contenido que puede ser: audio, video o libro</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>titulo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El título del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>autor</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El autor del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>descripcion</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La descripción del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>ano</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El año en el que se creó el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>idioma</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El idioma en el que está hecho el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>soporte</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El soporte en el que está el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>prestable</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indica si el contenido es prestable o no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>diasDePrestamo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Los días que el contenido será prestado</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>disponible</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Si el contenido está actualmente disponible o no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>imagen</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La URL de la imagen del contenido. Puede ser nula</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>duracion</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La duración del contenido audiovisual en minutos</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>edadRecomendada</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La edad mínima recomendada para ver el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>calidad</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El número de píxeles que tiene el vídeo</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect4">
@@ -863,14 +1507,105 @@ Se recomienda leer el Empezando del README.md antes de ejecutar el programa.
 <div class="paragraph">
 <p>Debido a que Library Database in Spanish es una biblioteca hecha para prestar libros, hay una sección dedicada a los préstamos.</p>
 </div>
-<div id="prestamo-response" class="paragraph">
-<div class="title">Respuesta Préstamo</div>
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/insert-prestamo/response-fields.adoc[]</p>
-</div>
-<div id="prestamo-request" class="paragraph">
-<div class="title">Solicitud Préstamo</div>
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/insert-prestamo/request-fields.adoc[]</p>
-</div>
+<table id="prestamo-response" class="tableblock frame-all grid-all stretch">
+<caption class="title">Respuesta Préstamo</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nombre</th>
+<th class="tableblock halign-left valign-top">Tipo</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>id</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador del préstamo en la base de datos</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>idperfil</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador en la base de datos del perfil que coge prestado al contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>idcontenido</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador en la base de datos del contenido que es cogido en préstamo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>fechaHoraPrestamo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La fecha y hora en la que se produjo el préstamo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>fechaHoraDevolucion</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La fecha y hora en la que se produjo la devolución</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>diasdePrestamo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El número de días por los que el contenido puede ser prestado como máximo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>devuelto</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Si el contenido ha sido devuelto o no</p></td>
+</tr>
+</tbody>
+</table>
+<table id="prestamo-request" class="tableblock frame-all grid-all stretch">
+<caption class="title">Solicitud Préstamo</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nombre</th>
+<th class="tableblock halign-left valign-top">Tipo</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>idperfil</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador en la base de datos del perfil que coge prestado al contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>idcontenido</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador en la base de datos del contenido que es cogido en préstamo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>fechaHoraPrestamo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La fecha y hora en la que se produjo el préstamo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>fechaHoraDevolucion</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La fecha y hora en la que se produjo la devolución</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>diasdePrestamo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El número de días por los que el contenido puede ser prestado como máximo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>devuelto</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Si el contenido ha sido devuelto o no</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -887,8 +1622,16 @@ Aun así, hay partes de la API que sí <a href="#public">son accesibles sin auto
 <div class="paragraph">
 <p>Son algo así:</p>
 </div>
-<div id="token-pair" class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/registrarse/http-response.adoc[]</p>
+<div id="token-pair" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+  "accessToken" : "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlzcyI6InRlc3QiLCJleHAiOjE2NjkxNDMxMjUsImlhdCI6MTY2OTE0MjgyNX0.TMAOKXCdjLDbru-KQ5ismweJifprX4IJ1sZhwCyyUKU",
+  "refreshToken" : "HQ0XtpWebSVaDR9OGy5qORaDyNdbNI1o5BzYcdnzUr8"
+}</code></pre>
+</div>
 </div>
 <div class="sect4">
 <h5 id="access-token">Access token</h5>
@@ -922,9 +1665,42 @@ Aun así, hay partes de la API que sí <a href="#public">son accesibles sin auto
 <div class="paragraph">
 <p>Para registrarse en el sistema, envíe una petición <strong>POST</strong> a <code>/auth/signup</code> incluyendo cuerpo de solicitud con la siguiente estructura:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/registrarse/request-fields.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nombre</th>
+<th class="tableblock halign-left valign-top">Tipo</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>nombre</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El nombre completo (nombre y apellidos del perfil)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>fechaNacimiento</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La fecha de naciento del usuario,</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>email</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El correo electrónico del usuario, que será usado como su username</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>password</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La contraseña del usuario. Debe tener más de 8 caracteres y tener letras y números</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>Se creará un perfil a partir de tu cuerpo de solicitud con <a href="#roles">rol usuario</a>, si es trabajador o administrador de la biblioteca póngase en contacto con un administrador para tener el rol que le pertenece.</p>
 </div>
@@ -937,9 +1713,32 @@ Aun así, hay partes de la API que sí <a href="#public">son accesibles sin auto
 <div class="paragraph">
 <p>Para abrir sesión y conseguir los tokens una vez que ya se había registrado en el sistema con anterioridad y su refresh token ha caducado, envíe una petición <strong>POST</strong> a <code>/auth/login</code> incluyendo cuerpo de solicitud con la siguiente estructura:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/login/request-fields.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nombre</th>
+<th class="tableblock halign-left valign-top">Tipo</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>username</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El email con el que el usuario se registró</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>password</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La contraseña con la que el usuario se registró</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>Se devolverá un <a href="#access-refresh">par access/refresh token</a> para tener autorización a los servicios de la API.</p>
 </div>
@@ -970,9 +1769,100 @@ Aun así, hay partes de la API que sí <a href="#public">son accesibles sin auto
 <div class="paragraph">
 <p>Este método sirve para buscar contenidos en la base de datos según los siguientes parámetros:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/get-contenidos-by-params/request-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>q</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Las palabras claves con las que se buscarán los contenidos, separados por espacios</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>titulo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El título del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>autor</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El autor del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>minAno</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El año en el que se creó el contenido (mínimo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>maxAno</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El año en el que se creó el contenido (máximo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>idioma</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El idioma en el que está hecho el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>soporte</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El soporte en el que está el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>minPaginas</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El número de páginas del libro (mínimo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>maxPaginas</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El número de páginas del libro (máximo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>editorial</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La editorial del libro</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>isbn</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El ISBN del libro</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>minEdad</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La edad mínima recomendada para ver el contenido (mínimo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>maxEdad</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La edad mínima recomendada para ver el contenido (máximo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>minDuracion</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La duración del contenido audiovisual en minutos (mínimo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>maxDuracion</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La duración del contenido audiovisual en minutos (máximo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>minCalidad</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El número de píxeles que tiene el vídeo (mínimo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>maxCalidad</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El número de píxeles que tiene el vídeo (máximo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>type</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El tipo de contenido que puede ser: audio, video o libro</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>d</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Si el contenido está actualmente disponible o no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>p</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indica si el contenido es prestable o no</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>Devuelve una lista de contenidos, ya sean <a href="#libro-response">libros</a>, <a href="#audio-response">audios</a> o <a href="#video-response">vídeos</a>.</p>
 </div>
@@ -982,25 +1872,176 @@ Aun así, hay partes de la API que sí <a href="#public">son accesibles sin auto
 <div class="paragraph">
 <p>Este método sirve para buscar diferentes modelos de contenidos según los siguientes parámetros:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/get-unique-contenidos-by-params/request-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>q</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Las palabras claves con las que se buscará el contenidos, separados por espacios</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>titulo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El título del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>autor</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El autor del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>minAno</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El año en el que se creó el contenido (mínimo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>maxAno</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El año en el que se creó el contenido (máximo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>idioma</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El idioma en el que está hecho el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>soporte</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El soporte en el que está el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>minPaginas</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El número de páginas del libro (mínimo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>maxPaginas</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El número de páginas del libro (máximo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>editorial</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La editorial del libro</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>isbn</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El ISBN del libro</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>minEdad</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La edad mínima recomendada para ver el contenido (mínimo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>maxEdad</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La edad mínima recomendada para ver el contenido (máximo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>minDuracion</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La duración del contenido audiovisual en minutos (mínimo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>maxDuracion</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La duración del contenido audiovisual en minutos (máximo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>minCalidad</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El número de píxeles que tiene el vídeo (mínimo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>maxCalidad</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El número de píxeles que tiene el vídeo (máximo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>type</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El tipo de contenido que puede ser: audio, video o libro</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>Devuelve una lista de modelos de contenidos como la siguiente:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/get-unique-contenidos-by-params/response-fields.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nombre</th>
+<th class="tableblock halign-left valign-top">Tipo</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>[]</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Un array de diferentes modelos de contenidos</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>[].titulo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El título del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>[].autor</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El autor del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>[].descripcion</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La descripción del contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>[].ano</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El año en el que se creó el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>[].idioma</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El idioma en el que está hecho el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>[].soporte</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El soporte en el que está el contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>[].ids[]</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Las ID de los contenidos que comparten las anteriores características</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_get_contenidossearchtopprestamos">GET <code>/contenidos/search/topprestamos</code></h3>
 <div class="paragraph">
 <p>Este método sirve para buscar los contenidos más prestados de la biblioteca.</p>
 </div>
-<div class="paragraph">
-<div class="title">Parámetro (por defecto 10, no obligatorio)</div>
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/get-contenidos-top-prestamos/request-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Parámetro (por defecto 10, no obligatorio)</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>limit</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El número de contenidos que serán devueltos, por defecto 10</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>Devuelve una lista de contenidos, ya sean <a href="#libro-response">libros</a>, <a href="#audio-response">audios</a> o <a href="#video-response">vídeos</a>.</p>
 </div>
@@ -1010,9 +2051,25 @@ Aun así, hay partes de la API que sí <a href="#public">son accesibles sin auto
 <div class="paragraph">
 <p>Busca un contenido con la id del parámetro id:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/get-contenido-by-id/path-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">/contenidos/search/id/{id}</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>id</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador del contenido en la base de datos</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>Devuelve un <a href="#tipos-contenidos">contenido</a> o un error 404 si no ha sido encontrado.</p>
 </div>
@@ -1030,9 +2087,47 @@ Aun así, hay partes de la API que sí <a href="#public">son accesibles sin auto
 <div class="paragraph">
 <p>Este método devuelve la información completa del perfil al cual pertenece el token de autorización, con la siguiente estructura:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/get-my-info/response-fields.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nombre</th>
+<th class="tableblock halign-left valign-top">Tipo</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>id</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador del perfil en la base de datos</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>nombre</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El nombre completo (nombre y apellidos del perfil)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>fechaNacimiento</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La fecha de naciento del usuario,</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>email</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El correo electrónico del usuario, que será usado como su username</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>role</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El rol que el perfil tiene en la biblioteca</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="update-perfil">PUT <code>/user</code></h3>
@@ -1040,9 +2135,47 @@ Aun así, hay partes de la API que sí <a href="#public">son accesibles sin auto
 <p>Este método sirve para actualizar la información de tu perfil basado en el token de autorización.
 Se debe incluir un cuerpo de solicitud como el siguiente:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/update-my-perfil/request-fields.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nombre</th>
+<th class="tableblock halign-left valign-top">Tipo</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>nombre</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El nombre completo (nombre y apellidos del perfil)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>fechaNacimiento</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La fecha de naciento del usuario,</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>email</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El correo electrónico del usuario, que será usado como su username</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>password</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La contraseña del usuario. Debe tener más de 8 caracteres y tener letras y números</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>role</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El rol que el perfil tiene en la biblioteca</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>Devolverá un <a href="#perfil-response">perfil</a></p>
 </div>
@@ -1091,9 +2224,25 @@ Se debe incluir un cuerpo de solicitud como el siguiente:</p>
 <div class="paragraph">
 <p>Este método coge en préstamo el contenido con id del parámetro id para el perfil propietario del token de autorización.</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/prestar-user/path-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">/user/prestar/{id}</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>id</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador del contenido en la base de datos</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>Devuelve el <a href="#prestamo-response">préstamo</a> resultante de la petición.</p>
 </div>
@@ -1103,9 +2252,25 @@ Se debe incluir un cuerpo de solicitud como el siguiente:</p>
 <div class="paragraph">
 <p>Este método devuelve el contenido con id del parámetro id para el perfil propietario del token de autorización.</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/devolver-user/path-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">/user/devolver/{id}</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>id</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador del contenido en la base de datos</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>Devuelve el <a href="#prestamo-response">préstamo</a> resultante de la devolución.</p>
 </div>
@@ -1135,9 +2300,25 @@ Se debe incluir un cuerpo de solicitud como el siguiente:</p>
 <div class="paragraph">
 <p>Este método sirve para actualizar los datos de un contenido de la base de datos según su id, especificado en el parámetro id:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/update-contenido/path-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">/contenidos/{id}</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>id</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador del contenido en la base de datos</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>El cuerpo de la solicitud (contenido completo con los nuevos datos) puede ser un <a href="#libro-request">libros</a>, un <a href="#audio-request">audios</a> o un <a href="#video-request">vídeos</a>.</p>
 </div>
@@ -1150,27 +2331,94 @@ Se debe incluir un cuerpo de solicitud como el siguiente:</p>
 <div class="paragraph">
 <p>Este método sirve para borrar un contenido de la base de datos según su id, especificado en el parámetro id:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/delete-contenido/path-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">/contenidos/{id}</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>id</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador del contenido en la base de datos</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_get_perfilessearch">GET <code>/perfiles/search</code></h3>
 <div class="paragraph">
 <p>Este método devuelve una lista de <a href="#perfil-response">perfiles</a> basado en los siguiente parámetros:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/get-perfil-by-params/request-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>q</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Las palabras claves con las que se buscarán los perfiles, separados por espacios</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>nombre</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El nombre completo del perfil</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>email</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El correo electrónico del perfil</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>fromNacimiento</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La fecha de nacimiento del perfil (mínimo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>toNacimiento</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La fecha de nacimiento del perfil (máximo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>role</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El rol del perfil en la biblioteca, precedido de "ROLE_"</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_get_perfilessearchidid">GET <code>/perfiles/search/id/{id}</code></h3>
 <div class="paragraph">
 <p>Este método busca un perfil basado en el parámetro id:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/get-perfil-by-id/path-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">/perfiles/search/id/{id}</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>id</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador del perfil en la base de datos</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>Devuelve un <a href="#perfil-response">perfiles</a> o un error 404.</p>
 </div>
@@ -1180,9 +2428,25 @@ Se debe incluir un cuerpo de solicitud como el siguiente:</p>
 <div class="paragraph">
 <p>Este método busca un perfil basado en el parámetro username:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/get-perfil-by-username/path-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">/perfiles/search/username/{username}</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>username</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El nombre de usuario del perfil en la base de datos, un correo electrónico</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>Devuelve un <a href="#perfil-response">perfiles</a> o un error 404.</p>
 </div>
@@ -1192,18 +2456,81 @@ Se debe incluir un cuerpo de solicitud como el siguiente:</p>
 <div class="paragraph">
 <p>Este método devuelve una lista de <a href="#prestamo-response">préstamos</a> basado en los siguientes parámetros:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/get-prestamos-by-params/request-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>contenido</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador en la base de datos del contenido que es cogido en préstamo</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>perfil</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador en la base de datos del perfil que coge prestado al contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>minDias</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El número de días por los que el contenido puede ser prestado como máximo (mínimo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>maxDias</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El número de días por los que el contenido puede ser prestado como máximo (máximo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>fromPrestamo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La fecha y hora en la que se produjo el préstamo (mínimo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>toPrestamo</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La fecha y hora en la que se produjo el préstamo (máximo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>fromDevolucion</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La fecha y hora en la que se produjo la devolución (mínimo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>toDevolucion</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">La fecha y hora en la que se produjo la devolución (máximo)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>d</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Si el contenido ha sido devuelto o no</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_get_prestamossearchidid">GET <code>/prestamos/search/id/{id}</code></h3>
 <div class="paragraph">
 <p>Este método busca un préstamo basado el el parámetro id:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/get-prestamo-by-id/path-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">/prestamos/search/id/{id}</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>id</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador del préstamo en la base de datos</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>Devuelve un <a href="#prestamo-response">préstamo</a> o un error 404.</p>
 </div>
@@ -1214,9 +2541,28 @@ Se debe incluir un cuerpo de solicitud como el siguiente:</p>
 <p>Este método sirve para que el perfil con la id del parámetro "perfil" coja prestado el contenido con la id del parámetro "contenido".
 .Parámetros de la solicitud</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/prestar-transacciones/request-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>perfil</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador en la base de datos del perfil que coge prestado al contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>contenido</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador en la base de datos del contenido que es cogido en préstamo</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>Devuelve el <a href="#prestamo-response">préstamo</a> resultante de la petición.</p>
 </div>
@@ -1239,9 +2585,28 @@ Para coger algo prestado para uno mismo, se recomienda usar <a href="#prestar">e
 <p>Este método sirve para que el perfil con la id del parámetro "perfil" devuelva el contenido con la id del parámetro "contenido".
 .Parámetros de la solicitud</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/devolver-transacciones/request-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>perfil</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador en la base de datos del perfil que coge prestado al contenido</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>contenido</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador en la base de datos del contenido que es cogido en préstamo</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>Devuelve el <a href="#prestamo-response">préstamo</a> resultante de la devolución.</p>
 </div>
@@ -1271,9 +2636,25 @@ Para devolver algo por uno mismo, se recomienda usar <a href="#devolver">este ot
 <div class="paragraph">
 <p>Este método sirve para cerrar la sesión de un perfil determinado por el parámetro username:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/logout/path-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">/auth/logout/{username}</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>username</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El email con el que el usuario se registró</p></td>
+</tr>
+</tbody>
+</table>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -1292,9 +2673,25 @@ Para cerrar la sesión de uno mismo, se recomienda usar <a href="#logout">este o
 <div class="paragraph">
 <p>Este método sirve para eliminar un perfil y cerrar su sesión determinado por el parámetro username:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/delete-perfil-logout/path-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">/auth/delete/{username}</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>username</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El email con el que el usuario se registró</p></td>
+</tr>
+</tbody>
+</table>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -1337,9 +2734,25 @@ Si se quiere crear un perfil de usuario, se recomienda usar <a href="#signup">es
 <div class="paragraph">
 <p>Este método sirve para actualizar los datos de un perfil determinado por el parámetro id:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/update-perfil-perfiles/path-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">/perfiles/{id}</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>id</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador del perfil en la base de datos</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>El cuerpo de la solicitud (perfil completo con los nuevos datos) es un <a href="#perfil-request">perfil</a></p>
 </div>
@@ -1365,18 +2778,54 @@ Si se quiere actualizar el perfil de uno mismo, se recomienda usar <a href="#upd
 <p>Este método sirve para modificar el rol de un usuario en la base de datos.
 .Parámetros de la solicitud</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/set-role/path-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">/perfiles/roles/{id}/{role}</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>id</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador del perfil en la base de datos</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>role</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El rol que el perfil tiene en la biblioteca: 'user', 'staff' o 'admin'</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_delete_perfilesid">DELETE <code>/perfiles/{id}</code></h3>
 <div class="paragraph">
 <p>Este método sirve para eliminar un perfil de la base de datos según su parámetro id:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/delete-perfil-perfiles/path-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">/perfiles/{id}</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>id</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador del perfil en la base de datos</p></td>
+</tr>
+</tbody>
+</table>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -1419,9 +2868,25 @@ Se recomienda usar <a href="#prestar">este otro método</a> o <a href="#prestar-
 <div class="paragraph">
 <p>Este método sirve para actualizar los datos de un préstamo determinado por el parámetro id:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/update-prestamo/path-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">/prestamos/{id}</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>id</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador del préstamo en la base de datos</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>El cuerpo de la solicitud (préstamo completo con los nuevos datos) es un <a href="#prestamo-request">préstamo</a></p>
 </div>
@@ -1434,9 +2899,25 @@ Se recomienda usar <a href="#prestar">este otro método</a> o <a href="#prestar-
 <div class="paragraph">
 <p>Este método sirve para eliminar un préstamo de la base de datos según su parámetro id:</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::D:\Programación\Java\database-server\target/generated-snippets/delete-prestamo/path-parameters.adoc[]</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">/prestamos/{id}</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parámetro</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>id</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">El identificador del préstamo en la base de datos</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -1449,12 +2930,20 @@ Se recomienda usar <a href="#prestar">este otro método</a> o <a href="#prestar-
 <div class="paragraph">
 <p>Luego ejecuta el siguiente comando en el directorio del proyecto para generar el nuevo index.html:</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">./mvnw clean package</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Asegúrate de que la base de datos está corriendo mientras ejecutas el anterior comando.</p>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-09-16 20:39:44 +0200
+Last updated 2022-11-22 19:46:36 +0100
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

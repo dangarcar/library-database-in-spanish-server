@@ -120,8 +120,8 @@ public class PrestamoApiTest {
 	@Test
 	void insertPrestamoTest() throws Exception {
 		Prestamo p = new Prestamo(null, 
-				100l, 
-				100l, 
+				idContenido, 
+				idPerfil, 
 				ZonedDateTime.now().minus(Period.ofDays(30)), 
 				null, 
 				400, 
@@ -144,8 +144,8 @@ public class PrestamoApiTest {
 	@Test
 	void updatePrestamoByIdTest() throws Exception {
 		Prestamo p = new Prestamo(null, 
-				100l, 
-				100l, 
+				idContenido, 
+				idPerfil,
 				ZonedDateTime.now().minus(Period.ofDays(30)), 
 				ZonedDateTime.now(), 
 				400, 
