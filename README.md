@@ -1,6 +1,6 @@
 # Library Database In Spanish (SERVER)
 
-Esta aplicación hecha con Spring Boot, Maven y SQLite es el servidor de la para el [cliente](https://github.com/dangarcar/library-database-in-spanish) de esta aplicación.
+Esta aplicación hecha con Spring Boot, Maven, Postgresql y SQLite es el servidor de la para el [cliente](https://github.com/dangarcar/library-database-in-spanish) de esta aplicación.
 
 Sirve como servidor de una app que controla los préstamos, contenidos y usuarios de una biblioteca, teniendo funcionalidades para usuarios anónimos, clientes de la biblioteca, trabajadores de la biblioteca y administradores del sistema.
 
